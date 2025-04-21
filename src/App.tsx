@@ -132,11 +132,18 @@ const App = () => {
   const scrollToSection = (sectionId: string) => {
     const section = document.getElementById(sectionId);
     if (section) {
-      window.scrollTo({
-        top: section.offsetTop - 100,
-        behavior: "smooth"
-      });
-      setMobileMenuOpen(false); // Close mobile menu when navigating
+      // Add a small delay to ensure the menu has time to close
+      setTimeout(() => {
+        window.scrollTo({
+          top: section.offsetTop - 80, // Adjusted offset for better positioning
+          behavior: "smooth"
+        });
+      }, 100);
+      
+      // Close mobile menu
+      setMobileMenuOpen(false);
+    } else {
+      console.error(`Section with ID "${sectionId}" not found`);
     }
   };
 
@@ -480,24 +487,26 @@ const App = () => {
               >
                 <div className="py-4 px-2 space-y-1">
                   {navItems.map((item) => (
-                    <motion.a
-                      key={item.id}
-                      href={`#${item.id}`}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        scrollToSection(item.id);
-                      }}
-                      className={`flex items-center gap-3 mx-2 px-4 py-3 rounded-lg text-base font-medium
-                        ${activeSection === item.id 
-                          ? 'bg-emerald-600 text-white' 
-                          : 'text-gray-700 hover:bg-emerald-50 hover:text-emerald-700'
-                        }`}
-                      whileHover={{ x: 8 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      {item.icon}
-                      {item.label}
-                    </motion.a>
+                   <motion.a
+                   key={item.id}
+                   href={`#${item.id}`}
+                   onClick={(e) => {
+                     e.preventDefault();
+                     // Try to log something to confirm the click is working
+                     console.log(`Clicking on ${item.id} section`);
+                     scrollToSection(item.id);
+                   }}
+                   className={`flex items-center gap-3 mx-2 px-4 py-3 rounded-lg text-base font-medium
+                     ${activeSection === item.id 
+                       ? 'bg-emerald-600 text-white' 
+                       : 'text-gray-700 hover:bg-emerald-50 hover:text-emerald-700'
+                     }`}
+                   whileHover={{ x: 8 }}
+                   whileTap={{ scale: 0.95 }}
+                 >
+                   {item.icon}
+                   {item.label}
+                 </motion.a>
                   ))}
                   
                   <motion.a
