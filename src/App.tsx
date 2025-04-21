@@ -501,18 +501,20 @@ const App = () => {
                   ))}
                   
                   <motion.a
-                    href="#join"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      scrollToSection("join");
-                    }}
-                    className="flex items-center gap-3 mx-2 mt-4 px-4 py-3 rounded-lg font-medium transition-colors text-center shadow-lg bg-emerald-600 text-white"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <MessageSquare className="w-4 h-4" />
-                    Join Now
-                  </motion.a>
+  href="#join"
+  onClick={(e) => {
+    e.preventDefault();
+    e.stopPropagation(); // Stop event from bubbling up
+    scrollToSection("join");
+    setMobileMenuOpen(false); // Explicitly close menu
+  }}
+  className="flex items-center gap-3 mx-2 mt-4 px-4 py-3 rounded-lg font-medium transition-colors text-center shadow-lg bg-emerald-600 text-white"
+  whileHover={{ scale: 1.05 }}
+  whileTap={{ scale: 0.95 }}
+>
+  <MessageSquare className="w-4 h-4" />
+  Join Now
+</motion.a>
                 </div>
               </motion.div>
             )}
