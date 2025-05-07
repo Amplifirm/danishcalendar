@@ -675,7 +675,7 @@ const App = () => {
                   </motion.div>
                   
                   <h3 className="text-3xl font-bold text-gray-900 mb-4 font-['Playfair_Display']">
-                    Emān Academy
+                    Sayed Mahdi Modarresi
                   </h3>
                   
                   <p className="text-lg mb-6 text-emerald-600">Islamic Education & Wisdom</p>
@@ -811,8 +811,8 @@ const App = () => {
                     
                     {/* Name overlay */}
                     <div className="absolute bottom-0 left-0 right-0 p-6 text-center">
-                      <h3 className="text-2xl font-bold text-white font-['Playfair_Display']">Emān Academy</h3>
-                      <p className="text-emerald-400">Islamic Education & Wisdom</p>
+                      <h3 className="text-2xl font-bold text-white font-['Playfair_Display']">Sayed Mahdi Modarresi</h3>
+                      <p className="text-emerald-400">Islamic Scholar and Speaker</p>
                     </div>
                   </div>
                   
