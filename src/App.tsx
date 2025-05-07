@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useScroll } from 'framer-motion';
 import {
   BookOpen, CheckCircle, AlertCircle, GraduationCap, Users, Scale,
-  Clock, Sparkles, Star, BookMarked, Globe, ArrowRight, ChevronDown,
+  Clock, Sparkles, Star, BookMarked, ArrowRight, ChevronDown,
   Heart, Compass, Shield, Gift, BookIcon, MessageSquare, Award,
   DollarSign, HandHeart, Loader, Menu, X
 } from 'lucide-react';
@@ -20,7 +20,6 @@ const App = () => {
     fullName: '',
     email: '',
     phone: '',
-    courseInterest: '',
     message: '',
     acceptTerms: false
   });
@@ -171,8 +170,16 @@ const App = () => {
     e.preventDefault();
     
     // Validate form
-    if (!formData.fullName || !formData.email || !formData.courseInterest || !formData.acceptTerms) {
+    if (!formData.fullName || !formData.email || !formData.phone || !formData.acceptTerms) {
       setErrorMessage('Please complete all required fields and accept the terms.');
+      setSubmissionStatus('error');
+      return;
+    }
+    
+    // Validate phone number has a country code (starts with + and has 7-15 digits total)
+    const phoneRegex = /^\+[0-9]{7,15}$/;
+    if (!phoneRegex.test(formData.phone)) {
+      setErrorMessage('Please enter a valid phone number with country code (e.g., +1234567890).');
       setSubmissionStatus('error');
       return;
     }
@@ -191,8 +198,7 @@ const App = () => {
         body: JSON.stringify({
           full_name: formData.fullName,
           email: formData.email,
-          phone: formData.phone || null,
-          course_interest: formData.courseInterest,
+          phone: formData.phone,
           message: formData.message || null,
           status: 'pending'
         })
@@ -234,62 +240,73 @@ const App = () => {
     }
   };
 
-  // Potential course offerings - enhanced with more details
+  // Course offerings based on the provided document
   const potentialCourses = [
     {
-      id: 'foundations-islamic-ethics',
-      title: 'Foundations of Islamic Ethics',
-      description: 'Dive deep into the ethical framework that guides Islamic thought and practice, exploring both classical and contemporary applications.',
+      id: 'biography-prophet',
+      title: 'A Brief Biography of the Holy Prophet',
+      description: 'Embark on a transformative journey through the life of the Holy Prophet of Islam — a man whose character, leadership, and legacy changed the course of human history.',
       duration: '8 weeks',
       level: 'All Levels',
-      features: ['Live weekly sessions', 'Interactive discussions', 'Comprehensive readings'],
+      features: ['Compelling narratives', 'Historical analysis', 'Moral and spiritual lessons'],
       startDate: 'September 2023',
-      icon: <Scale className="w-full h-full" />,
+      icon: <Star className="w-full h-full" />,
       color: 'emerald'
     },
     {
-      id: 'quran-interpretation',
-      title: 'Quranic Interpretation & Analysis',
-      description: 'Discover the rich tapestry of Quranic exegesis through a balanced approach that honors tradition while engaging modern scholarship.',
+      id: 'shia-faith-history',
+      title: 'A Brief History of the Shia Faith',
+      description: 'Delve into the rich and often misunderstood story of Shia Islam — a tradition rooted in devotion, struggle, and deep theological reflection.',
       duration: '10 weeks',
       level: 'Intermediate',
-      features: ['In-depth textual analysis', 'Historical context studies', 'Contemporary applications'],
+      features: ['Origins and development', 'Key historical events', 'Theological dimensions'],
       startDate: 'October 2023',
       icon: <BookMarked className="w-full h-full" />,
       color: 'cyan'
     },
     {
-      id: 'ahlul-bayt-teachings',
-      title: 'Teachings of Ahlul Bayt',
-      description: 'Explore the profound spiritual and intellectual legacy of the Prophet\'s household and their enduring influence on Islamic thought.',
+      id: 'ashurology',
+      title: 'Ashurology: Analysis of Ashura Narratives',
+      description: 'What really happened at Karbala? This course delves into the origins and development of the Ashura passion narratives with a focus on early sources and historical transmission.',
       duration: '12 weeks',
-      level: 'All Levels',
-      features: ['Biographical studies', 'Hadith collections', 'Ethical teachings'],
+      level: 'Advanced',
+      features: ['Source criticism', 'Historical analysis', 'Narrative development'],
       startDate: 'August 2023',
-      icon: <Star className="w-full h-full" />,
+      icon: <Scale className="w-full h-full" />,
       color: 'amber'
     },
     {
-      id: 'islamic-philosophy',
-      title: 'Islamic Philosophy',
-      description: 'Journey through the golden age of Islamic philosophical thought and its dialogue with other intellectual traditions throughout history.',
+      id: 'saqeefa-analysis',
+      title: 'Saqeefa: Historical Chronology and Analysis',
+      description: 'Investigate the pivotal and controversial gathering at Saqeefa, where political ambitions overlapped with prophetic commands, through rigorous chronological analysis.',
       duration: '10 weeks',
       level: 'Advanced',
-      features: ['Metaphysical concepts', 'Logical reasoning', 'Comparative philosophy'],
+      features: ['Primary source examination', 'Critical historical inquiry', 'Theological implications'],
       startDate: 'November 2023',
       icon: <Sparkles className="w-full h-full" />,
       color: 'purple'
     },
     {
-      id: 'interfaith-dialogue',
-      title: 'Interfaith Dialogue & Understanding',
-      description: 'Develop the knowledge and skills needed for meaningful engagement across religious boundaries in our diverse global society.',
+      id: 'battles-prophet',
+      title: 'Battles of the Prophet',
+      description: 'Study the key military expeditions undertaken by the Prophet, with a focus on their historical, political, and theological significance in the early history of Islam.',
+      duration: '8 weeks',
+      level: 'Intermediate',
+      features: ['Strategic analysis', 'Political context', 'Social dimensions'],
+      startDate: 'December 2023',
+      icon: <Shield className="w-full h-full" />,
+      color: 'blue'
+    },
+    {
+      id: 'istikhara-guidance',
+      title: 'Divine Guidance: Understanding Istikhara',
+      description: 'Explore the spiritual practice of seeking divine guidance when faced with major life decisions through a comprehensive exploration of this often-misunderstood tradition.',
       duration: '6 weeks',
       level: 'All Levels',
-      features: ['Dialogue techniques', 'Comparative theology', 'Case studies'],
-      startDate: 'December 2023',
-      icon: <Globe className="w-full h-full" />,
-      color: 'blue'
+      features: ['Practical application', 'Spiritual dimensions', 'Common misconceptions'],
+      startDate: 'January 2024',
+      icon: <Compass className="w-full h-full" />,
+      color: 'emerald'
     }
   ];
 
@@ -415,9 +432,9 @@ const App = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <img src="/Logo.svg" alt="SMM Logo" className="w-10 h-10 mr-3" />
-              <span className="hidden sm:block text-emerald-700 tracking-wide">
-                Sayed Mahdi Modarresi
+              <img src="/Logo.svg" alt="Emān Academy Logo" className="w-10 h-10 mr-3" />
+              <span className="hidden sm:block text-emerald-700 tracking-wide font-['Playfair_Display']">
+                Emān Academy
               </span>
             </motion.a>
             
@@ -566,10 +583,10 @@ const App = () => {
                 >
                   Welcome to 
                   <span className="block mt-3 text-emerald-600">
-                    Our Waitlist For
+                    The Waitlist For
                   </span>
                   <span className="block mt-3 text-emerald-700 relative">
-                    Sayed Mahdi Modarresi
+                    Emān Academy
                     <svg className="absolute -bottom-2 left-0 w-2/3 h-2 text-emerald-600" viewBox="0 0 100 10" xmlns="http://www.w3.org/2000/svg">
                       <path d="M0,5 Q25,0 50,5 T100,5" stroke="currentColor" strokeWidth="3" fill="none" />
                     </svg>
@@ -651,17 +668,17 @@ const App = () => {
                   >
                     <img 
                       src="/Mod.jpg" 
-                      alt="Sayed Mahdi Modarresi" 
+                      alt="Emān Academy" 
                       className="w-full h-full object-cover"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-emerald-600/20 to-transparent"></div>
                   </motion.div>
                   
                   <h3 className="text-3xl font-bold text-gray-900 mb-4 font-['Playfair_Display']">
-                    Sayed Mahdi Modarresi
+                    Emān Academy
                   </h3>
                   
-                  <p className="text-lg mb-6 text-emerald-600">Islamic Scholar & Speaker</p>
+                  <p className="text-lg mb-6 text-emerald-600">Islamic Education & Wisdom</p>
                   
                   <p className="text-gray-700 mb-10 text-lg italic font-['Playfair_Display']">
                     "Knowledge illuminates the path of those who seek it with sincere hearts."
@@ -746,7 +763,7 @@ const App = () => {
                 viewport={{ once: true }}
                 className="inline-block text-xl font-medium mb-4 text-emerald-400"
               >
-                About the Scholar
+                About the Academy
               </motion.span>
               <motion.h2 
                 initial={{ opacity: 0, y: 20 }}
@@ -755,7 +772,7 @@ const App = () => {
                 viewport={{ once: true }}
                 className="text-5xl font-bold text-white mb-6 font-['Playfair_Display']"
               >
-                Meet Sayed Mahdi <span className="text-emerald-400">Modarresi</span>
+                Welcome to <span className="text-emerald-400">Emān Academy</span>
               </motion.h2>
               <motion.p 
                 initial={{ opacity: 0, y: 20 }}
@@ -764,7 +781,7 @@ const App = () => {
                 viewport={{ once: true }}
                 className="text-xl text-gray-300 max-w-3xl mx-auto"
               >
-                A distinguished Islamic scholar dedicated to making profound wisdom accessible to all seekers of knowledge.
+                A distinguished Islamic educational platform dedicated to making profound wisdom accessible to all seekers of knowledge.
               </motion.p>
             </div>
             
@@ -784,7 +801,7 @@ const App = () => {
                     <div className="aspect-square rounded-lg overflow-hidden shadow-lg">
                       <img 
                         src="/Mod.jpg" 
-                        alt="Sayed Mahdi Modarresi" 
+                        alt="Emān Academy" 
                         className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-700"
                       />
                     </div>
@@ -794,19 +811,19 @@ const App = () => {
                     
                     {/* Name overlay */}
                     <div className="absolute bottom-0 left-0 right-0 p-6 text-center">
-                      <h3 className="text-2xl font-bold text-white font-['Playfair_Display']">Sayed Mahdi Modarresi</h3>
-                      <p className="text-emerald-400">Islamic Scholar & Speaker</p>
+                      <h3 className="text-2xl font-bold text-white font-['Playfair_Display']">Emān Academy</h3>
+                      <p className="text-emerald-400">Islamic Education & Wisdom</p>
                     </div>
                   </div>
                   
                   <div className="space-y-4">
-                    <h3 className="text-2xl font-bold text-white text-center font-['Playfair_Display']">Academic Background</h3>
+                    <h3 className="text-2xl font-bold text-white text-center font-['Playfair_Display']">Our Foundation</h3>
                     <div className="flex flex-col space-y-4 mt-6">
                       {[
-                        "Extensive Classical Islamic Education",
-                        "PhD in Islamic Studies",
-                        "Author of Multiple Publications",
-                        "International Speaker & Lecturer"
+                        "Classical Islamic Education",
+                        "Research-Based Approach",
+                        "Scholarly Publications",
+                        "International Reach"
                       ].map((item, index) => (
                         <motion.div 
                           key={index} 
@@ -841,7 +858,7 @@ const App = () => {
                     
                     <div className="space-y-6 text-gray-300">
                       <p className="text-xl">
-                        My approach bridges classical Islamic scholarship with contemporary understanding, making timeless wisdom relevant to modern life.
+                        Our approach bridges classical Islamic scholarship with contemporary understanding, making timeless wisdom relevant to modern life.
                       </p>
                       
                       <p className="italic text-xl p-4 rounded-lg shadow-md
@@ -1111,7 +1128,7 @@ const App = () => {
                 {/* Right side - Content */}
                 <div className="p-8 lg:p-10">
                   <h3 className="text-3xl font-bold text-white mb-4 font-['Playfair_Display']">
-                    Foundations of Islamic Ethics
+                    A Brief Biography of the Holy Prophet
                   </h3>
                   
                   <div className="flex flex-wrap gap-3 mb-6">
@@ -1127,7 +1144,7 @@ const App = () => {
                   </div>
                   
                   <p className="text-gray-300 mb-8 text-lg">
-                    Dive deep into the ethical framework that guides Islamic thought and practice, exploring both classical and contemporary applications. This comprehensive course offers a balanced perspective on moral principles.
+                    Embark on a transformative journey through the life of the Holy Prophet of Islam — a man whose character, leadership, and legacy changed the course of human history. This course offers compelling narratives and insightful historical analysis.
                   </p>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
@@ -1135,32 +1152,31 @@ const App = () => {
                       <div className="mt-1 mr-3 text-emerald-400">
                         <CheckCircle className="w-5 h-5" />
                       </div>
-                      <span className="text-gray-300">Live weekly sessions</span>
+                      <span className="text-gray-300">Compelling narratives</span>
                     </div>
                     <div className="flex items-start">
                       <div className="mt-1 mr-3 text-emerald-400">
                         <CheckCircle className="w-5 h-5" />
                       </div>
-                      <span className="text-gray-300">Interactive discussions</span>
+                      <span className="text-gray-300">Historical analysis</span>
                     </div>
                     <div className="flex items-start">
                       <div className="mt-1 mr-3 text-emerald-400">
                         <CheckCircle className="w-5 h-5" />
                       </div>
-                      <span className="text-gray-300">Comprehensive readings</span>
+                      <span className="text-gray-300">Moral and spiritual lessons</span>
                     </div>
                     <div className="flex items-start">
                       <div className="mt-1 mr-3 text-emerald-400">
                         <CheckCircle className="w-5 h-5" />
                       </div>
-                      <span className="text-gray-300">Practical applications</span>
+                      <span className="text-gray-300">Theological insights</span>
                     </div>
                   </div>
                   
                   <div className="flex flex-col sm:flex-row gap-4">
                     <motion.button
                       onClick={() => {
-                        setFormData(prev => ({ ...prev, courseInterest: 'foundations-islamic-ethics' }));
                         scrollToSection("join");
                       }}
                       className="px-6 py-3 rounded-lg transition-all flex items-center justify-center text-base font-medium
@@ -1171,8 +1187,6 @@ const App = () => {
                       <span>Express Interest</span>
                       <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
                     </motion.button>
-                    
-                    
                   </div>
                 </div>
               </div>
@@ -1248,7 +1262,6 @@ const App = () => {
                       {/* CTA */}
                       <motion.button
                         onClick={() => {
-                          setFormData(prev => ({ ...prev, courseInterest: course.id }));
                           scrollToSection("join");
                         }}
                         className="w-full py-3 px-6 rounded-lg transition-all flex items-center justify-center gap-2 text-base font-medium
@@ -1504,7 +1517,7 @@ const App = () => {
                 },
                 {
                   title: "Direct Communication",
-                  description: "Receive personal updates and insights from Sayed Modarresi as courses develop.",
+                  description: "Receive personal updates and insights as courses develop.",
                   icon: "📩"
                 }
               ].map((benefit, index) => (
@@ -1641,7 +1654,7 @@ const App = () => {
                       transition={{ delay: 0.5 }}
                       className="text-2xl text-gray-700 mb-10"
                     >
-                      Thank you for your interest in Sayed Mahdi Modarresi's upcoming courses. You're now on our priority waitlist.
+                      Thank you for your interest in Emān Academy's upcoming courses. You're now on our priority waitlist.
                     </motion.p>
                     
                     <motion.div
@@ -1704,7 +1717,6 @@ const App = () => {
                             fullName: '',
                             email: '',
                             phone: '',
-                            courseInterest: '',
                             message: '',
                             acceptTerms: false
                           });
@@ -1714,7 +1726,7 @@ const App = () => {
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                       >
-                        Register for Another Course
+                        Register Again
                       </motion.button>
                       
                       <motion.button
@@ -1800,50 +1812,28 @@ const App = () => {
                       </div>
                     </div>
                     
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                      {/* Phone Field with Enhanced Input Masking */}
-                      <div>
-                        <label htmlFor="phone" className="block text-base font-medium text-gray-700 mb-2">
-                          Phone Number <span className="text-gray-500">(Optional)</span>
-                        </label>
+                    {/* Phone Field with Enhanced Input Masking - Now Required */}
+                    <div>
+                      <label htmlFor="phone" className="block text-base font-medium text-gray-700 mb-2">
+                        Phone Number with Country Code <span className="text-emerald-600">*</span>
+                      </label>
+                      <div className="relative">
                         <input
                           type="tel"
                           id="phone"
                           name="phone"
                           value={formData.phone}
                           onChange={handleChange}
+                          required
                           className="w-full px-4 py-3 rounded-lg text-gray-900 transition-all text-lg
                             border border-gray-300 focus:border-emerald-500 focus:ring focus:ring-emerald-200 focus:ring-opacity-50"
                           placeholder="+1 (123) 456-7890"
                         />
-                      </div>
-                      
-                      {/* Course Interest Field with Enhanced Styling */}
-                      <div>
-                        <label htmlFor="courseInterest" className="block text-base font-medium text-gray-700 mb-2">
-                          Course Interest <span className="text-emerald-600">*</span>
-                        </label>
-                        <select
-                          id="courseInterest"
-                          name="courseInterest"
-                          value={formData.courseInterest}
-                          onChange={handleChange}
-                          required
-                          className="w-full px-4 py-3 rounded-lg text-gray-900 transition-all text-lg
-                            border border-gray-300 focus:border-emerald-500 focus:ring focus:ring-emerald-200 focus:ring-opacity-50 appearance-none bg-white"
-                          style={{
-                            backgroundImage: "url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e\")",
-                            backgroundPosition: "right 0.5rem center",
-                            backgroundRepeat: "no-repeat",
-                            backgroundSize: "1.5em 1.5em",
-                            paddingRight: "2.5rem"
-                          }}
-                        >
-                          <option value="">Select a course</option>
-                          {potentialCourses.map(course => (
-                            <option key={course.id} value={course.id}>{course.title}</option>
-                          ))}
-                        </select>
+                        <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                          <p className="text-sm text-emerald-600 italic">
+                            Include + and country code
+                          </p>
+                        </div>
                       </div>
                     </div>
                     
@@ -1872,8 +1862,8 @@ const App = () => {
                       <p className="font-medium mt-3 text-emerald-400">— Imam Muhammad al-Baqir (a.s.)</p>
                     </div>
                     
-                   {/* Terms Checkbox with Enhanced Styling */}
-                   <div className="flex items-start gap-4">
+                    {/* Terms Checkbox with Updated Text */}
+                    <div className="flex items-start gap-4">
                       <div className="flex items-center h-6 mt-1">
                         <input
                           id="acceptTerms"
@@ -1886,8 +1876,7 @@ const App = () => {
                         />
                       </div>
                       <label htmlFor="acceptTerms" className="text-lg text-gray-700">
-                        I agree to receive communications about upcoming courses and events. 
-                        I understand that expressing interest does not obligate me to enroll.
+                        I agree to receive communications about upcoming courses and events. I understand that expressing interest does not obligate me to enroll, nor does it guarantee enrollment in any course.
                       </label>
                     </div>
                     
@@ -1944,13 +1933,13 @@ const App = () => {
                   whileHover={{ scale: 1.05 }}
                 >
                   <span className="text-white font-['Playfair_Display']">
-                    Sayed Mahdi
+                    Emān
                   </span>
                   <span className="ml-1 text-emerald-400 font-['Playfair_Display']">
-                    Modarresi
+                    Academy
                   </span>
                 </motion.a>
-                <p className="text-gray-400 mb-4 text-lg">Islamic Scholar & Speaker</p>
+                <p className="text-gray-400 mb-4 text-lg">Islamic Education & Wisdom</p>
                 <p className="text-gray-400 mb-6">
                   Dedicated to spreading knowledge, wisdom, and understanding through education and interfaith dialogue.
                 </p>
@@ -2036,7 +2025,7 @@ const App = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                       </svg>
                     </div>
-                    <span className="text-gray-400">info@sayedmodarresi.org</span>
+                    <span className="text-gray-400">info@emanacademy.org</span>
                   </li>
                   <li className="flex items-start">
                     <div className="mr-3 mt-1 text-emerald-400">
@@ -2088,7 +2077,7 @@ const App = () => {
             {/* Bottom Footer */}
             <div className="flex flex-col md:flex-row justify-between items-center">
               <p className="text-gray-400 text-base mb-4 md:mb-0">
-                &copy; {new Date().getFullYear()} Sayed Mahdi Modarresi. All rights reserved.
+                &copy; {new Date().getFullYear()} Emān Academy. All rights reserved.
               </p>
               
               <div className="flex flex-wrap gap-4 md:gap-8">
