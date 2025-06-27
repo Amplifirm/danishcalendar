@@ -1,35 +1,24 @@
-import React, { useState } from 'react';
-import { AnimatePresence } from 'framer-motion';
 
-// Import all our components (you'll need to import these from your actual files)
-import LoadingAnimation from './components/LoadingAnimation';
-import Navigation from './components/Navigation';
-import HeroSection from './components/HeroSection';
-import ValuesSection from './components/ValuesSection';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import './App.css';
+import AmpliFirmHubHomepage from './pages/Home';
 
-const App: React.FC = () => {
-  const [isLoading, setIsLoading] = useState(true);
 
-  const handleLoadingComplete = () => {
-    setIsLoading(false);
-  };
-
+function App() {
   return (
-    <div className="min-h-screen">
-      <AnimatePresence mode="wait">
-        {isLoading ? (
-          <LoadingAnimation key="loading" onComplete={handleLoadingComplete} />
-        ) : (
-          <div key="main-content">
-            <Navigation />
-            <HeroSection />
-            <ValuesSection />
-            {/* Add other sections here as needed */}
-          </div>
-        )}
-      </AnimatePresence>
-    </div>
+    <Router>
+      <div className="App">
+        <Routes>
+          <Route path="/" element={<AmpliFirmHubHomepage />} />
+          {/* Add more routes as you build out the platform */}
+          {/* <Route path="/login" element={<LoginPage />} /> */}
+          {/* <Route path="/signup" element={<SignupPage />} /> */}
+          {/* <Route path="/dashboard" element={<Dashboard />} /> */}
+          {/* <Route path="/profile" element={<ProfilePage />} /> */}
+        </Routes>
+      </div>
+    </Router>
   );
-};
+}
 
 export default App;
