@@ -1,29 +1,15 @@
-// Add this to your index.css file:
-/*
-@import url('https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,600,700,800,900&display=swap');
-
-* {
-  font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, sans-serif;
-}
-*/
-
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ArrowRight, 
-  Brain, 
-  Sparkles, 
   Target, 
   Users, 
   TrendingUp,
   Play,
   Star,
-  ChevronRight,
   ChevronDown,
   Building,
   Search,
-  Zap,
-  BarChart3,
   Shield,
   Globe,
   Rocket,
@@ -32,18 +18,24 @@ import {
   CheckCircle,
   Clock,
   DollarSign,
-
   Calendar,
-
-  FileText
+  FileText,
+  Settings,
+  Lightbulb,
+  PieChart,
+  Smartphone,
+  Code,
+  Megaphone
 } from 'lucide-react';
+import HeroSection from '../components/HeroSection';
 
-const AmpliFirmHubHomepage = () => {
+const AmplifirmHomepage = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [hoveredDropdown, setHoveredDropdown] = useState<string | null>(null);
-  const [activeFeature, setActiveFeature] = useState(0);
+  const [, setActiveFeature] = useState(0);
 
   useEffect(() => {
+    
     const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
     };
@@ -58,240 +50,100 @@ const AmpliFirmHubHomepage = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const buyersMenu = [
-    { name: 'Find Marketing Partners', href: '#', icon: Search },
-    { name: 'How It Works', href: '#', icon: Play },
-    { name: 'Success Stories', href: '#', icon: Award },
-    { name: 'Pricing', href: '#', icon: Zap }
+  const servicesMenu = [
+    { name: 'Business Consultancy', href: '#', icon: Building },
+    { name: 'Marketing Solutions', href: '#', icon: Megaphone },
+    { name: 'Website Development', href: '#', icon: Code },
+    { name: 'Platform Development', href: '#', icon: Smartphone }
   ];
 
-  const sellersMenu = [
-    { name: 'Join as Agency', href: '#', icon: Building },
-    { name: 'Agency Dashboard', href: '#', icon: BarChart3 },
-    { name: 'Resources', href: '#', icon: Globe },
-    { name: 'Partner Support', href: '#', icon: MessageSquare }
+  const aboutMenu = [
+    { name: 'Our Story', href: '#', icon: Star },
+    { name: 'Meet the Team', href: '#', icon: Users },
+    { name: 'Awards & Recognition', href: '#', icon: Award },
+    { name: 'Case Studies', href: '#', icon: FileText }
   ];
 
-  const particles = Array.from({ length: 8 }, (_, i) => ({
-    id: i,
-    x: Math.random() * 100,
-    y: Math.random() * 100,
-    delay: i * 0.5
-  }));
+
 
   const trustedCompanies = [
-    'Stripe', 'Notion', 'Linear', 'Figma', 'Vercel', 'Supabase', 'Clerk', 'Framer',
-    'OpenAI', 'Anthropic', 'Perplexity', 'Replicate', 'Hugging Face', 'Runway'
+    'TechStart', 'GrowthCorp', 'ScaleUp', 'InnovateLab', 'CloudFlow', 'RetailTech', 
+    'FinanceFlow', 'StartupX', 'BuildFast', 'MarketLeap', 'TechFlow', 'VentureBase'
   ];
 
   const howItWorksSteps = [
     {
       number: '01',
-      title: 'Tell us about your business',
-      description: 'Our AI analyzes your company profile, budget, goals, and marketing needs in just 2 minutes.',
-      icon: Building,
-      color: 'from-blue-500 to-teal-600'
+      title: 'Book Your Discovery Call',
+      description: 'Schedule a free consultation via Calendly. We\'ll dive deep into your business challenges and growth goals.',
+      icon: Calendar,
+      color: 'from-blue-500 to-blue-600'
     },
     {
       number: '02', 
-      title: 'Get matched instantly',
-      description: 'Advanced algorithms match you with pre-vetted agencies that specialize in your industry and budget range.',
-      icon: Brain,
-      color: 'from-blue-500 to-teal-600'
+      title: 'Problem Analysis & Strategy',
+      description: 'Our experts analyze your operations, marketing, and financials to identify opportunities and create tailored solutions.',
+      icon: Search,
+      color: 'from-blue-500 to-blue-600'
     },
     {
       number: '03',
-      title: 'Start your campaign',
-      description: 'Connect directly with your matches, compare proposals, and launch campaigns with built-in project management.',
+      title: 'Implement & Scale',
+      description: 'We implement the solutions, whether it\'s marketing campaigns, operational systems, or custom development.',
       icon: Rocket,
-      color: 'from-blue-500 to-teal-600'
+      color: 'from-blue-500 to-blue-600'
     }
   ];
 
-  const features = [
-    {
-      title: 'AI-Powered Matching',
-      description: 'Our advanced algorithms analyze 47+ data points to find your perfect marketing partner.',
-      icon: Brain,
-      stats: '98% accuracy rate',
-      preview: 'Real-time compatibility scoring'
-    },
-    {
-      title: 'Instant Proposals',
-      description: 'Get custom proposals from top agencies within 24 hours, not weeks.',
-      icon: Zap,
-      stats: '< 24 hour response',
-      preview: 'Automated proposal generation'
-    },
-    {
-      title: 'Project Management',
-      description: 'Built-in tools to track progress, manage deliverables, and ensure on-time delivery.',
-      icon: Calendar,
-      stats: '94% on-time delivery',
-      preview: 'Collaborative workspace'
-    },
-    {
-      title: 'Performance Analytics',
-      description: 'Real-time dashboards showing ROI, campaign performance, and actionable insights.',
-      icon: BarChart3,
-      stats: '340% avg ROI increase',
-      preview: 'Live performance tracking'
-    }
-  ];
 
-  const businessFeatures = [
-    {
-      title: 'Smart Matching Algorithm',
-      description: 'Get matched with agencies that have proven success in your exact industry and budget range.',
-      icon: Target,
-      benefits: ['Industry expertise verification', 'Budget-optimized matches', 'Success rate tracking']
-    },
-    {
-      title: 'Transparent Pricing', 
-      description: 'See upfront costs, compare proposals side-by-side, and never worry about hidden fees.',
-      icon: DollarSign,
-      benefits: ['Fixed-price projects', 'Cost comparison tools', 'No hidden fees']
-    },
-    {
-      title: 'Quality Assurance',
-      description: 'Every agency is pre-vetted with verified case studies, client reviews, and performance metrics.',
-      icon: Shield,
-      benefits: ['Verified track records', 'Client testimonials', 'Performance guarantees']
-    }
-  ];
-
-  const agencyFeatures = [
-    {
-      title: 'Qualified Lead Generation',
-      description: 'Only get matched with serious businesses that fit your ideal client profile.',
-      icon: Users,
-      benefits: ['Pre-qualified prospects', 'Perfect-fit clients', 'Higher conversion rates']
-    },
-    {
-      title: 'Automated Proposals',
-      description: 'Our AI helps create compelling proposals that win more business in less time.',
-      icon: FileText,
-      benefits: ['Template automation', 'Success rate optimization', 'Time-saving tools']
-    },
-    {
-      title: 'Performance Showcase',
-      description: 'Highlight your best work with verified case studies and client success metrics.',
-      icon: Award,
-      benefits: ['Verified case studies', 'Client testimonials', 'Performance metrics']
-    }
-  ];
 
   const stats = [
-    { value: '12K+', label: 'Successful Matches', icon: Target },
-    { value: '96.4%', label: 'Success Rate', icon: TrendingUp },
-    { value: '$45M+', label: 'Revenue Generated', icon: DollarSign },
-    { value: '2.3 hrs', label: 'Avg Match Time', icon: Clock }
+    { value: '150+', label: 'Clients Served', icon: Users },
+    { value: '300+', label: 'Websites Built', icon: Code },
+    { value: '3+', label: 'Years Experience', icon: Clock },
+    { value: '100%', label: 'Tailored Solutions', icon: Target }
   ];
 
-  const pricingPlans = [
-    {
-      name: 'For Businesses',
-      price: 'Free',
-      description: 'Find your perfect marketing partner',
-      features: [
-        'AI-powered matching',
-        'Unlimited searches',
-        'Direct agency contact',
-        'Project management tools',
-        'Performance tracking'
-      ],
-      cta: 'Speak to Our AI',
-      popular: false
-    },
-    {
-      name: 'For Agencies',
-      price: '$99',
-      period: '/month',
-      description: 'Grow your agency with quality leads',
-      features: [
-        'Qualified lead matching',
-        'Automated proposals',
-        'Performance showcase',
-        'Client communication tools',
-        'Analytics dashboard'
-      ],
-      cta: 'Start Free Trial',
-      popular: true
-    }
-  ];
-
-  const faqs = [
-    {
-      question: 'How does the AI matching work?',
-      answer: 'Our AI analyzes 47+ data points including your industry, budget, company size, goals, and previous marketing performance to match you with agencies that have proven success with similar businesses.'
-    },
-    {
-      question: 'What if I\'m not satisfied with my matches?',
-      answer: 'We guarantee satisfaction. If you\'re not happy with your initial matches, our team will personally review your requirements and provide new recommendations within 24 hours.'
-    },
-    {
-      question: 'How are agencies vetted?',
-      answer: 'Every agency goes through a rigorous 5-step verification process including portfolio review, client reference checks, case study validation, and performance metric verification.'
-    },
-    {
-      question: 'Is there really no cost for businesses?',
-      answer: 'Absolutely free for businesses. We only charge agencies for access to qualified leads. This ensures agencies are motivated to provide exceptional results to maintain their platform access.'
-    },
-    {
-      question: 'How quickly can I start a campaign?',
-      answer: 'Most businesses receive their first proposals within 24 hours and can start campaigns within a week. Our streamlined process eliminates the typical 4-6 week agency search timeline.'
-    },
-    {
-      question: 'What industries do you support?',
-      answer: 'We support all industries but specialize in SaaS, E-commerce, FinTech, HealthTech, and B2B services. Our AI has the deepest expertise in these high-growth sectors.'
-    }
-  ];
 
   return (
-    <div className="min-h-screen bg-white relative overflow-hidden">
+    <div className="min-h-screen bg-white relative overflow-hidden" style={{ fontFamily: 'Satoshi, sans-serif' }}>
       {/* Enhanced background grid */}
       <div className="fixed inset-0 pointer-events-none">
         <div 
           className="absolute inset-0 opacity-[0.4]"
           style={{
             backgroundImage: `
-              linear-gradient(rgba(0,0,0,0.05) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(0,0,0,0.05) 1px, transparent 1px)
+              linear-gradient(rgba(33,106,217,0.05) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(33,106,217,0.05) 1px, transparent 1px)
             `,
             backgroundSize: '40px 40px'
           }}
         />
         
-        {/* Enhanced floating particles */}
-        {particles.map((particle) => (
-          <motion.div
-            key={particle.id}
-            className="absolute w-2 h-2 bg-blue-300/20 rounded-full"
-            style={{
-              left: `${particle.x}%`,
-              top: `${particle.y}%`,
-            }}
-            animate={{
-              y: [0, -40, 0],
-              x: [0, 20, 0],
-              opacity: [0.2, 0.8, 0.2],
-              scale: [1, 1.5, 1]
-            }}
-            transition={{
-              duration: 12,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: particle.delay
-            }}
-          />
-        ))}
+        {/* Subtle background enhancement */}
+        <motion.div 
+          className="absolute top-10 left-10 w-32 h-32 bg-blue-100/20 rounded-full blur-3xl"
+          animate={{ 
+            scale: [1, 1.2, 1],
+            opacity: [0.1, 0.3, 0.1]
+          }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div 
+          className="absolute bottom-20 right-20 w-40 h-40 bg-blue-200/20 rounded-full blur-3xl"
+          animate={{ 
+            scale: [1, 1.3, 1],
+            opacity: [0.1, 0.2, 0.1]
+          }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 3 }}
+        />
       </div>
 
       {/* Mouse gradient effect */}
       <motion.div 
         className="absolute inset-0 opacity-[0.02]"
         style={{
-          background: `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(59, 130, 246, 0.3), transparent 40%)`
+          background: `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(33, 106, 217, 0.3), transparent 40%)`
         }}
       />
 
@@ -315,64 +167,22 @@ const AmpliFirmHubHomepage = () => {
                 transition={{ duration: 0.2 }}
               >
                 <motion.div 
-                  className="w-9 h-9 bg-gradient-to-br from-blue-600 via-teal-600 to-cyan-600 rounded-2xl flex items-center justify-center shadow-lg"
+                  className="w-9 h-9 rounded-2xl flex items-center justify-center shadow-lg"
+                  style={{ backgroundColor: '#216ad9' }}
                   whileHover={{ rotate: 360 }}
                   transition={{ duration: 0.6 }}
                 >
-                  <Brain className="w-4 h-4 text-white" />
+                  <Lightbulb className="w-4 h-4 text-white" />
                 </motion.div>
                 <div>
-                  <span className="text-lg font-bold text-gray-900">AmpliFirm</span>
-                  <span className="text-lg font-bold bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent">Hub</span>
+                  <span className="text-lg font-bold text-gray-900">Amplifirm</span>
                 </div>
               </motion.div>
               
               <div className="hidden lg:flex items-center space-x-1">
                 <div 
                   className="relative"
-                  onMouseEnter={() => setHoveredDropdown('buyers')}
-                  onMouseLeave={() => setHoveredDropdown(null)}
-                >
-                  <motion.button 
-                    className="flex items-center space-x-1 text-gray-700 hover:text-blue-600 text-sm font-medium px-3 py-2 rounded-xl transition-all duration-200 hover:bg-blue-50"
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    <Users className="w-4 h-4" />
-                    <span>For Businesses</span>
-                    <ChevronDown className="w-3 h-3" />
-                  </motion.button>
-                  
-                  <AnimatePresence>
-                    {hoveredDropdown === 'buyers' && (
-                      <motion.div
-                        className="absolute top-full left-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-gray-100 py-2"
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 10 }}
-                        transition={{ duration: 0.2 }}
-                      >
-                        {buyersMenu.map((item, index) => (
-                          <motion.a
-                            key={item.name}
-                            href={item.href}
-                            className="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-colors"
-                            initial={{ opacity: 0, x: -10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: index * 0.05 }}
-                            whileHover={{ x: 4 }}
-                          >
-                            <item.icon className="w-4 h-4" />
-                            <span className="text-sm font-medium">{item.name}</span>
-                          </motion.a>
-                        ))}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-
-                <div 
-                  className="relative"
-                  onMouseEnter={() => setHoveredDropdown('sellers')}
+                  onMouseEnter={() => setHoveredDropdown('services')}
                   onMouseLeave={() => setHoveredDropdown(null)}
                 >
                   <motion.button 
@@ -380,12 +190,12 @@ const AmpliFirmHubHomepage = () => {
                     whileHover={{ scale: 1.05 }}
                   >
                     <Building className="w-4 h-4" />
-                    <span>For Agencies</span>
+                    <span>Services</span>
                     <ChevronDown className="w-3 h-3" />
                   </motion.button>
                   
                   <AnimatePresence>
-                    {hoveredDropdown === 'sellers' && (
+                    {hoveredDropdown === 'services' && (
                       <motion.div
                         className="absolute top-full left-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-gray-100 py-2"
                         initial={{ opacity: 0, y: 10 }}
@@ -393,7 +203,7 @@ const AmpliFirmHubHomepage = () => {
                         exit={{ opacity: 0, y: 10 }}
                         transition={{ duration: 0.2 }}
                       >
-                        {sellersMenu.map((item, index) => (
+                        {servicesMenu.map((item, index) => (
                           <motion.a
                             key={item.name}
                             href={item.href}
@@ -412,7 +222,49 @@ const AmpliFirmHubHomepage = () => {
                   </AnimatePresence>
                 </div>
 
-                {['About', 'Contact'].map((item, index) => (
+                <div 
+                  className="relative"
+                  onMouseEnter={() => setHoveredDropdown('about')}
+                  onMouseLeave={() => setHoveredDropdown(null)}
+                >
+                  <motion.button 
+                    className="flex items-center space-x-1 text-gray-700 hover:text-blue-600 text-sm font-medium px-3 py-2 rounded-xl transition-all duration-200 hover:bg-blue-50"
+                    whileHover={{ scale: 1.05 }}
+                  >
+                    <Users className="w-4 h-4" />
+                    <span>About</span>
+                    <ChevronDown className="w-3 h-3" />
+                  </motion.button>
+                  
+                  <AnimatePresence>
+                    {hoveredDropdown === 'about' && (
+                      <motion.div
+                        className="absolute top-full left-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-gray-100 py-2"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 10 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        {aboutMenu.map((item, index) => (
+                          <motion.a
+                            key={item.name}
+                            href={item.href}
+                            className="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+                            initial={{ opacity: 0, x: -10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: index * 0.05 }}
+                            whileHover={{ x: 4 }}
+                          >
+                            <item.icon className="w-4 h-4" />
+                            <span className="text-sm font-medium">{item.name}</span>
+                          </motion.a>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                {['Pricing', 'Contact'].map((item, index) => (
                   <motion.a 
                     key={item}
                     href="#" 
@@ -429,222 +281,28 @@ const AmpliFirmHubHomepage = () => {
             </div>
             
             <motion.button 
-              className="bg-gradient-to-r from-blue-600 to-teal-600 text-white px-6 py-3 rounded-2xl text-sm font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+              className="text-white px-6 py-3 rounded-2xl text-sm font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+              style={{ backgroundColor: '#216ad9' }}
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.4, delay: 0.2 }}
               whileHover={{ 
                 scale: 1.05, 
                 y: -2,
-                boxShadow: "0 20px 40px rgba(59, 130, 246, 0.3)"
+                boxShadow: "0 20px 40px rgba(33, 106, 217, 0.3)"
               }}
               whileTap={{ scale: 0.95 }}
             >
-              Speak to Our AI
+              Book Free Consultation
             </motion.button>
           </div>
         </motion.div>
       </motion.nav>
 
-      {/* Hero Section */}
-      <div className="relative z-40 max-w-5xl mx-auto px-6 lg:px-8 pt-44 pb-16 text-center">
-        <motion.div 
-          className="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-50 to-teal-50 border border-blue-200/50 rounded-full px-5 py-3 mb-12"
-          initial={{ opacity: 0, y: 30, scale: 0.8 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.8, delay: 0.2, type: "spring" }}
-          whileHover={{ scale: 1.05, y: -2 }}
-        >
-          <motion.div
-            animate={{ 
-              rotate: [0, 15, -15, 0],
-              scale: [1, 1.1, 1]
-            }}
-            transition={{ 
-              duration: 3, 
-              repeat: Infinity, 
-              ease: "easeInOut" 
-            }}
-          >
-            <Sparkles className="w-4 h-4 text-blue-600" />
-          </motion.div>
-          <span className="text-sm font-semibold text-blue-700">New</span>
-          <span className="text-sm text-blue-600">AI Matchmaking 2.0 is live 🚀</span>
-          <ChevronRight className="w-4 h-4 text-blue-400" />
-        </motion.div>
+      <HeroSection/>
 
-        <div className="mb-10">
-          <motion.h1 
-            className="text-8xl font-bold text-gray-900"
-            style={{ lineHeight: '1' }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 0.4 }}
-          >
-            <motion.div
-              className="mb-6"
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.5 }}
-            >
-              Find your
-              <motion.span 
-                className="inline-flex items-center mx-4"
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6, delay: 0.8, type: "spring" }}
-                whileHover={{ scale: 1.1 }}
-              >
-                <motion.span 
-                  className="w-24 h-24 md:w-28 md:h-28 bg-green-500 rounded-2xl flex items-center justify-center mx-2 shadow-xl"
-                  style={{ transform: 'rotate(-8deg)' }}
-                  animate={{ 
-                    y: [0, -12, 0],
-                    rotate: [-8, -3, -8],
-                    boxShadow: [
-                      "0 10px 30px rgba(34, 197, 94, 0.3)",
-                      "0 20px 50px rgba(34, 197, 94, 0.5)",
-                      "0 10px 30px rgba(34, 197, 94, 0.3)"
-                    ]
-                  }}
-                  transition={{ 
-                    y: { duration: 4, repeat: Infinity, ease: "easeInOut" },
-                    rotate: { duration: 4, repeat: Infinity, ease: "easeInOut" },
-                    boxShadow: { duration: 3, repeat: Infinity }
-                  }}
-                  whileHover={{ rotate: 5, scale: 1.1 }}
-                >
-                  <Brain className="w-12 h-12 md:w-14 md:h-14 text-white" style={{ transform: 'rotate(8deg)' }} />
-                </motion.span>
-              </motion.span>
-              perfect
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 1.2 }}
-            >
-              marketing
-              <motion.span 
-                className="inline-flex items-center mx-4"
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6, delay: 1.4, type: "spring" }}
-                whileHover={{ scale: 1.1 }}
-              >
-                <motion.span 
-                  className="w-24 h-24 md:w-28 md:h-28 bg-red-500 rounded-2xl flex items-center justify-center mx-2 shadow-xl"
-                  style={{ transform: 'rotate(12deg)' }}
-                  animate={{ 
-                    rotate: [12, 25, -5, 12],
-                    scale: [1, 1.1, 1],
-                    boxShadow: [
-                      "0 10px 30px rgba(239, 68, 68, 0.3)",
-                      "0 20px 50px rgba(239, 68, 68, 0.5)",
-                      "0 10px 30px rgba(239, 68, 68, 0.3)"
-                    ]
-                  }}
-                  transition={{ 
-                    rotate: { duration: 6, repeat: Infinity, ease: "easeInOut" },
-                    scale: { duration: 4, repeat: Infinity, ease: "easeInOut" },
-                    boxShadow: { duration: 3, repeat: Infinity, delay: 1 }
-                  }}
-                  whileHover={{ rotate: -5, scale: 1.15 }}
-                >
-                  <Target className="w-12 h-12 md:w-14 md:h-14 text-white" style={{ transform: 'rotate(-12deg)' }} />
-                </motion.span>
-              </motion.span>
-              partner
-            </motion.div>
-          </motion.h1>
-        </div>
-        
-        <motion.p 
-          className="text-xl text-gray-600 max-w-3xl mx-auto mb-10 leading-relaxed"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 1.8 }}
-        >
-          Stop wasting time and money on mismatched partnerships. Our AI analyzes your business, 
-          budget, and goals to connect you with <span className="font-semibold text-blue-600">marketing experts who deliver results</span>.
-        </motion.p>
-        
-        <motion.div 
-          className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 2 }}
-        >
-          <motion.button 
-            className="group bg-black text-white px-8 py-4 rounded-2xl text-lg font-semibold flex items-center space-x-3 shadow-lg hover:shadow-xl transition-all duration-300"
-            whileHover={{ 
-              scale: 1.02, 
-              y: -2,
-            }}
-            whileTap={{ scale: 0.98 }}
-          >
-            <span>Speak to Our AI</span>
-            <motion.div
-              animate={{ x: [0, 4, 0] }}
-              transition={{ 
-                duration: 2, 
-                repeat: Infinity, 
-                ease: "easeInOut" 
-              }}
-            >
-              <ArrowRight className="w-5 h-5" />
-            </motion.div>
-          </motion.button>
-          
-          <motion.button 
-            className="group flex items-center space-x-3 text-gray-700 hover:text-blue-600 transition-all duration-300"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <motion.div 
-              className="w-14 h-14 bg-white rounded-2xl shadow-lg flex items-center justify-center border border-gray-200 group-hover:shadow-xl group-hover:border-blue-200 transition-all duration-300"
-              whileHover={{ rotate: 10 }}
-            >
-              <Play className="w-5 h-5 text-gray-700 group-hover:text-blue-600 ml-1" />
-            </motion.div>
-            <div className="text-left">
-              <div className="text-lg font-semibold">See how it works</div>
-              <div className="text-sm text-gray-500">3 min demo</div>
-            </div>
-          </motion.button>
-        </motion.div>
-        
-        <motion.div 
-          className="flex items-center justify-center space-x-6 text-sm text-gray-500"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 2.2 }}
-        >
-          <motion.div 
-            className="flex items-center space-x-2"
-            whileHover={{ scale: 1.05, y: -1 }}
-          >
-            <Shield className="w-4 h-4 text-blue-500" />
-            <span>No credit card required</span>
-          </motion.div>
-          <motion.div 
-            className="flex items-center space-x-2"
-            whileHover={{ scale: 1.05, y: -1 }}
-          >
-            <Zap className="w-4 h-4 text-blue-500" />
-            <span>Setup in 5 minutes</span>
-          </motion.div>
-          <motion.div 
-            className="flex items-center space-x-2"
-            whileHover={{ scale: 1.05, y: -1 }}
-          >
-            <Award className="w-4 h-4 text-blue-500" />
-            <span>94% success rate</span>
-          </motion.div>
-        </motion.div>
-      </div>
 
-      {/* Dashboard Preview */}
+      {/* Client Success Showcase */}
       <motion.div 
         className="relative z-30 max-w-7xl mx-auto px-6 lg:px-8 pb-32"
         initial={{ opacity: 0, y: 100 }}
@@ -652,312 +310,141 @@ const AmpliFirmHubHomepage = () => {
         transition={{ duration: 1.2, delay: 2.4 }}
       >
         <motion.div 
-          className="relative bg-white rounded-3xl shadow-2xl border border-gray-200 overflow-hidden"
-          whileHover={{ y: -8, scale: 1.01 }}
-          transition={{ duration: 0.4 }}
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 2.6 }}
         >
-          <div className="flex items-center px-8 py-5 bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200">
-            <div className="flex gap-3">
-              <motion.div 
-                className="w-4 h-4 rounded-full bg-red-400"
-                whileHover={{ scale: 1.3 }}
-              />
-              <motion.div 
-                className="w-4 h-4 rounded-full bg-yellow-400"
-                whileHover={{ scale: 1.3 }}
-              />
-              <motion.div 
-                className="w-4 h-4 rounded-full bg-green-400"
-                whileHover={{ scale: 1.3 }}
-              />
-            </div>
-            <div className="flex-1 flex justify-center">
-              <div className="bg-white px-6 py-2 rounded-xl text-sm text-gray-600 border shadow-sm">
-                app.amplifirmhub.ai
-              </div>
-            </div>
-          </div>
-          
-          <div className="p-10 min-h-[700px] bg-gradient-to-br from-gray-50/50 to-white">
+          <h2 className="text-4xl font-bold text-gray-900 mb-4">Real Problems. Real Solutions. Real Results.</h2>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            See how we've transformed businesses across industries with our tailored approach
+          </p>
+        </motion.div>
+
+        <div className="grid lg:grid-cols-3 gap-8">
+          {[
+            {
+              problem: "E-commerce store struggling with 0.8% conversion rate",
+              solution: "Implemented conversion optimization strategy + new checkout flow",
+              result: "Increased to 4.2% conversion rate (+425% improvement)",
+              industry: "E-commerce",
+              timeframe: "3 months",
+              color: "from-green-500 to-emerald-600"
+            },
+            {
+              type: "video",
+              videoId: "pOgzx82g0SU",
+              caption: "Julian Schöffrman at Saviour",
+              title: "Client Success Story",
+              description: "See how we helped transform Saviour's business operations and growth strategy."
+            },
+            {
+              problem: "Local service business relying only on word-of-mouth",
+              solution: "Built digital presence + local SEO + automated lead system",
+              result: "Generated 150+ qualified leads monthly",
+              industry: "Local Services",
+              timeframe: "4 months",
+              color: "from-purple-500 to-pink-600"
+            }
+          ].map((story, index) => (
             <motion.div 
-              className="flex items-center justify-between mb-10"
-              initial={{ opacity: 0, y: 20 }}
+              key={index}
+              className="bg-white rounded-3xl p-8 shadow-xl border border-gray-200 hover:shadow-2xl transition-all duration-300"
+              initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 2.6 }}
+              transition={{ duration: 0.6, delay: 2.8 + index * 0.2 }}
+              whileHover={{ y: -5, scale: 1.02 }}
             >
-              <div>
-                <h3 className="text-3xl font-bold text-gray-900 mb-2">AI Matchmaking Dashboard</h3>
-                <div className="flex items-center space-x-4">
-                  <p className="text-gray-600">Real-time marketing intelligence</p>
-                  <motion.div 
-                    className="flex items-center space-x-2 bg-blue-100 px-3 py-1 rounded-full"
-                    animate={{ scale: [1, 1.05, 1] }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                  >
-                    <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
-                    <span className="text-xs font-medium text-blue-700">Live</span>
-                  </motion.div>
-                </div>
-              </div>
-              <motion.div 
-                className="text-right bg-white rounded-2xl p-6 shadow-lg border"
-                whileHover={{ scale: 1.05, y: -2 }}
-              >
-                <h3 className="text-sm font-medium text-gray-600 mb-1">Overall Success Rate</h3>
-                <motion.p 
-                  className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent"
-                  animate={{ scale: [1, 1.05, 1] }}
-                  transition={{ duration: 3, repeat: Infinity }}
-                >
-                  96.4%
-                </motion.p>
-                <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
-                  <motion.div 
-                    className="bg-gradient-to-r from-blue-500 to-teal-500 h-2 rounded-full"
-                    initial={{ width: "0%" }}
-                    animate={{ width: "96.4%" }}
-                    transition={{ duration: 2, delay: 3 }}
-                  />
-                </div>
-              </motion.div>
-            </motion.div>
-            
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-              {[
-                { 
-                  title: 'Active Matches', 
-                  value: '3,247', 
-                  icon: Target, 
-                  change: '+23%', 
-                  color: 'from-blue-500 to-teal-600',
-                  chart: [20, 45, 28, 80, 99, 43, 85]
-                },
-                { 
-                  title: 'Live Projects', 
-                  value: '1,856', 
-                  icon: Rocket, 
-                  change: '+18%', 
-                  color: 'from-blue-500 to-teal-600',
-                  chart: [30, 55, 38, 70, 89, 53, 75]
-                },
-                { 
-                  title: 'Success Stories', 
-                  value: '2,891', 
-                  icon: Star, 
-                  change: '+31%', 
-                  color: 'from-blue-500 to-teal-600',
-                  chart: [40, 65, 48, 90, 79, 63, 95]
-                },
-                { 
-                  title: 'Revenue Generated', 
-                  value: '$4.2M', 
-                  icon: TrendingUp, 
-                  change: '+45%', 
-                  color: 'from-blue-500 to-teal-600',
-                  chart: [25, 50, 35, 85, 92, 58, 88]
-                }
-              ].map((stat, index) => (
-                <motion.div 
-                  key={index}
-                  className="bg-white rounded-2xl p-6 shadow-lg border hover:shadow-xl transition-all duration-300 cursor-pointer group"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 2.8 + index * 0.1 }}
-                  whileHover={{ y: -5, scale: 1.02 }}
-                >
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex-1">
-                      <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">{stat.title}</p>
-                      <motion.p 
-                        className="text-3xl font-bold text-gray-900"
-                        animate={{ scale: [1, 1.02, 1] }}
-                        transition={{ duration: 4, repeat: Infinity, delay: index * 0.5 }}
-                      >
-                        {stat.value}
-                      </motion.p>
-                      <p className="text-sm text-blue-600 font-semibold mt-1">
-                        {stat.change} from last month
-                      </p>
-                    </div>
-                    <motion.div 
-                      className={`w-14 h-14 bg-gradient-to-r ${stat.color} rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl`}
-                      whileHover={{ rotate: 360, scale: 1.1 }}
-                      transition={{ duration: 0.6 }}
-                    >
-                      <stat.icon className="w-7 h-7 text-white" />
-                    </motion.div>
+              {story.type === "video" ? (
+                <div className="space-y-6">
+                  <div className="text-center">
+                    <h4 className="text-xl font-bold text-gray-900 mb-2">{story.title}</h4>
+                    <p className="text-gray-600">{story.description}</p>
                   </div>
                   
-                  <div className="flex items-end space-x-1 h-12">
-                    {stat.chart.map((height, chartIndex) => (
-                      <motion.div
-                        key={chartIndex}
-                        className={`flex-1 bg-gradient-to-t ${stat.color} rounded-sm opacity-70`}
-                        initial={{ height: 0 }}
-                        animate={{ height: `${height}%` }}
-                        transition={{ duration: 1, delay: 3 + chartIndex * 0.1 }}
-                      />
-                    ))}
+                  <div className="relative rounded-xl overflow-hidden bg-gray-100 aspect-video">
+                    <iframe
+                      src={`https://www.youtube.com/embed/${story.videoId}`}
+                      title="Client Success Story"
+                      className="w-full h-full"
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
                   </div>
-                </motion.div>
-              ))}
-            </div>
-            
-            <div className="grid lg:grid-cols-3 gap-8 mb-10">
-              <div className="lg:col-span-2">
-                <motion.div 
-                  className="bg-white rounded-2xl p-6 shadow-lg border"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.6, delay: 3.2 }}
-                >
-                  <h4 className="text-xl font-bold text-gray-900 mb-4">Recent Matches</h4>
-                  <div className="space-y-4">
-                    {[
-                      { company: 'TechFlow Inc.', agency: 'Digital Dynamo', budget: '$25k', match: '98%' },
-                      { company: 'StartupX', agency: 'Growth Partners', budget: '$15k', match: '95%' },
-                      { company: 'ScaleUp Co.', agency: 'Marketing Mavens', budget: '$50k', match: '97%' }
-                    ].map((match, index) => (
-                      <motion.div 
-                        key={index}
-                        className="flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.4, delay: 3.4 + index * 0.1 }}
-                        whileHover={{ x: 4 }}
-                      >
-                        <div className="flex items-center space-x-4">
-                          <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-teal-600 rounded-xl flex items-center justify-center">
-                            <Building className="w-5 h-5 text-white" />
-                          </div>
-                          <div>
-                            <p className="font-semibold text-gray-900">{match.company}</p>
-                            <p className="text-sm text-gray-600">matched with {match.agency}</p>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <p className="font-semibold text-gray-900">{match.budget}</p>
-                          <p className="text-sm text-blue-600">{match.match} match</p>
-                        </div>
-                      </motion.div>
-                    ))}
+                  
+                  <div className="text-center">
+                    <p className="text-sm font-medium text-gray-700 italic">
+                      "{story.caption}"
+                    </p>
                   </div>
-                </motion.div>
-              </div>
-              
-              <motion.div 
-                className="bg-white rounded-2xl p-6 shadow-lg border"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: 3.2 }}
-              >
-                <h4 className="text-xl font-bold text-gray-900 mb-4">Market Trends</h4>
-                <div className="space-y-4">
-                  {[
-                    { trend: 'SaaS Marketing', growth: '+45%', color: 'text-blue-600' },
-                    { trend: 'E-commerce', growth: '+32%', color: 'text-blue-600' },
-                    { trend: 'FinTech', growth: '+28%', color: 'text-blue-600' }
-                  ].map((trend, index) => (
-                    <motion.div 
-                      key={index}
-                      className="flex items-center justify-between"
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.4, delay: 3.6 + index * 0.1 }}
-                    >
-                      <span className="font-medium text-gray-700">{trend.trend}</span>
-                      <span className={`font-bold ${trend.color}`}>{trend.growth}</span>
-                    </motion.div>
-                  ))}
                 </div>
-              </motion.div>
-            </div>
-            
-            <motion.div 
-              className="bg-gradient-to-r from-blue-600 via-teal-600 to-cyan-600 rounded-2xl p-8 text-white relative overflow-hidden"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, delay: 3.8 }}
-              whileHover={{ scale: 1.01 }}
-            >
-              <motion.div 
-                className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -mr-20 -mt-20"
-                animate={{ rotate: 360 }}
-                transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-              />
-              <motion.div 
-                className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full -ml-16 -mb-16"
-                animate={{ rotate: -360 }}
-                transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-              />
-              
-              <div className="flex items-start space-x-6 relative z-10">
-                <motion.div 
-                  className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-sm"
-                  animate={{ 
-                    boxShadow: [
-                      "0 0 0 0 rgba(255, 255, 255, 0.3)", 
-                      "0 0 0 15px rgba(255, 255, 255, 0)", 
-                      "0 0 0 0 rgba(255, 255, 255, 0)"
-                    ]
-                  }}
-                  transition={{ duration: 3, repeat: Infinity }}
-                >
-                  <Brain className="w-8 h-8" />
-                </motion.div>
-                <div className="flex-1">
-                  <h4 className="font-bold text-2xl mb-2">AI Marketing Intelligence</h4>
-                  <p className="text-blue-100 mb-4">Powered by advanced machine learning algorithms</p>
-                  <motion.p 
-                    className="text-lg leading-relaxed"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 4 }}
-                  >
-                    "Based on your SaaS profile, $75k annual budget, and Series A growth stage, our AI has identified 
-                    <span className="font-semibold"> 5 specialized agencies</span> with proven B2B SaaS results in your vertical. 
-                    Predicted ROI improvement: <span className="font-bold text-yellow-300 text-xl">+340%</span> within 6 months."
-                  </motion.p>
+              ) : (
+                <>
+                  <div className="flex items-center justify-between mb-6">
+                    <span className="text-sm font-bold px-3 py-1 rounded-full bg-gray-100 text-gray-700">
+                      {story.industry}
+                    </span>
+                    <span className="text-sm text-gray-500 font-medium">{story.timeframe}</span>
+                  </div>
+                  
+                  <div className="space-y-6">
+                    <div>
+                      <h4 className="text-sm font-bold text-red-600 mb-2 uppercase tracking-wider">The Problem</h4>
+                      <p className="text-gray-700 leading-relaxed">{story.problem}</p>
+                    </div>
+                    
+                    <div>
+                      <h4 className="text-sm font-bold text-blue-600 mb-2 uppercase tracking-wider">Our Solution</h4>
+                      <p className="text-gray-700 leading-relaxed">{story.solution}</p>
+                    </div>
+                    
+                    <div>
+                      <h4 className="text-sm font-bold text-green-600 mb-2 uppercase tracking-wider">The Result</h4>
+                      <p className="text-gray-900 font-semibold leading-relaxed">{story.result}</p>
+                    </div>
+                  </div>
+                  
                   <motion.div 
-                    className="flex items-center space-x-4 mt-6"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 4.2 }}
-                  >
-                    <button className="bg-white/20 hover:bg-white/30 px-6 py-2 rounded-lg font-semibold transition-colors">
-                      View Matches
-                    </button>
-                    <button className="border border-white/30 hover:border-white/50 px-6 py-2 rounded-lg font-semibold transition-colors">
-                      Learn More
-                    </button>
-                  </motion.div>
-                </div>
-              </div>
+                    className={`mt-6 h-1 bg-gradient-to-r ${story.color} rounded-full`}
+                    initial={{ width: 0 }}
+                    animate={{ width: "100%" }}
+                    transition={{ duration: 1, delay: 3 + index * 0.3 }}
+                  />
+                </>
+              )}
             </motion.div>
-          </div>
+          ))}
+        </div>
+        
+        <motion.div 
+          className="text-center mt-12"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 4 }}
+        >
+          <motion.button 
+            className="text-white px-8 py-4 rounded-2xl text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 inline-flex items-center space-x-2"
+            style={{ backgroundColor: '#216ad9' }}
+            whileHover={{ scale: 1.05, y: -2 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <span>See More Success Stories</span>
+            <ArrowRight className="w-5 h-5" />
+          </motion.button>
         </motion.div>
       </motion.div>
 
       {/* Trusted By Section */}
       <section className="py-20 bg-gray-50 overflow-hidden relative">
-        {/* Floating background elements */}
         <motion.div 
-          className="absolute top-10 left-10 w-20 h-20 bg-green-200/30 rounded-full blur-xl"
+          className="absolute top-10 left-10 w-20 h-20 bg-blue-200/30 rounded-full blur-xl"
           animate={{ 
             y: [0, -30, 0],
             x: [0, 20, 0],
             scale: [1, 1.2, 1]
           }}
           transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div 
-          className="absolute bottom-10 right-10 w-16 h-16 bg-red-200/30 rounded-full blur-xl"
-          animate={{ 
-            y: [0, 25, 0],
-            x: [0, -15, 0],
-            scale: [1, 0.8, 1]
-          }}
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 2 }}
         />
         
         <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
@@ -973,7 +460,7 @@ const AmpliFirmHubHomepage = () => {
               animate={{ y: [0, -2, 0] }}
               transition={{ duration: 4, repeat: Infinity }}
             >
-              Trusted by leading companies worldwide
+              Trusted by businesses across industries
             </motion.p>
           </motion.div>
           
@@ -988,7 +475,6 @@ const AmpliFirmHubHomepage = () => {
                 ease: "linear"
               }}
             >
-              {/* Duplicate array for seamless loop */}
               {[...trustedCompanies, ...trustedCompanies].map((company, index) => (
                 <motion.div 
                   key={`${company}-${index}`}
@@ -996,7 +482,7 @@ const AmpliFirmHubHomepage = () => {
                   whileHover={{ 
                     scale: 1.15, 
                     y: -5,
-                    color: index % 3 === 0 ? "#ef4444" : index % 3 === 1 ? "#22c55e" : "#3b82f6"
+                    color: '#216ad9'
                   }}
                   animate={{
                     y: [0, -3, 0]
@@ -1012,7 +498,7 @@ const AmpliFirmHubHomepage = () => {
           </div>
         </div>
         
-        {/* Enhanced Awards Section - Make it MASSIVE */}
+        {/* Awards Section */}
         <motion.div 
           className="mt-20 px-6 lg:px-8"
           initial={{ opacity: 0, y: 50 }}
@@ -1039,7 +525,6 @@ const AmpliFirmHubHomepage = () => {
                 y: { duration: 0.3 }
               }}
             >
-              {/* Floating award icons */}
               <motion.div 
                 className="absolute top-5 right-5 text-4xl"
                 animate={{ 
@@ -1049,16 +534,6 @@ const AmpliFirmHubHomepage = () => {
                 transition={{ duration: 4, repeat: Infinity }}
               >
                 🏆
-              </motion.div>
-              <motion.div 
-                className="absolute bottom-5 left-5 text-3xl"
-                animate={{ 
-                  rotate: [0, -10, 10, 0],
-                  y: [0, -10, 0]
-                }}
-                transition={{ duration: 3, repeat: Infinity, delay: 1 }}
-              >
-                🎖️
               </motion.div>
               
               <div className="text-center relative z-10">
@@ -1070,7 +545,7 @@ const AmpliFirmHubHomepage = () => {
                   }}
                   transition={{ duration: 2, repeat: Infinity }}
                 >
-                  🏆 Multiple Award Winning Platform 🏆
+                  🏆 Award Winning Consultancy 🏆
                 </motion.div>
                 <motion.h3 
                   className="text-3xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight"
@@ -1079,16 +554,12 @@ const AmpliFirmHubHomepage = () => {
                 >
                   <motion.span 
                     className="bg-gradient-to-r from-yellow-600 to-orange-600 bg-clip-text text-transparent"
-                    animate={{ backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"] }}
-                    transition={{ duration: 3, repeat: Infinity }}
                   >
                     AI Startup of the Year
                   </motion.span>
                   <span className="mx-3 text-gray-400">•</span> 
                   <motion.span 
                     className="bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent"
-                    animate={{ backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"] }}
-                    transition={{ duration: 3, repeat: Infinity, delay: 1 }}
                   >
                     Equity Backed Startup
                   </motion.span>
@@ -1102,61 +573,8 @@ const AmpliFirmHubHomepage = () => {
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.5 }}
                 >
-                  Recognized by industry leaders as the UK's most innovative AI-powered marketing platform
+                  Recognized for excellence in business transformation and innovative solutions
                 </motion.p>
-                
-                {/* Award badges */}
-                <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-8 mt-6">
-                  <motion.div 
-                    className="flex items-center space-x-3 bg-white rounded-2xl px-6 py-4 shadow-lg border-2 border-yellow-200"
-                    whileHover={{ scale: 1.05, y: -3 }}
-                    animate={{ 
-                      boxShadow: [
-                        "0 4px 20px rgba(251, 191, 36, 0.3)",
-                        "0 8px 30px rgba(251, 191, 36, 0.5)",
-                        "0 4px 20px rgba(251, 191, 36, 0.3)"
-                      ]
-                    }}
-                    transition={{ boxShadow: { duration: 2, repeat: Infinity } }}
-                  >
-                    <motion.div 
-                      className="w-12 h-12 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-xl flex items-center justify-center"
-                      animate={{ rotate: [0, 360] }}
-                      transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-                    >
-                      <Brain className="w-6 h-6 text-white" />
-                    </motion.div>
-                    <div className="text-left">
-                      <div className="text-sm font-bold text-gray-900">AI Startup Finalist</div>
-                      <div className="text-xs text-yellow-600 font-semibold">Innovation Excellence</div>
-                    </div>
-                  </motion.div>
-                  
-                  <motion.div 
-                    className="flex items-center space-x-3 bg-white rounded-2xl px-6 py-4 shadow-lg border-2 border-red-200"
-                    whileHover={{ scale: 1.05, y: -3 }}
-                    animate={{ 
-                      boxShadow: [
-                        "0 4px 20px rgba(239, 68, 68, 0.3)",
-                        "0 8px 30px rgba(239, 68, 68, 0.5)",
-                        "0 4px 20px rgba(239, 68, 68, 0.3)"
-                      ]
-                    }}
-                    transition={{ boxShadow: { duration: 2, repeat: Infinity, delay: 1 } }}
-                  >
-                    <motion.div 
-                      className="w-12 h-12 bg-gradient-to-r from-orange-500 to-red-500 rounded-xl flex items-center justify-center"
-                      animate={{ rotate: [0, -360] }}
-                      transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
-                    >
-                      <Award className="w-6 h-6 text-white" />
-                    </motion.div>
-                    <div className="text-left">
-                      <div className="text-sm font-bold text-gray-900">Equity Backed Finalist</div>
-                      <div className="text-xs text-red-600 font-semibold">Growth Leadership</div>
-                    </div>
-                  </motion.div>
-                </div>
               </div>
             </motion.div>
           </div>
@@ -1174,11 +592,11 @@ const AmpliFirmHubHomepage = () => {
             viewport={{ once: true }}
           >
             <h2 className="text-5xl font-bold text-gray-900 mb-6">
-              How it works
+              How we transform your business
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              From initial consultation to campaign launch, our AI-powered platform 
-              streamlines the entire process in just three simple steps.
+              Our proven three-step process takes you from consultation to implementation, 
+              with tailored solutions designed specifically for your business.
             </p>
           </motion.div>
 
@@ -1198,7 +616,8 @@ const AmpliFirmHubHomepage = () => {
                 >
                   <div className="flex items-center mb-6">
                     <motion.div 
-                      className={`w-16 h-16 bg-gradient-to-r ${step.color} rounded-2xl flex items-center justify-center mr-4`}
+                      className="w-16 h-16 rounded-2xl flex items-center justify-center mr-4"
+                      style={{ backgroundColor: '#216ad9' }}
                       whileHover={{ rotate: 360, scale: 1.1 }}
                       transition={{ duration: 0.6 }}
                     >
@@ -1233,7 +652,7 @@ const AmpliFirmHubHomepage = () => {
         </div>
       </section>
 
-      {/* Features Overview Section */}
+      {/* Problem-Solution Approach */}
       <section className="py-32 bg-gray-50">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <motion.div 
@@ -1244,348 +663,165 @@ const AmpliFirmHubHomepage = () => {
             viewport={{ once: true }}
           >
             <h2 className="text-5xl font-bold text-gray-900 mb-6">
-              Powerful features that deliver results
+              We solve the problems that hold you back
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Our AI-powered platform combines cutting-edge technology with human expertise 
-              to ensure every marketing partnership succeeds.
+              Every business faces unique challenges. We identify yours and implement solutions that work.
             </p>
           </motion.div>
 
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
+          <div className="grid lg:grid-cols-2 gap-16">
+            {/* Problems Side */}
             <div className="space-y-8">
-              {features.map((feature, index) => (
+              <motion.div 
+                className="text-center mb-8"
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8 }}
+                viewport={{ once: true }}
+              >
+                <h3 className="text-3xl font-bold text-red-600 mb-4">Common Business Problems</h3>
+                <p className="text-gray-600">Sound familiar? We've solved these before.</p>
+              </motion.div>
+
+              {[
+                {
+                  icon: TrendingUp,
+                  title: "Stagnant Growth",
+                  description: "Revenue plateaued, can't break through to the next level, unclear growth strategy"
+                },
+                {
+                  icon: Megaphone,
+                  title: "Ineffective Marketing", 
+                  description: "Marketing spend not generating ROI, low conversion rates, poor lead quality"
+                },
+                {
+                  icon: Settings,
+                  title: "Operational Chaos",
+                  description: "Manual processes, team inefficiencies, no clear systems or workflows"
+                },
+                {
+                  icon: DollarSign,
+                  title: "Cash Flow Issues",
+                  description: "Unpredictable revenue, poor financial planning, difficulty securing funding"
+                },
+                {
+                  icon: Code,
+                  title: "Outdated Technology",
+                  description: "Website doesn't convert, no digital presence, manual systems holding you back"
+                }
+              ].map((problem, index) => (
                 <motion.div 
                   key={index}
-                  className={`p-6 rounded-2xl cursor-pointer transition-all duration-300 ${
-                    activeFeature === index 
-                      ? 'bg-white shadow-lg border-l-4 border-blue-500' 
-                      : 'bg-transparent hover:bg-white/50'
-                  }`}
-                  initial={{ opacity: 0, x: -30 }}
+                  className="bg-red-50 border-l-4 border-red-500 rounded-xl p-6 hover:shadow-lg transition-all duration-300"
+                  initial={{ opacity: 0, x: -20 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
                   viewport={{ once: true }}
-                  onClick={() => setActiveFeature(index)}
                   whileHover={{ x: 4 }}
                 >
                   <div className="flex items-start space-x-4">
-                    <motion.div 
-                      className="w-12 h-12 bg-gradient-to-r from-blue-500 to-teal-600 rounded-xl flex items-center justify-center flex-shrink-0"
-                      whileHover={{ rotate: 360 }}
-                      transition={{ duration: 0.6 }}
-                    >
-                      <feature.icon className="w-6 h-6 text-white" />
-                    </motion.div>
-                    <div className="flex-1">
-                      <h3 className="text-xl font-bold text-gray-900 mb-2">
-                        {feature.title}
-                      </h3>
-                      <p className="text-gray-600 mb-3">
-                        {feature.description}
-                      </p>
-                      <div className="flex items-center space-x-4">
-                        <span className="text-sm font-semibold text-blue-600">
-                          {feature.stats}
-                        </span>
-                        <span className="text-sm text-gray-500">
-                          {feature.preview}
-                        </span>
-                      </div>
+                    <div className="w-12 h-12 bg-red-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <problem.icon className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <h4 className="text-xl font-bold text-gray-900 mb-2">{problem.title}</h4>
+                      <p className="text-gray-600">{problem.description}</p>
                     </div>
                   </div>
                 </motion.div>
               ))}
             </div>
 
-            <motion.div 
-              className="relative"
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-            >
+            {/* Solutions Side */}
+            <div className="space-y-8">
               <motion.div 
-                className="bg-white rounded-3xl shadow-2xl border border-gray-200 overflow-hidden"
-                whileHover={{ y: -5 }}
-                transition={{ duration: 0.3 }}
+                className="text-center mb-8"
+                initial={{ opacity: 0, x: 30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8 }}
+                viewport={{ once: true }}
               >
-                <div className="p-8">
-                  <motion.div 
-                    className="text-center"
-                    key={activeFeature}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
-                  >
-                    <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-teal-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                      {React.createElement(features[activeFeature].icon, { className: "w-10 h-10 text-white" })}
-                    </div>
-                    <h4 className="text-2xl font-bold text-gray-900 mb-4">
-                      {features[activeFeature].title}
-                    </h4>
-                    <p className="text-gray-600 mb-6">
-                      {features[activeFeature].description}
-                    </p>
-                    <div className="bg-gray-50 rounded-xl p-4">
-                      <div className="text-3xl font-bold text-blue-600 mb-1">
-                        {features[activeFeature].stats}
-                      </div>
-                      <div className="text-sm text-gray-500">
-                        {features[activeFeature].preview}
-                      </div>
-                    </div>
-                  </motion.div>
-                </div>
+                <h3 className="text-3xl font-bold mb-4" style={{ color: '#216ad9' }}>Our Tailored Solutions</h3>
+                <p className="text-gray-600">Designed specifically for your business.</p>
               </motion.div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
 
-      {/* For Businesses Section */}
-      <section className="py-32 bg-white">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <motion.div 
-              className="space-y-8"
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-            >
-              <div>
-                <h2 className="text-5xl font-bold text-gray-900 mb-6">
-                  For growing businesses
-                </h2>
-                <p className="text-xl text-gray-600 leading-relaxed">
-                  Stop wasting time and money on agencies that don't understand your business. 
-                  Get matched with experts who have proven success in your exact industry.
-                </p>
-              </div>
-
-              <div className="space-y-6">
-                {businessFeatures.map((feature, index) => (
-                  <motion.div 
-                    key={index}
-                    className="bg-gray-50 rounded-2xl p-6 hover:bg-gray-100 transition-colors"
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: index * 0.2 }}
-                    viewport={{ once: true }}
-                    whileHover={{ x: 4 }}
-                  >
-                    <div className="flex items-start space-x-4">
-                      <motion.div 
-                        className="w-12 h-12 bg-gradient-to-r from-blue-500 to-teal-600 rounded-xl flex items-center justify-center flex-shrink-0"
-                        whileHover={{ rotate: 360 }}
-                        transition={{ duration: 0.6 }}
-                      >
-                        <feature.icon className="w-6 h-6 text-white" />
-                      </motion.div>
-                      <div>
-                        <h3 className="text-xl font-bold text-gray-900 mb-2">
-                          {feature.title}
-                        </h3>
-                        <p className="text-gray-600 mb-4">
-                          {feature.description}
-                        </p>
-                        <div className="space-y-2">
-                          {feature.benefits.map((benefit, benefitIndex) => (
-                            <div key={benefitIndex} className="flex items-center space-x-2">
-                              <CheckCircle className="w-4 h-4 text-blue-500" />
-                              <span className="text-sm text-gray-600">{benefit}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
+              {[
+                {
+                  icon: Rocket,
+                  title: "Growth Strategy & Implementation",
+                  description: "Data-driven growth plans, market expansion strategies, revenue optimization systems"
+                },
+                {
+                  icon: Target,
+                  title: "Marketing That Actually Works", 
+                  description: "Our proven 4-phase marketing approach: Research → Create → Test → Scale"
+                },
+                {
+                  icon: Building,
+                  title: "Operational Excellence",
+                  description: "Process automation, team optimization, workflow systemization, efficiency improvements"
+                },
+                {
+                  icon: PieChart,
+                  title: "Financial Optimization",
+                  description: "Cash flow management, financial planning, funding preparation, budget optimization"
+                },
+                {
+                  icon: Globe,
+                  title: "Digital Transformation",
+                  description: "Website development, platform creation, digital systems, online presence optimization"
+                }
+              ].map((solution, index) => (
+                <motion.div 
+                  key={index}
+                  className="bg-blue-50 border-l-4 rounded-xl p-6 hover:shadow-lg transition-all duration-300"
+                  style={{ borderColor: '#216ad9' }}
+                  initial={{ opacity: 0, x: 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  viewport={{ once: true }}
+                  whileHover={{ x: -4 }}
+                >
+                  <div className="flex items-start space-x-4">
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: '#216ad9' }}>
+                      <solution.icon className="w-6 h-6 text-white" />
                     </div>
-                  </motion.div>
-                ))}
-              </div>
-
-              <motion.button 
-                className="bg-gradient-to-r from-blue-600 to-teal-600 text-white px-8 py-4 rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-2"
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <span>Speak to Our AI</span>
-                <ArrowRight className="w-5 h-5" />
-              </motion.button>
-            </motion.div>
-
-            <motion.div 
-              className="relative"
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-            >
-              <motion.div 
-                className="bg-gradient-to-br from-blue-50 to-teal-100 rounded-3xl p-8"
-                whileHover={{ scale: 1.02 }}
-                transition={{ duration: 0.3 }}
-              >
-                <div className="grid grid-cols-2 gap-6">
-                  {[
-                    { metric: '2.3 hrs', label: 'Average match time', icon: Clock },
-                    { metric: '340%', label: 'ROI increase', icon: TrendingUp },
-                    { metric: '94%', label: 'Success rate', icon: Target },
-                    { metric: '$2.4M', label: 'Revenue generated', icon: DollarSign }
-                  ].map((item, index) => (
-                    <motion.div 
-                      key={index}
-                      className="bg-white rounded-2xl p-6 text-center shadow-lg"
-                      initial={{ opacity: 0, y: 20 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5, delay: index * 0.1 }}
-                      viewport={{ once: true }}
-                      whileHover={{ y: -5 }}
-                    >
-                      <motion.div 
-                        className="w-12 h-12 bg-gradient-to-r from-blue-500 to-teal-600 rounded-xl flex items-center justify-center mx-auto mb-4"
-                        whileHover={{ rotate: 360 }}
-                        transition={{ duration: 0.6 }}
-                      >
-                        <item.icon className="w-6 h-6 text-white" />
-                      </motion.div>
-                      <div className="text-2xl font-bold text-gray-900 mb-1">
-                        {item.metric}
-                      </div>
-                      <div className="text-sm text-gray-600">
-                        {item.label}
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              </motion.div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* For Agencies Section */}
-      <section className="py-32 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <motion.div 
-              className="relative order-2 lg:order-1"
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-            >
-              <motion.div 
-                className="bg-gradient-to-br from-blue-50 to-teal-100 rounded-3xl p-8"
-                whileHover={{ scale: 1.02 }}
-                transition={{ duration: 0.3 }}
-              >
-                <div className="space-y-6">
-                  <div className="text-center">
-                    <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                      Agency Success Metrics
-                    </h3>
+                    <div>
+                      <h4 className="text-xl font-bold text-gray-900 mb-2">{solution.title}</h4>
+                      <p className="text-gray-600">{solution.description}</p>
+                    </div>
                   </div>
-                  
-                  {[
-                    { label: 'Lead Quality Score', value: 94, color: 'from-blue-500 to-teal-600' },
-                    { label: 'Client Retention Rate', value: 87, color: 'from-blue-500 to-teal-600' },
-                    { label: 'Proposal Win Rate', value: 76, color: 'from-blue-500 to-teal-600' }
-                  ].map((metric, index) => (
-                    <motion.div 
-                      key={index}
-                      className="bg-white rounded-2xl p-6 shadow-lg"
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.5, delay: index * 0.1 }}
-                      viewport={{ once: true }}
-                    >
-                      <div className="flex items-center justify-between mb-3">
-                        <span className="font-semibold text-gray-900">{metric.label}</span>
-                        <span className="text-2xl font-bold text-gray-900">{metric.value}%</span>
-                      </div>
-                      <div className="w-full bg-gray-200 rounded-full h-3">
-                        <motion.div 
-                          className={`bg-gradient-to-r ${metric.color} h-3 rounded-full`}
-                          initial={{ width: "0%" }}
-                          whileInView={{ width: `${metric.value}%` }}
-                          transition={{ duration: 1, delay: index * 0.2 }}
-                          viewport={{ once: true }}
-                        />
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              </motion.div>
-            </motion.div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
 
-            <motion.div 
-              className="space-y-8 order-1 lg:order-2"
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-            >
-              <div>
-                <h2 className="text-5xl font-bold text-gray-900 mb-6">
-                  For marketing agencies
-                </h2>
-                <p className="text-xl text-gray-600 leading-relaxed">
-                  Stop chasing unqualified leads. Get matched with serious businesses 
-                  that fit your expertise and are ready to invest in growth.
-                </p>
-              </div>
-
-              <div className="space-y-6">
-                {agencyFeatures.map((feature, index) => (
-                  <motion.div 
-                    key={index}
-                    className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300"
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: index * 0.2 }}
-                    viewport={{ once: true }}
-                    whileHover={{ x: 4 }}
-                  >
-                    <div className="flex items-start space-x-4">
-                      <motion.div 
-                        className="w-12 h-12 bg-gradient-to-r from-blue-500 to-teal-600 rounded-xl flex items-center justify-center flex-shrink-0"
-                        whileHover={{ rotate: 360 }}
-                        transition={{ duration: 0.6 }}
-                      >
-                        <feature.icon className="w-6 h-6 text-white" />
-                      </motion.div>
-                      <div>
-                        <h3 className="text-xl font-bold text-gray-900 mb-2">
-                          {feature.title}
-                        </h3>
-                        <p className="text-gray-600 mb-4">
-                          {feature.description}
-                        </p>
-                        <div className="space-y-2">
-                          {feature.benefits.map((benefit, benefitIndex) => (
-                            <div key={benefitIndex} className="flex items-center space-x-2">
-                              <CheckCircle className="w-4 h-4 text-green-500" />
-                              <span className="text-sm text-gray-600">{benefit}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-
+          <motion.div 
+            className="text-center mt-16"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
+            viewport={{ once: true }}
+          >
+            <div className="bg-white rounded-3xl p-8 shadow-xl border border-gray-200 max-w-4xl mx-auto">
+              <h3 className="text-3xl font-bold text-gray-900 mb-4">
+                Don't see your specific problem?
+              </h3>
+              <p className="text-xl text-gray-600 mb-6">
+                We've worked across 25+ industries solving unique challenges. Book a free consultation to discuss your specific situation.
+              </p>
               <motion.button 
-                className="bg-gradient-to-r from-blue-600 to-teal-600 text-white px-8 py-4 rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-2"
+                className="text-white px-8 py-4 rounded-2xl text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 inline-flex items-center space-x-2"
+                style={{ backgroundColor: '#216ad9' }}
                 whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <span>Join as Agency Partner</span>
+                <span>Book Free Consultation</span>
                 <ArrowRight className="w-5 h-5" />
               </motion.button>
-            </motion.div>
-          </div>
+            </div>
+          </motion.div>
         </div>
       </section>
 
@@ -1600,11 +836,11 @@ const AmpliFirmHubHomepage = () => {
             viewport={{ once: true }}
           >
             <h2 className="text-5xl font-bold text-gray-900 mb-6">
-              The numbers speak for themselves
+              Proven track record of success
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Thousands of successful partnerships, millions in revenue generated, 
-              and countless businesses transformed through AI-powered matching.
+              3+ years of helping businesses across industries achieve their goals 
+              with tailored solutions and expert guidance.
             </p>
           </motion.div>
 
@@ -1619,7 +855,8 @@ const AmpliFirmHubHomepage = () => {
                 viewport={{ once: true }}
               >
                 <motion.div 
-                  className="w-20 h-20 bg-gradient-to-r from-blue-500 to-teal-600 rounded-2xl flex items-center justify-center mx-auto mb-6"
+                  className="w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6"
+                  style={{ backgroundColor: '#216ad9' }}
                   whileHover={{ rotate: 360, scale: 1.1 }}
                   transition={{ duration: 0.6 }}
                 >
@@ -1641,8 +878,8 @@ const AmpliFirmHubHomepage = () => {
         </div>
       </section>
 
-      {/* Testimonials Section */}
-      <section className="py-32 bg-gray-50 overflow-hidden">
+      {/* Cross-Industry Expertise */}
+      <section className="py-32 bg-gray-50">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <motion.div 
             className="text-center mb-20"
@@ -1652,277 +889,110 @@ const AmpliFirmHubHomepage = () => {
             viewport={{ once: true }}
           >
             <h2 className="text-5xl font-bold text-gray-900 mb-6">
-              What our <span className="text-blue-600">clients</span> are saying
+              Proven expertise across <span style={{ color: '#216ad9' }}>diverse industries</span>
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Everything you need to know about using our AI matchmaking platform, from setup to 
-              success. Still curious? Drop us a message and we'll get right back to you.
+              From cutting-edge tech startups to established traditional businesses - 
+              we understand the unique challenges of every sector and create solutions that work.
             </p>
           </motion.div>
 
-          {/* Top row - moving right */}
-          <div className="relative mb-8">
-            <motion.div 
-              className="flex space-x-8 items-center"
-              animate={{ x: [0, -100 * 6] }}
-              transition={{
-                duration: 30,
-                repeat: Infinity,
-                ease: "linear"
-              }}
-            >
-              {/* Duplicate array for seamless loop */}
-              {[
-                {
-                  content: "The AI matching is incredible. Found an agency that understood our B2B SaaS needs perfectly.",
-                  name: "Marcus Williams",
-                  role: "Founder & CEO",
-                  company: "StartupX",
-                  avatar: "👨‍💻"
-                },
-                {
-                  content: "AmpliFirmHub matched us with the perfect agency in 2 hours. Our conversion rate increased 340%.",
-                  name: "Sarah Chen", 
-                  role: "Head of Marketing",
-                  company: "TechFlow Inc.",
-                  avatar: "👩‍💼"
-                },
-                {
-                  content: "Previously spent months finding agencies. AmpliFirmHub delivered 3 perfect matches instantly.",
-                  name: "Emily Rodriguez",
-                  role: "Marketing Director", 
-                  company: "ScaleUp Co.",
-                  avatar: "👩‍🚀"
-                },
-                {
-                  content: "Quality of leads is outstanding. Every match is a perfect fit for our services.",
-                  name: "David Park",
-                  role: "Agency Owner",
-                  company: "Growth Partners", 
-                  avatar: "👨‍🎯"
-                },
-                {
-                  content: "The platform handles everything - matching, proposals, project management. Game-changing.",
-                  name: "Lisa Thompson",
-                  role: "CMO",
-                  company: "RetailTech",
-                  avatar: "👩‍⚡"
-                },
-                {
-                  content: "Transparent pricing, verified results, perfect matches. Finally, a platform that delivers.",
-                  name: "Alex Kumar",
-                  role: "Digital Marketing Lead",
-                  company: "FinanceFlow",
-                  avatar: "👨‍📊"
-                }
-              ].concat([
-                {
-                  content: "The AI matching is incredible. Found an agency that understood our B2B SaaS needs perfectly.",
-                  name: "Marcus Williams",
-                  role: "Founder & CEO",
-                  company: "StartupX",
-                  avatar: "👨‍💻"
-                },
-                {
-                  content: "AmpliFirmHub matched us with the perfect agency in 2 hours. Our conversion rate increased 340%.",
-                  name: "Sarah Chen", 
-                  role: "Head of Marketing",
-                  company: "TechFlow Inc.",
-                  avatar: "👩‍💼"
-                },
-                {
-                  content: "Previously spent months finding agencies. AmpliFirmHub delivered 3 perfect matches instantly.",
-                  name: "Emily Rodriguez",
-                  role: "Marketing Director", 
-                  company: "ScaleUp Co.",
-                  avatar: "👩‍🚀"
-                },
-                {
-                  content: "Quality of leads is outstanding. Every match is a perfect fit for our services.",
-                  name: "David Park",
-                  role: "Agency Owner",
-                  company: "Growth Partners", 
-                  avatar: "👨‍🎯"
-                },
-                {
-                  content: "The platform handles everything - matching, proposals, project management. Game-changing.",
-                  name: "Lisa Thompson",
-                  role: "CMO",
-                  company: "RetailTech",
-                  avatar: "👩‍⚡"
-                },
-                {
-                  content: "Transparent pricing, verified results, perfect matches. Finally, a platform that delivers.",
-                  name: "Alex Kumar",
-                  role: "Digital Marketing Lead",
-                  company: "FinanceFlow",
-                  avatar: "👨‍📊"
-                }
-              ]).map((testimonial, index) => (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+            {[
+              {
+                category: "Technology & Software",
+                industries: ["SaaS Platforms", "E-commerce", "FinTech", "EdTech", "Artificial Intelligence"],
+                icon: Code,
+                color: "from-blue-500 to-cyan-600"
+              },
+              {
+                category: "Professional Services",
+                industries: ["Consulting", "Legal Services", "Accounting", "Real Estate", "Financial Advisory"],
+                icon: Building,
+                color: "from-purple-500 to-pink-600"
+              },
+              {
+                category: "Healthcare & Wellness",
+                industries: ["Medical Practices", "Dental Clinics", "Fitness Centers", "Mental Health", "Pharmaceuticals"],
+                icon: Shield,
+                color: "from-green-500 to-emerald-600"
+              },
+              {
+                category: "Manufacturing & Production",
+                industries: ["Industrial Manufacturing", "Food Production", "Automotive", "Construction", "Energy"],
+                icon: Settings,
+                color: "from-orange-500 to-red-600"
+              },
+              {
+                category: "Hospitality & Retail",
+                industries: ["Restaurants & Cafes", "Hotels & Travel", "Retail Stores", "Entertainment", "Fashion"],
+                icon: Globe,
+                color: "from-teal-500 to-blue-600"
+              },
+              {
+                category: "Education & Non-Profit",
+                industries: ["Educational Institutions", "Training Organizations", "Non-Profit Organizations", "Government", "Associations"],
+                icon: Users,
+                color: "from-yellow-500 to-orange-600"
+              }
+            ].map((sector, index) => (
+              <motion.div 
+                key={index}
+                className="bg-white rounded-3xl p-8 shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-300"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                whileHover={{ y: -5, scale: 1.02 }}
+              >
                 <motion.div 
-                  key={`top-${index}`}
-                  className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex-shrink-0 w-96 hover:shadow-md transition-all duration-300"
-                  whileHover={{ scale: 1.02, y: -2 }}
+                  className={`w-16 h-16 bg-gradient-to-r ${sector.color} rounded-2xl flex items-center justify-center mb-6`}
+                  whileHover={{ rotate: 360, scale: 1.1 }}
+                  transition={{ duration: 0.6 }}
                 >
-                  <div className="flex items-center space-x-1 mb-4">
-                    {[1,2,3,4,5].map((star) => (
-                      <Star key={star} className="w-4 h-4 text-yellow-400 fill-current" />
-                    ))}
-                  </div>
-                  
-                  <p className="text-gray-700 mb-4 leading-relaxed text-sm">
-                    "{testimonial.content}"
-                  </p>
-                  
-                  <div className="flex items-center space-x-3">
-                    <div className="text-xl">
-                      {testimonial.avatar}
-                    </div>
-                    <div>
-                      <div className="font-semibold text-gray-900 text-sm">
-                        {testimonial.name}
-                      </div>
-                      <div className="text-xs text-gray-500">
-                        {testimonial.role}, {testimonial.company}
-                      </div>
-                    </div>
-                  </div>
+                  <sector.icon className="w-8 h-8 text-white" />
                 </motion.div>
-              ))}
-            </motion.div>
+                
+                <h3 className="text-xl font-bold text-gray-900 mb-4">{sector.category}</h3>
+                
+                <div className="space-y-2">
+                  {sector.industries.map((industry, industryIndex) => (
+                    <div key={industryIndex} className="flex items-center space-x-2">
+                      <div className="w-2 h-2 rounded-full" style={{ backgroundColor: '#216ad9' }} />
+                      <span className="text-gray-600 text-sm">{industry}</span>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            ))}
           </div>
 
-          {/* Bottom row - moving left */}
-          <div className="relative">
-            <motion.div 
-              className="flex space-x-8 items-center"
-              animate={{ x: [-100 * 6, 0] }}
-              transition={{
-                duration: 35,
-                repeat: Infinity,
-                ease: "linear"
-              }}
-            >
-              {/* Different set of testimonials for bottom row */}
-              {[
-                {
-                  content: "Best investment we've made for our marketing efforts. The ROI has been incredible.",
-                  name: "Jennifer Walsh",
-                  role: "VP Marketing",
-                  company: "CloudTech",
-                  avatar: "👩‍💻"
-                },
-                {
-                  content: "Found our dream agency partner in under 24 hours. The matching accuracy is unreal.",
-                  name: "Robert Kim",
-                  role: "Marketing Lead",
-                  company: "GrowthCorp",
-                  avatar: "👨‍💼"
-                },
-                {
-                  content: "Streamlined our entire agency search process. Saved us months of back and forth.",
-                  name: "Amanda Foster",
-                  role: "Brand Director",
-                  company: "InnovateLab",
-                  avatar: "👩‍🎨"
-                },
-                {
-                  content: "The quality of agencies on this platform is exceptional. Highly recommend.",
-                  name: "Michael Chen",
-                  role: "Co-Founder",
-                  company: "TechStart",
-                  avatar: "👨‍🚀"
-                },
-                {
-                  content: "Revolutionary platform for marketing partnerships. Changed how we do business.",
-                  name: "Rachel Green",
-                  role: "Marketing Manager",
-                  company: "EcommPlus",
-                  avatar: "👩‍🔬"
-                },
-                {
-                  content: "From initial match to campaign launch - everything was seamless and professional.",
-                  name: "James Wilson",
-                  role: "Growth Director",
-                  company: "ScaleFast",
-                  avatar: "👨‍🎯"
-                }
-              ].concat([
-                {
-                  content: "Best investment we've made for our marketing efforts. The ROI has been incredible.",
-                  name: "Jennifer Walsh",
-                  role: "VP Marketing",
-                  company: "CloudTech",
-                  avatar: "👩‍💻"
-                },
-                {
-                  content: "Found our dream agency partner in under 24 hours. The matching accuracy is unreal.",
-                  name: "Robert Kim",
-                  role: "Marketing Lead",
-                  company: "GrowthCorp",
-                  avatar: "👨‍💼"
-                },
-                {
-                  content: "Streamlined our entire agency search process. Saved us months of back and forth.",
-                  name: "Amanda Foster",
-                  role: "Brand Director",
-                  company: "InnovateLab",
-                  avatar: "👩‍🎨"
-                },
-                {
-                  content: "The quality of agencies on this platform is exceptional. Highly recommend.",
-                  name: "Michael Chen",
-                  role: "Co-Founder",
-                  company: "TechStart",
-                  avatar: "👨‍🚀"
-                },
-                {
-                  content: "Revolutionary platform for marketing partnerships. Changed how we do business.",
-                  name: "Rachel Green",
-                  role: "Marketing Manager",
-                  company: "EcommPlus",
-                  avatar: "👩‍🔬"
-                },
-                {
-                  content: "From initial match to campaign launch - everything was seamless and professional.",
-                  name: "James Wilson",
-                  role: "Growth Director",
-                  company: "ScaleFast",
-                  avatar: "👨‍🎯"
-                }
-              ]).map((testimonial, index) => (
-                <motion.div 
-                  key={`bottom-${index}`}
-                  className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex-shrink-0 w-96 hover:shadow-md transition-all duration-300"
-                  whileHover={{ scale: 1.02, y: -2 }}
-                >
-                  <div className="flex items-center space-x-1 mb-4">
-                    {[1,2,3,4,5].map((star) => (
-                      <Star key={star} className="w-4 h-4 text-yellow-400 fill-current" />
-                    ))}
-                  </div>
-                  
-                  <p className="text-gray-700 mb-4 leading-relaxed text-sm">
-                    "{testimonial.content}"
-                  </p>
-                  
-                  <div className="flex items-center space-x-3">
-                    <div className="text-xl">
-                      {testimonial.avatar}
-                    </div>
-                    <div>
-                      <div className="font-semibold text-gray-900 text-sm">
-                        {testimonial.name}
-                      </div>
-                      <div className="text-xs text-gray-500">
-                        {testimonial.role}, {testimonial.company}
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </motion.div>
-          </div>
+          <motion.div 
+            className="text-center"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
+            viewport={{ once: true }}
+          >
+            <div className="bg-white rounded-3xl p-8 shadow-xl border border-gray-200 max-w-4xl mx-auto">
+              <h3 className="text-3xl font-bold text-gray-900 mb-4">
+                Your industry not listed?
+              </h3>
+              <p className="text-xl text-gray-600 mb-6">
+                We've successfully worked with businesses across many more sectors. 
+                Every industry has unique challenges, and we create solutions that work specifically for your market.
+              </p>
+              <motion.button 
+                className="text-white px-8 py-4 rounded-2xl text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 inline-flex items-center space-x-2"
+                style={{ backgroundColor: '#216ad9' }}
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <span>Discuss Your Industry</span>
+                <ArrowRight className="w-5 h-5" />
+              </motion.button>
+            </div>
+          </motion.div>
         </div>
       </section>
 
@@ -1937,81 +1007,580 @@ const AmpliFirmHubHomepage = () => {
             viewport={{ once: true }}
           >
             <h2 className="text-5xl font-bold text-gray-900 mb-6">
-              Simple, transparent pricing
+              Transparent, tailored pricing
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              No hidden fees, no long-term contracts. Get started for free and 
-              scale as your business grows.
+              No fixed pricing because no two businesses are the same. We create custom solutions 
+              that fit your budget and deliver maximum value.
             </p>
           </motion.div>
 
-          <div className="grid lg:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {pricingPlans.map((plan, index) => (
+          <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <motion.div 
+              className="bg-white rounded-3xl p-8 shadow-lg border-2 border-gray-200 transition-all duration-300 hover:border-blue-300"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              viewport={{ once: true }}
+              whileHover={{ y: -5 }}
+            >
+              <div className="text-center mb-8">
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                  Discovery Call
+                </h3>
+                <div className="mb-4">
+                  <span className="text-5xl font-bold text-gray-900">
+                    Free
+                  </span>
+                </div>
+                <p className="text-gray-600">
+                  Start with a comprehensive business analysis
+                </p>
+              </div>
+              
+              <div className="space-y-4 mb-8">
+                {[
+                  'Complete business analysis',
+                  'Problem identification', 
+                  'Strategic recommendations',
+                  'Custom quote preparation',
+                  'Early bird discount eligibility'
+                ].map((feature, featureIndex) => (
+                  <div key={featureIndex} className="flex items-center space-x-3">
+                    <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700">{feature}</span>
+                  </div>
+                ))}
+              </div>
+              
+              <motion.button 
+                className="w-full py-4 rounded-2xl font-semibold transition-all duration-300 text-white shadow-lg hover:shadow-xl"
+                style={{ backgroundColor: '#216ad9' }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                Book Free Consultation
+              </motion.button>
+            </motion.div>
+
+            <motion.div 
+              className="bg-white rounded-3xl p-8 shadow-lg border-2 border-blue-500 ring-2 ring-blue-200 scale-105 relative"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              viewport={{ once: true }}
+              whileHover={{ y: -5 }}
+            >
+              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                <div className="text-white px-6 py-2 rounded-full text-sm font-semibold" style={{ backgroundColor: '#216ad9' }}>
+                  Most Popular
+                </div>
+              </div>
+              
+              <div className="text-center mb-8">
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                  Your Budget
+                </h3>
+                <div className="mb-4">
+                  <span className="text-5xl font-bold text-gray-900">
+                    Any Size
+                  </span>
+                </div>
+                <p className="text-gray-600">
+                  Solutions designed for your specific budget
+                </p>
+              </div>
+              
+              <div className="space-y-4 mb-8">
+                {[
+                  'Completely customized approach',
+                  'Budget-conscious planning',
+                  'Scalable solutions',
+                  'Payment plans available',
+                  'Early bird discounts included'
+                ].map((feature, featureIndex) => (
+                  <div key={featureIndex} className="flex items-center space-x-3">
+                    <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700">{feature}</span>
+                  </div>
+                ))}
+              </div>
+              
+              <motion.button 
+                className="w-full py-4 rounded-2xl font-semibold transition-all duration-300 text-white shadow-lg hover:shadow-xl"
+                style={{ backgroundColor: '#216ad9' }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                Get Custom Quote
+              </motion.button>
+            </motion.div>
+
+            <motion.div 
+              className="bg-white rounded-3xl p-8 shadow-lg border-2 border-gray-200 transition-all duration-300 hover:border-blue-300"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              viewport={{ once: true }}
+              whileHover={{ y: -5 }}
+            >
+              <div className="text-center mb-8">
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                  Enterprise
+                </h3>
+                <div className="mb-4">
+                  <span className="text-5xl font-bold text-gray-900">
+                    Custom
+                  </span>
+                </div>
+                <p className="text-gray-600">
+                  Full-scale business transformation
+                </p>
+              </div>
+              
+              <div className="space-y-4 mb-8">
+                {[
+                  'Multi-department solutions',
+                  'Dedicated project team',
+                  'Ongoing support & optimization',
+                  'Performance guarantees',
+                  'Priority support'
+                ].map((feature, featureIndex) => (
+                  <div key={featureIndex} className="flex items-center space-x-3">
+                    <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700">{feature}</span>
+                  </div>
+                ))}
+              </div>
+              
+              <motion.button 
+                className="w-full py-4 rounded-2xl font-semibold transition-all duration-300 bg-gray-100 text-gray-900 hover:bg-gray-200"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                Contact Us
+              </motion.button>
+            </motion.div>
+          </div>
+
+          <motion.div 
+            className="text-center mt-16"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
+            viewport={{ once: true }}
+          >
+            <div className="bg-white rounded-3xl p-8 shadow-xl border border-gray-200 max-w-4xl mx-auto">
+              <h3 className="text-3xl font-bold text-gray-900 mb-4">Early Bird Discounts Available</h3>
+              <div className="grid md:grid-cols-2 gap-6 mb-8">
+                <div className="text-center">
+                  <div className="text-3xl font-bold mb-2" style={{ color: '#216ad9' }}>Super Early Bird</div>
+                  <p className="text-gray-600">Sign within 24 hours of consultation for maximum savings</p>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold mb-2" style={{ color: '#216ad9' }}>Early Bird</div>
+                  <p className="text-gray-600">Sign within 3 days of consultation for great savings</p>
+                </div>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <motion.button 
+                  className="text-white px-8 py-4 rounded-2xl text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 inline-flex items-center space-x-2"
+                  style={{ backgroundColor: '#216ad9' }}
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <span>Book Free Consultation</span>
+                  <ArrowRight className="w-5 h-5" />
+                </motion.button>
+                <motion.a 
+                  href="/pricing"
+                  className="border-2 text-gray-700 hover:text-blue-600 px-8 py-4 rounded-2xl text-lg font-semibold hover:bg-blue-50 transition-all duration-300 inline-flex items-center space-x-2"
+                  style={{ borderColor: '#216ad9' }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <span>Find Out More</span>
+                  <ArrowRight className="w-5 h-5" />
+                </motion.a>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Marketing 4-Phase Approach */}
+      <section className="py-32 bg-gradient-to-br from-blue-50 via-white to-teal-50">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <motion.div 
+            className="text-center mb-20"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          >
+            <motion.div 
+              className="inline-flex items-center space-x-2 bg-blue-100 border border-blue-200 rounded-full px-5 py-3 mb-8"
+              whileHover={{ scale: 1.05 }}
+            >
+              <Megaphone className="w-4 h-4" style={{ color: '#216ad9' }} />
+              <span className="text-sm font-semibold" style={{ color: '#216ad9' }}>Marketing Excellence</span>
+            </motion.div>
+            
+            <h2 className="text-5xl font-bold text-gray-900 mb-6">
+              Our proven <span style={{ color: '#216ad9' }}>4-phase marketing</span> approach
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              We don't waste your budget. Every campaign is strategically planned, 
+              carefully executed, and continuously optimized for maximum ROI.
+            </p>
+          </motion.div>
+
+          {/* Visual Process Flow */}
+          <div className="relative mb-16">
+            <motion.div 
+              className="absolute top-1/2 left-0 right-0 h-1 transform -translate-y-1/2 hidden lg:block"
+              style={{ background: 'linear-gradient(90deg, #216ad9 0%, #10b981 100%)' }}
+              initial={{ width: 0 }}
+              whileInView={{ width: "100%" }}
+              transition={{ duration: 2, delay: 0.5 }}
+              viewport={{ once: true }}
+            />
+            
+            <div className="grid lg:grid-cols-4 gap-8 relative">
+              {[
+                {
+                  phase: "01",
+                  title: "Research & Strategy",
+                  description: "Deep market analysis, competitor research, and strategic planning. No budget wasted on guesswork.",
+                  icon: Search,
+                  color: "from-red-500 to-pink-600",
+                  features: ["Market analysis", "Competitor research", "Audience profiling", "Strategy development"],
+                  highlight: "Industry benchmarks analysis"
+                },
+                {
+                  phase: "02", 
+                  title: "Create & Develop",
+                  description: "Creative development, video production, and asset creation that resonates with your audience.",
+                  icon: Lightbulb,
+                  color: "from-orange-500 to-yellow-600",
+                  features: ["Creative development", "Video production", "Copy writing", "Asset creation"],
+                  highlight: "Professional creative assets"
+                },
+                {
+                  phase: "03",
+                  title: "Test & Launch",
+                  description: "Strategic campaign launch with built-in A/B testing. Data guides every decision we make.",
+                  icon: Rocket,
+                  color: "from-blue-500 to-cyan-600",
+                  features: ["Campaign launch", "A/B testing", "Performance monitoring", "Real-time optimization"],
+                  highlight: "A/B testing protocols"
+                },
+                {
+                  phase: "04",
+                  title: "Scale & Optimize",
+                  description: "Scale winning campaigns while continuously optimizing for better results and lower costs.",
+                  icon: TrendingUp,
+                  color: "from-green-500 to-emerald-600",
+                  features: ["Performance scaling", "Cost optimization", "ROI maximization", "Continuous improvement"],
+                  highlight: "ROI optimization"
+                }
+              ].map((phase, index) => (
+                <motion.div 
+                  key={index}
+                  className="relative"
+                  initial={{ opacity: 0, y: 50 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: index * 0.2 }}
+                  viewport={{ once: true }}
+                >
+                  {/* Phase Circle */}
+                  <motion.div 
+                    className="relative mb-8 mx-auto w-24 h-24 lg:w-32 lg:h-32"
+                    whileHover={{ scale: 1.1 }}
+                  >
+                    <motion.div 
+                      className={`w-full h-full bg-gradient-to-r ${phase.color} rounded-full flex items-center justify-center shadow-xl relative z-10`}
+                      animate={{ 
+                        boxShadow: [
+                          "0 10px 30px rgba(0,0,0,0.2)",
+                          "0 20px 50px rgba(0,0,0,0.3)",
+                          "0 10px 30px rgba(0,0,0,0.2)"
+                        ]
+                      }}
+                      transition={{ duration: 3, repeat: Infinity, delay: index * 0.5 }}
+                    >
+                      <phase.icon className="w-8 h-8 lg:w-12 lg:h-12 text-white" />
+                    </motion.div>
+                    <motion.div 
+                      className="absolute -bottom-2 -right-2 bg-white rounded-full w-10 h-10 flex items-center justify-center shadow-lg"
+                      initial={{ scale: 0 }}
+                      whileInView={{ scale: 1 }}
+                      transition={{ duration: 0.5, delay: index * 0.2 + 0.5 }}
+                      viewport={{ once: true }}
+                    >
+                      <span className="text-sm font-bold text-gray-700">{phase.phase}</span>
+                    </motion.div>
+                  </motion.div>
+                  
+                  <motion.div 
+                    className="bg-white rounded-3xl p-6 shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-300"
+                    whileHover={{ y: -5 }}
+                  >
+                    <h3 className="text-xl font-bold text-gray-900 mb-3">
+                      {phase.title}
+                    </h3>
+                    <p className="text-gray-600 leading-relaxed mb-4">
+                      {phase.description}
+                    </p>
+                    
+                    <div className="mb-4">
+                      <div className="text-sm font-bold mb-2" style={{ color: '#216ad9' }}>
+                        Key Focus: {phase.highlight}
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      {phase.features.slice(0, 3).map((feature, featureIndex) => (
+                        <div key={featureIndex} className="flex items-center space-x-2">
+                          <CheckCircle className="w-4 h-4 text-green-500" />
+                          <span className="text-sm text-gray-600">{feature}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </motion.div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+
+          {/* Call-to-Action Section */}
+          <motion.div 
+            className="text-center"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 1 }}
+            viewport={{ once: true }}
+          >
+            <div className="bg-white rounded-3xl p-10 shadow-2xl border border-gray-200 max-w-5xl mx-auto relative overflow-hidden">
+              <motion.div 
+                className="absolute top-0 right-0 w-32 h-32 bg-blue-100 rounded-full -mr-16 -mt-16 opacity-50"
+                animate={{ rotate: 360 }}
+                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+              />
+              
+              <div className="relative z-10">
+                <h3 className="text-4xl font-bold text-gray-900 mb-6">
+                  Ready to transform your marketing?
+                </h3>
+                <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+                  From VSL funnels and email marketing to pixel optimization and landing pages - 
+                  we build everything you need for marketing success, tailored to your specific goals and budget.
+                </p>
+                
+                <div className="grid md:grid-cols-3 gap-6 mb-8">
+                  {[
+                    { label: "VSL Funnels", icon: Play },
+                    { label: "Email Marketing", icon: MessageSquare },
+                    { label: "Landing Pages", icon: Globe }
+                  ].map((service, index) => (
+                    <motion.div 
+                      key={index}
+                      className="bg-blue-50 rounded-2xl p-4 flex items-center space-x-3"
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                      viewport={{ once: true }}
+                      whileHover={{ scale: 1.05 }}
+                    >
+                      <service.icon className="w-6 h-6" style={{ color: '#216ad9' }} />
+                      <span className="font-semibold text-gray-700">{service.label}</span>
+                    </motion.div>
+                  ))}
+                </div>
+                
+                <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                  <motion.a 
+                    href="/marketing-solutions"
+                    className="text-white px-10 py-4 rounded-2xl text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 inline-flex items-center space-x-2"
+                    style={{ backgroundColor: '#216ad9' }}
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <span>Explore Marketing Solutions</span>
+                    <ArrowRight className="w-5 h-5" />
+                  </motion.a>
+                  
+                  <motion.button 
+                    className="border-2 text-gray-700 hover:text-blue-600 px-10 py-4 rounded-2xl text-lg font-semibold hover:bg-blue-50 transition-all duration-300 inline-flex items-center space-x-2"
+                    style={{ borderColor: '#216ad9' }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <span>Book Marketing Consultation</span>
+                    <Calendar className="w-5 h-5" />
+                  </motion.button>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Why Choose Us */}
+      <section className="py-32 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <motion.div 
+            className="text-center mb-20"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-5xl font-bold text-gray-900 mb-6">
+              Why businesses choose Amplifirm
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              We're not just another consultancy. We're partners in your success, 
+              with a proven track record and approach that delivers real results.
+            </p>
+          </motion.div>
+
+          <div className="grid lg:grid-cols-3 gap-8">
+            {[
+              {
+                title: "No Cookie-Cutter Solutions",
+                description: "Every solution is designed specifically for your business, industry, and budget. We don't believe in one-size-fits-all approaches.",
+                icon: Target,
+                benefits: ["Tailored strategies", "Industry-specific solutions", "Budget-conscious planning"]
+              },
+              {
+                title: "Proven Track Record", 
+                description: "150+ successful projects, 300+ websites built, and recognition as AI Startup Finalist. Our results speak for themselves.",
+                icon: Award,
+                benefits: ["Award-winning team", "150+ clients served", "Verified success stories"]
+              },
+              {
+                title: "End-to-End Support",
+                description: "From initial consultation to ongoing optimization, we're with you every step of the way. No handoffs, no confusion.",
+                icon: Shield,
+                benefits: ["Complete support", "Ongoing optimization", "Single point of contact"]
+              }
+            ].map((reason, index) => (
               <motion.div 
                 key={index}
-                className={`relative bg-white rounded-3xl p-8 shadow-lg border-2 transition-all duration-300 ${
-                  plan.popular 
-                    ? 'border-blue-500 ring-2 ring-blue-200 scale-105' 
-                    : 'border-gray-200 hover:border-blue-300'
-                }`}
+                className="bg-white rounded-3xl p-8 shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-300"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.2 }}
                 viewport={{ once: true }}
-                whileHover={{ y: -5 }}
+                whileHover={{ y: -5, scale: 1.02 }}
               >
-                {plan.popular && (
-                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                    <div className="bg-gradient-to-r from-blue-600 to-teal-600 text-white px-6 py-2 rounded-full text-sm font-semibold">
-                      Most Popular
-                    </div>
-                  </div>
-                )}
-                
-                <div className="text-center mb-8">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                    {plan.name}
-                  </h3>
-                  <div className="mb-4">
-                    <span className="text-5xl font-bold text-gray-900">
-                      {plan.price}
-                    </span>
-                    {plan.period && (
-                      <span className="text-xl text-gray-600">
-                        {plan.period}
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-gray-600">
-                    {plan.description}
-                  </p>
-                </div>
-                
-                <div className="space-y-4 mb-8">
-                  {plan.features.map((feature, featureIndex) => (
-                    <div key={featureIndex} className="flex items-center space-x-3">
-                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
-                      <span className="text-gray-700">{feature}</span>
+                <motion.div 
+                  className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6"
+                  style={{ backgroundColor: '#216ad9' }}
+                  whileHover={{ rotate: 360, scale: 1.1 }}
+                  transition={{ duration: 0.6 }}
+                >
+                  <reason.icon className="w-8 h-8 text-white" />
+                </motion.div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">{reason.title}</h3>
+                <p className="text-gray-600 mb-6 leading-relaxed">{reason.description}</p>
+                <div className="space-y-3">
+                  {reason.benefits.map((benefit, benefitIndex) => (
+                    <div key={benefitIndex} className="flex items-center space-x-2">
+                      <CheckCircle className="w-5 h-5 text-green-500" />
+                      <span className="text-gray-700">{benefit}</span>
                     </div>
                   ))}
                 </div>
-                
-                <motion.button 
-                  className={`w-full py-4 rounded-2xl font-semibold transition-all duration-300 ${
-                    plan.popular
-                      ? 'bg-gradient-to-r from-blue-600 to-teal-600 text-white shadow-lg hover:shadow-xl'
-                      : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
-                  }`}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  {plan.cta}
-                </motion.button>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
+
+      {/* Client Testimonials */}
+      <section className="py-32 bg-white overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <motion.div 
+            className="text-center mb-20"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-5xl font-bold text-gray-900 mb-6">
+              What our <span style={{ color: '#216ad9' }}>clients</span> say
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Real feedback from real businesses who've transformed their operations 
+              with our tailored solutions.
+            </p>
+          </motion.div>
+
+          {/* Testimonials Grid */}
+          <div className="grid lg:grid-cols-3 gap-8 mb-16">
+            {[
+              {
+                content: "Amplifirm transformed our entire marketing approach. Our conversion rate went from 1.2% to 4.8% in just 3 months. The ROI has been incredible.",
+                name: "Sarah Mitchell",
+                role: "Founder",
+                company: "TechFlow Solutions",
+                rating: 5
+              },
+              {
+                content: "We were struggling with operational inefficiencies. Amplifirm streamlined our processes and saved us 15 hours per week. Game-changing.",
+                name: "James Wilson",
+                role: "Operations Director", 
+                company: "ScaleUp Manufacturing",
+                rating: 5
+              },
+              {
+                content: "Their tailored approach to our industry was exactly what we needed. They understood our challenges and delivered solutions that actually work.",
+                name: "Emily Rodriguez",
+                role: "CEO",
+                company: "Healthcare Innovations",
+                rating: 5
+              }
+            ].map((testimonial, index) => (
+              <motion.div 
+                key={index}
+                className="bg-gray-50 rounded-3xl p-8 shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-300"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.2 }}
+                viewport={{ once: true }}
+                whileHover={{ y: -5, scale: 1.02 }}
+              >
+                <div className="flex items-center space-x-1 mb-6">
+                  {[...Array(testimonial.rating)].map((_, i) => (
+                    <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
+                  ))}
+                </div>
+                
+                <p className="text-gray-700 mb-6 leading-relaxed text-lg italic">
+                  "{testimonial.content}"
+                </p>
+                
+                <div className="flex items-center space-x-4">
+                  <div className="w-12 h-12 rounded-full flex items-center justify-center text-xl" style={{ backgroundColor: '#216ad9', color: 'white' }}>
+                    {testimonial.name.charAt(0)}
+                  </div>
+                  <div>
+                    <div className="font-bold text-gray-900">
+                      {testimonial.name}
+                    </div>
+                    <div className="text-gray-600">
+                      {testimonial.role}, {testimonial.company}
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
 
       {/* FAQ Section */}
       <section className="py-32 bg-gray-50">
@@ -2027,15 +1596,48 @@ const AmpliFirmHubHomepage = () => {
               Frequently asked questions
             </h2>
             <p className="text-xl text-gray-600">
-              Everything you need to know about AmpliFirmHub and how it works.
+              Everything you need to know about working with Amplifirm.
             </p>
           </motion.div>
 
           <div className="space-y-6">
-            {faqs.map((faq, index) => (
+            {[
+              {
+                question: "How do you determine pricing for each project?",
+                answer: "We don't have fixed pricing because every business is unique. After our free consultation, we understand your specific needs, budget, and goals, then create a custom quote that delivers maximum value within your budget range."
+              },
+              {
+                question: "What industries do you work with?",
+                answer: "We work with businesses across all industries - from tech startups to traditional manufacturing, healthcare to hospitality. Our approach is to understand your specific industry challenges and create solutions that work for your market."
+              },
+              {
+                question: "How long does it typically take to see results?",
+                answer: "This depends on the type of solution, but most clients see initial improvements within 4-6 weeks. Marketing campaigns can show results even faster, while operational changes may take 2-3 months to fully implement and optimize."
+              },
+              {
+                question: "Do you work with small businesses or just large companies?",
+                answer: "We work with businesses of all sizes - from startups just getting off the ground to established companies generating millions. Our solutions are tailored to your current size and growth stage."
+              },
+              {
+                question: "What's included in the free consultation?",
+                answer: "A comprehensive business analysis where we identify problems, discuss your goals, and provide strategic recommendations. You'll leave with actionable insights regardless of whether you choose to work with us."
+              },
+              {
+                question: "How do the early bird discounts work?",
+                answer: "Super Early Bird (24-hour decision): Maximum discount on your custom quote. Early Bird (3-day decision): Significant discount on your custom quote. These incentives reward quick decision-making after our consultation."
+              },
+              {
+                question: "What makes your 4-phase marketing approach different?",
+                answer: "Unlike agencies that jump straight into campaigns, we start with deep research and strategy. This ensures no budget is wasted on guesswork. Our systematic approach of Research → Create → Test → Scale has consistently delivered better ROI for our clients."
+              },
+              {
+                question: "Can you handle both consultancy and marketing for the same business?",
+                answer: "Absolutely! Many of our clients benefit from our integrated approach. We can optimize your operations while simultaneously improving your marketing, creating synergies that amplify results across your entire business."
+              }
+            ].map((faq, index) => (
               <motion.div 
                 key={index}
-                className="bg-white rounded-2xl p-6 shadow-lg border"
+                className="bg-white rounded-2xl p-8 shadow-lg border border-gray-200"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
@@ -2050,20 +1652,41 @@ const AmpliFirmHubHomepage = () => {
               </motion.div>
             ))}
           </div>
+
+          <motion.div 
+            className="text-center mt-16"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
+            viewport={{ once: true }}
+          >
+            <div className="bg-white rounded-3xl p-8 shadow-xl border border-gray-200">
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                Still have questions?
+              </h3>
+              <p className="text-gray-600 mb-6">
+                Book a free consultation and we'll answer all your questions while analyzing your business.
+              </p>
+              <motion.button 
+                className="text-white px-8 py-4 rounded-2xl text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 inline-flex items-center space-x-2"
+                style={{ backgroundColor: '#216ad9' }}
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <span>Book Free Consultation</span>
+                <ArrowRight className="w-5 h-5" />
+              </motion.button>
+            </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Final CTA Section */}
-      <section className="py-32 bg-gradient-to-r from-blue-600 via-teal-600 to-cyan-600 relative overflow-hidden">
+      <section className="py-32 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #216ad9 0%, #1e5cb3 100%)' }}>
         <motion.div 
           className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -mr-20 -mt-20"
           animate={{ rotate: 360 }}
           transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-        />
-        <motion.div 
-          className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full -ml-16 -mb-16"
-          animate={{ rotate: -360 }}
-          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
         />
         
         <div className="max-w-4xl mx-auto px-6 lg:px-8 text-center relative z-10">
@@ -2074,20 +1697,21 @@ const AmpliFirmHubHomepage = () => {
             viewport={{ once: true }}
           >
             <h2 className="text-5xl font-bold text-white mb-6">
-              Ready to find your perfect marketing partner?
+              Ready to transform your business?
             </h2>
             <p className="text-xl text-blue-100 mb-10 leading-relaxed">
-              Join thousands of businesses and agencies who've transformed their 
-              marketing partnerships with AI-powered matching.
+              Book your free consultation today and discover how our tailored solutions 
+              can solve your business challenges and accelerate your growth.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <motion.button 
-                className="bg-white text-blue-600 px-10 py-4 rounded-2xl text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-2"
+                className="bg-white px-10 py-4 rounded-2xl text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-2"
+                style={{ color: '#216ad9' }}
                 whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <span>Speak to Our AI</span>
+                <span>Book Free Consultation</span>
                 <ArrowRight className="w-5 h-5" />
               </motion.button>
               
@@ -2096,12 +1720,12 @@ const AmpliFirmHubHomepage = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                Schedule Demo
+                Learn More
               </motion.button>
             </div>
             
             <p className="text-sm text-blue-200 mt-6">
-              No credit card required • 14-day free trial • Cancel anytime
+              Free consultation • No obligations • Custom solutions designed for you
             </p>
           </motion.div>
         </div>
@@ -2113,46 +1737,34 @@ const AmpliFirmHubHomepage = () => {
           <div className="grid md:grid-cols-5 gap-12 mb-16">
             <div className="md:col-span-2">
               <div className="flex items-center space-x-3 mb-6">
-                <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-teal-600 rounded-2xl flex items-center justify-center">
-                  <Brain className="w-5 h-5 text-white" />
+                <div className="w-10 h-10 rounded-2xl flex items-center justify-center" style={{ backgroundColor: '#216ad9' }}>
+                  <Lightbulb className="w-5 h-5 text-white" />
                 </div>
-                <div>
-                  <span className="text-xl font-bold">AmpliFirm</span>
-                  <span className="text-xl font-bold bg-gradient-to-r from-blue-400 to-teal-400 bg-clip-text text-transparent">Hub</span>
-                </div>
+                <span className="text-xl font-bold">Amplifirm</span>
               </div>
               <p className="text-gray-400 text-lg leading-relaxed max-w-md mb-6">
-                AI-powered marketplace connecting businesses with their perfect marketing partners. 
-                Transforming partnerships, delivering results.
+                Award-winning business consultancy specializing in tailored solutions for operational, 
+                marketing, and financial challenges. Transforming businesses across all industries.
               </p>
-              <div className="flex space-x-4">
-                {['Twitter', 'LinkedIn', 'YouTube', 'Instagram'].map((social) => (
-                  <motion.a 
-                    key={social}
-                    href="#" 
-                    className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-blue-600 transition-colors"
-                    whileHover={{ scale: 1.1, y: -2 }}
-                  >
-                    <span className="text-sm font-medium">
-                      {social.charAt(0)}
-                    </span>
-                  </motion.a>
-                ))}
+              <div className="text-sm text-gray-500">
+                <p>AMPLIFIRM LTD</p>
+                <p>Company Number: 15426833</p>
+                <p>Registered in England & Wales</p>
               </div>
             </div>
             
             {[
               { 
-                title: 'For Businesses', 
-                links: ['Find Agencies', 'How It Works', 'Success Stories', 'Pricing', 'Case Studies'] 
-              },
-              { 
-                title: 'For Agencies', 
-                links: ['Join Platform', 'Agency Dashboard', 'Resources', 'Support', 'Partner Program'] 
+                title: 'Services', 
+                links: ['Business Consultancy', 'Marketing Solutions', 'Website Development', 'Platform Development', 'Custom Solutions'] 
               },
               { 
                 title: 'Company', 
-                links: ['About Us', 'Careers', 'Blog', 'Press', 'Contact'] 
+                links: ['About Us', 'Our Team', 'Case Studies', 'Awards', 'Careers'] 
+              },
+              { 
+                title: 'Support', 
+                links: ['Contact Us', 'Book Consultation', 'FAQ', 'Resources', 'Blog'] 
               }
             ].map((section, index) => (
               <div key={index}>
@@ -2176,7 +1788,7 @@ const AmpliFirmHubHomepage = () => {
           
           <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-gray-800">
             <p className="text-gray-400 mb-4 md:mb-0">
-              © 2024 AmpliFirmHub Inc. All rights reserved.
+              © 2024 Amplifirm Ltd. All rights reserved.
             </p>
             <div className="flex space-x-6">
               <a href="#" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</a>
@@ -2190,4 +1802,4 @@ const AmpliFirmHubHomepage = () => {
   );
 };
 
-export default AmpliFirmHubHomepage;
+export default AmplifirmHomepage;
