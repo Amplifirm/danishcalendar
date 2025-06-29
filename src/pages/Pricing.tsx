@@ -14,19 +14,23 @@ import {
   Award,
   CheckCircle,
   DollarSign,
+  Calendar,
   FileText,
   Lightbulb,
   Smartphone,
   Code,
   Megaphone,
   Calculator,
-  Heart
+  Heart,
+  ExternalLink,
+  X
 } from 'lucide-react';
 
 const AmplifirmPricingPage = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [hoveredDropdown, setHoveredDropdown] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('foundation');
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -36,7 +40,74 @@ const AmplifirmPricingPage = () => {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
- 
+  useEffect(() => {
+    // Load Calendly script when modal opens
+    if (isModalOpen && !document.querySelector('script[src*="calendly"]')) {
+      const script = document.createElement('script');
+      script.src = 'https://assets.calendly.com/assets/external/widget.js';
+      script.async = true;
+      document.body.appendChild(script);
+    }
+
+    // Handle escape key to close modal
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isModalOpen) {
+        setIsModalOpen(false);
+      }
+    };
+
+    if (isModalOpen) {
+      document.addEventListener('keydown', handleEscape);
+      // Prevent body scroll when modal is open
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+      document.body.style.overflow = 'unset';
+    };
+  }, [isModalOpen]);
+
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  const handleBookConsultation = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleGetQuote = () => {
+    scrollToSection('budget-tiers');
+  };
+
+  const handleNavigateToServices = (serviceName: string) => {
+    console.log(`Navigating to ${serviceName} page...`);
+    // Add actual navigation logic here
+  };
+
+  const handleNavigateToAbout = (pageName: string) => {
+    console.log(`Navigating to ${pageName} page...`);
+    // Add actual navigation logic here
+  };
+
+  const handleDiscussBudget = (budgetRange: string) => {
+    console.log(`Discussing ${budgetRange} budget...`);
+    setIsModalOpen(true);
+  };
+
+  const handleViewCaseStudies = () => {
+    console.log('Viewing case studies...');
+    // Add navigation to case studies
+  };
 
   const servicesMenu = [
     { name: 'Business Consultancy', href: '#', icon: Building },
@@ -56,109 +127,109 @@ const AmplifirmPricingPage = () => {
     {
       id: 'foundation',
       title: 'Getting Started',
-      range: '£0 - £1K',
-      description: 'Perfect for businesses taking their first steps',
+      range: '£500 - £2K',
+      description: 'Perfect for small businesses taking their first steps',
       color: 'from-emerald-500 to-green-600',
       icon: Heart,
       solutions: [
-        'Business consultation & roadmap',
-        'Problem identification session',
-        'Strategic recommendations',
-        'Action plan development',
-        'Resource guidance'
+        'Comprehensive business audit & consultation',
+        'Problem identification & prioritization',
+        'Strategic roadmap development',
+        'Basic system recommendations',
+        'Resource guidance & templates'
       ],
       guidance: [
-        'We\'ll assess your current situation',
-        'Identify your biggest opportunities',
+        'We\'ll assess your current business operations',
+        'Identify your biggest growth opportunities',
         'Create a prioritized action plan',
-        'Guide you on next steps to take',
-        'Provide templates and resources'
+        'Provide step-by-step implementation guide',
+        'Supply templates and resources to get started'
       ],
       caseStudy: {
-        business: 'Local Bakery',
-        challenge: 'Just starting out, minimal budget but big dreams',
-        result: 'Gained clarity on business direction + 50% revenue increase in 3 months'
+        business: 'Local Restaurant Chain',
+        challenge: 'Struggling with operational inefficiencies and low profit margins',
+        result: 'Streamlined operations + 45% profit increase in 4 months'
       }
     },
     {
-      id: 'startup',
-      title: 'Startup Growth',
-      range: '£1K - £5K',
-      description: 'For early-stage businesses ready to establish foundations',
+      id: 'growth',
+      title: 'Business Growth',
+      range: '£2K - £8K',
+      description: 'For businesses ready to establish solid foundations and scale',
       color: 'from-blue-500 to-cyan-600',
       icon: Rocket,
       solutions: [
-        'Complete business foundation setup',
-        'Basic website development',
-        'Initial marketing strategy',
-        'Social media establishment',
-        'Process optimization basics'
+        'Complete operational system setup',
+        'Professional website development',
+        'Phase 1-2 marketing implementation',
+        'Basic automation & processes',
+        'Team training & guidance'
       ],
       guidance: [
-        'We\'ll build your digital foundation',
-        'Set up essential business systems',
-        'Create your first marketing campaigns',
-        'Establish your online presence',
-        'Train you on managing everything'
+        'We\'ll build your foundational systems',
+        'Implement our proven 4-phase marketing approach',
+        'Create professional digital presence',
+        'Set up essential business automation',
+        'Train your team on new processes'
       ],
       caseStudy: {
-        business: 'Tech Startup',
-        challenge: 'Needed professional presence and initial customer acquisition',
-        result: 'Professional website + first 100 customers within 2 months'
+        business: 'Tech SaaS Startup',
+        challenge: 'Needed professional presence and systematic customer acquisition',
+        result: 'Professional platform + 200% user growth in 3 months'
       }
     },
     {
-      id: 'growing',
-      title: 'Scaling Business',
-      range: '£5K - £25K',
-      description: 'For businesses ready to scale and expand operations',
+      id: 'scaling',
+      title: 'Scaling Operations',
+      range: '£8K - £25K',
+      description: 'Comprehensive transformation for serious growth',
       color: 'from-purple-500 to-pink-600',
       icon: TrendingUp,
       solutions: [
-        'Comprehensive business optimization',
-        'Advanced website with features',
-        'Multi-channel marketing campaigns',
-        'Sales funnel development',
-        'Team & process scaling'
+        'Full business optimization & systemization',
+        'Advanced website with custom features',
+        'Complete 4-phase marketing implementation',
+        'Advanced automation & AI integration',
+        'Ongoing optimization & scaling'
       ],
       guidance: [
-        'We\'ll optimize your entire operation',
-        'Scale your marketing efforts effectively',
-        'Implement advanced systems and automation',
-        'Build processes that support growth',
-        'Guide your team through transformation'
+        'We\'ll transform your entire operation',
+        'Implement advanced marketing funnels & campaigns',
+        'Build custom platforms and integrations',
+        'Create scalable processes and systems',
+        'Provide ongoing strategic guidance'
       ],
       caseStudy: {
-        business: 'SaaS Platform',
-        challenge: 'Needed growth strategy and user acquisition at scale',
-        result: '300% user growth + £180K funding secured'
+        business: 'E-commerce Brand',
+        challenge: 'Needed complete digital transformation and scale strategy',
+        result: '400% revenue growth + international expansion in 6 months'
       }
     },
     {
-      id: 'established',
+      id: 'enterprise',
       title: 'Enterprise Level',
       range: '£25K - £100K+',
-      description: 'Comprehensive transformation for serious growth',
+      description: 'Complete business transformation with ongoing partnership',
       color: 'from-orange-500 to-red-600',
       icon: Building,
       solutions: [
-        'Complete business transformation',
-        'Custom platform development',
-        'Advanced marketing automation',
+        'Enterprise-level business transformation',
+        'Custom platform & system development',
+        'Advanced marketing automation & AI',
         'Multi-department optimization',
-        'Ongoing strategic partnership'
+        'Dedicated strategic partnership'
       ],
       guidance: [
-        'We\'ll transform your entire business',
-        'Implement enterprise-level solutions',
-        'Guide you through complex integrations',
-        'Optimize across all departments',
-        'Provide ongoing strategic direction'
+        'We\'ll become your strategic technology partner',
+        'Implement enterprise-grade solutions',
+        'Optimize across all business departments',
+        'Provide ongoing innovation and development',
+        'Ensure sustainable long-term growth'
       ],
       caseStudy: {
-        business: 'Manufacturing Corp',
-        challenge: 'Digital transformation across all departments needed',
-        result: '40% operational efficiency + £2M revenue increase'
+        business: 'Manufacturing Corporation',
+        challenge: 'Complete digital transformation across all departments needed',
+        result: '60% operational efficiency + £3.2M revenue increase annually'
       }
     }
   ];
@@ -167,27 +238,50 @@ const AmplifirmPricingPage = () => {
     {
       icon: Heart,
       title: 'Budget-First Approach',
-      description: 'We start with your budget and design the maximum value solution within that range.'
+      description: 'We start with your budget and design the maximum value solution within that range, ensuring no wastage.'
     },
     {
       icon: Target,
-      title: 'Outcome-Focused',
-      description: 'Every solution is designed to deliver specific, measurable results for your business.'
+      title: 'Results-Driven',
+      description: 'Every solution is designed to deliver specific, measurable results based on industry benchmarks.'
     },
     {
       icon: Zap,
       title: 'Transparent Process',
-      description: 'Clear breakdown of what you get, timeline, and expected outcomes before you commit.'
+      description: 'Clear breakdown of deliverables, timeline, and expected outcomes before you commit to anything.'
     },
     {
       icon: Rocket,
       title: 'Scalable Solutions',
-      description: 'Start small and grow. Our solutions scale with your business and budget.'
+      description: 'Start with what fits your budget now, then scale as your business grows and succeeds.'
+    }
+  ];
+
+  const achievements = [
+    {
+      icon: Award,
+      title: 'AI Startup Finalist',
+      description: 'Finalist for AI Startup of the Year Award'
+    },
+    {
+      icon: Star,
+      title: 'Equity Backed Finalist',
+      description: 'Equity Backed Startup of the Year finalist'
+    },
+    {
+      icon: Building,
+      title: '300+ Websites Built',
+      description: 'Successfully delivered 300+ websites and platforms'
+    },
+    {
+      icon: Users,
+      title: '150+ Clients Served',
+      description: '150+ businesses transformed through our consultancy'
     }
   ];
 
   return (
-    <div className="min-h-screen bg-white relative overflow-hidden" style={{ fontFamily: 'Satoshi, sans-serif' }}>
+    <div className="min-h-screen bg-white relative overflow-hidden" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
       {/* Enhanced background grid */}
       <div className="fixed inset-0 pointer-events-none">
         <div 
@@ -201,7 +295,6 @@ const AmplifirmPricingPage = () => {
           }}
         />
         
-        {/* Subtle background enhancement */}
         <motion.div 
           className="absolute top-10 left-10 w-32 h-32 bg-blue-100/20 rounded-full blur-3xl"
           animate={{ 
@@ -222,7 +315,7 @@ const AmplifirmPricingPage = () => {
 
       {/* Mouse gradient effect */}
       <motion.div 
-        className="absolute inset-0 opacity-[0.02]"
+        className="absolute inset-0 opacity-[0.02] pointer-events-none"
         style={{
           background: `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(33, 106, 217, 0.3), transparent 40%)`
         }}
@@ -242,11 +335,11 @@ const AmplifirmPricingPage = () => {
         >
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center space-x-8">
-              <motion.a 
-                href="/"
-                className="flex items-center space-x-3"
+              <motion.button
+                className="flex items-center space-x-3 cursor-pointer"
                 whileHover={{ scale: 1.03 }}
                 transition={{ duration: 0.2 }}
+                onClick={() => scrollToSection('hero')}
               >
                 <motion.div 
                   className="w-9 h-9 rounded-2xl flex items-center justify-center shadow-lg"
@@ -259,7 +352,7 @@ const AmplifirmPricingPage = () => {
                 <div>
                   <span className="text-lg font-bold text-gray-900">Amplifirm</span>
                 </div>
-              </motion.a>
+              </motion.button>
               
               <div className="hidden lg:flex items-center space-x-1">
                 <div 
@@ -286,23 +379,18 @@ const AmplifirmPricingPage = () => {
                         transition={{ duration: 0.2 }}
                       >
                         {servicesMenu.map((item, index) => (
-                          <motion.a
+                          <motion.button
                             key={item.name}
-                            href={item.href}
-                            className="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+                            className="w-full flex items-center space-x-3 px-4 py-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-colors text-left"
                             initial={{ opacity: 0, x: -10 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: index * 0.05 }}
                             whileHover={{ x: 4 }}
-                            onClick={(e) => {
-                              e.preventDefault();
-                              // Add navigation logic here
-                              console.log(`Navigate to ${item.name}`);
-                            }}
+                            onClick={() => handleNavigateToServices(item.name)}
                           >
                             <item.icon className="w-4 h-4" />
                             <span className="text-sm font-medium">{item.name}</span>
-                          </motion.a>
+                          </motion.button>
                         ))}
                       </motion.div>
                     )}
@@ -333,43 +421,39 @@ const AmplifirmPricingPage = () => {
                         transition={{ duration: 0.2 }}
                       >
                         {aboutMenu.map((item, index) => (
-                          <motion.a
+                          <motion.button
                             key={item.name}
-                            href={item.href}
-                            className="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+                            className="w-full flex items-center space-x-3 px-4 py-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-colors text-left"
                             initial={{ opacity: 0, x: -10 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: index * 0.05 }}
                             whileHover={{ x: 4 }}
-                            onClick={(e) => {
-                              e.preventDefault();
-                              console.log(`Navigate to ${item.name}`);
-                            }}
+                            onClick={() => handleNavigateToAbout(item.name)}
                           >
                             <item.icon className="w-4 h-4" />
                             <span className="text-sm font-medium">{item.name}</span>
-                          </motion.a>
+                          </motion.button>
                         ))}
                       </motion.div>
                     )}
                   </AnimatePresence>
                 </div>
 
-                <motion.a 
-                  href="/pricing"
+                <motion.button
                   className="text-blue-600 text-sm font-medium px-3 py-2 rounded-xl transition-all duration-200 bg-blue-50"
                   whileHover={{ scale: 1.05 }}
+                  onClick={() => scrollToSection('pricing-philosophy')}
                 >
                   Pricing
-                </motion.a>
+                </motion.button>
 
-                <motion.a 
-                  href="/contact"
+                <motion.button
                   className="text-gray-700 hover:text-blue-600 text-sm font-medium px-3 py-2 rounded-xl transition-all duration-200 hover:bg-blue-50"
                   whileHover={{ scale: 1.05 }}
+                  onClick={handleBookConsultation}
                 >
                   Contact
-                </motion.a>
+                </motion.button>
               </div>
             </div>
             
@@ -385,10 +469,7 @@ const AmplifirmPricingPage = () => {
                 boxShadow: "0 20px 40px rgba(33, 106, 217, 0.3)"
               }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => {
-                console.log('Navigate to consultation booking');
-                // Add booking logic here
-              }}
+              onClick={handleBookConsultation}
             >
               Book Free Consultation
             </motion.button>
@@ -397,7 +478,7 @@ const AmplifirmPricingPage = () => {
       </motion.nav>
 
       {/* Hero Section */}
-      <div className="relative z-40 max-w-6xl mx-auto px-6 lg:px-8 pt-44 pb-16 text-center">
+      <section id="hero" className="relative z-40 max-w-6xl mx-auto px-6 lg:px-8 pt-44 pb-16 text-center">
         <motion.div 
           className="inline-flex items-center space-x-2 bg-blue-50 border border-blue-200/50 rounded-full px-5 py-3 mb-12"
           initial={{ opacity: 0, y: 30, scale: 0.8 }}
@@ -468,18 +549,60 @@ const AmplifirmPricingPage = () => {
             boxShadow: "0 25px 50px rgba(33, 106, 217, 0.4)"
           }}
           whileTap={{ scale: 0.98 }}
-          onClick={() => {
-            console.log('Navigate to consultation booking');
-            // Add booking logic here
-          }}
+          onClick={handleGetQuote}
         >
           <span>Get Your Custom Quote</span>
           <ArrowRight className="w-6 h-6" />
         </motion.button>
-      </div>
+      </section>
+
+      {/* Achievements Section */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <motion.div 
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-4xl font-bold text-gray-900 mb-6">
+              Trusted by businesses, recognized by industry
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              3 years of transforming businesses with award-winning solutions and proven results.
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {achievements.map((achievement, index) => (
+              <motion.div 
+                key={index}
+                className="bg-white rounded-3xl p-8 shadow-lg border border-gray-200 text-center hover:shadow-xl transition-all duration-300"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                whileHover={{ y: -5, scale: 1.02 }}
+              >
+                <motion.div 
+                  className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6"
+                  style={{ backgroundColor: '#216ad9' }}
+                  whileHover={{ rotate: 360, scale: 1.1 }}
+                  transition={{ duration: 0.6 }}
+                >
+                  <achievement.icon className="w-8 h-8 text-white" />
+                </motion.div>
+                <h3 className="text-xl font-bold text-gray-900 mb-4">{achievement.title}</h3>
+                <p className="text-gray-600 leading-relaxed">{achievement.description}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* Pricing Principles */}
-      <section className="py-20 bg-gray-50">
+      <section id="pricing-philosophy" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <motion.div 
             className="text-center mb-16"
@@ -501,7 +624,7 @@ const AmplifirmPricingPage = () => {
             {pricingPrinciples.map((principle, index) => (
               <motion.div 
                 key={index}
-                className="bg-white rounded-3xl p-8 shadow-lg border border-gray-200 text-center hover:shadow-xl transition-all duration-300"
+                className="bg-gray-50 rounded-3xl p-8 shadow-lg border border-gray-200 text-center hover:shadow-xl transition-all duration-300"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
@@ -525,7 +648,7 @@ const AmplifirmPricingPage = () => {
       </section>
 
       {/* Budget Tiers */}
-      <section className="py-32 bg-white">
+      <section id="budget-tiers" className="py-32 bg-gray-50">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <motion.div 
             className="text-center mb-20"
@@ -549,7 +672,7 @@ const AmplifirmPricingPage = () => {
               <motion.button
                 key={tier.id}
                 onClick={() => setActiveTab(tier.id)}
-                className={`px-6 py-3 rounded-2xl font-semibold transition-all duration-300 ${
+                className={`px-6 py-3 rounded-2xl font-semibold transition-all duration-300 cursor-pointer ${
                   activeTab === tier.id
                     ? 'text-white shadow-lg'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -608,14 +731,11 @@ const AmplifirmPricingPage = () => {
                     </div>
 
                     <motion.button 
-                      className="text-white px-8 py-4 rounded-2xl text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 inline-flex items-center space-x-2"
+                      className="text-white px-8 py-4 rounded-2xl text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 inline-flex items-center space-x-2 cursor-pointer"
                       style={{ backgroundColor: '#216ad9' }}
                       whileHover={{ scale: 1.05, y: -2 }}
                       whileTap={{ scale: 0.95 }}
-                      onClick={() => {
-                        console.log(`Discuss ${tier.title} budget range`);
-                        // Add consultation booking logic here
-                      }}
+                      onClick={() => handleDiscussBudget(tier.range)}
                     >
                       <span>Discuss This Budget Range</span>
                       <ArrowRight className="w-5 h-5" />
@@ -624,7 +744,7 @@ const AmplifirmPricingPage = () => {
 
                   <div className="space-y-8">
                     {/* Guidance Box */}
-                    <div className="bg-gray-50 rounded-3xl p-8">
+                    <div className="bg-white rounded-3xl p-8 shadow-lg">
                       <h4 className="text-2xl font-bold text-gray-900 mb-6">How we'll guide you:</h4>
                       <div className="space-y-3">
                         {tier.guidance.map((guide, index) => (
@@ -781,10 +901,11 @@ const AmplifirmPricingPage = () => {
             viewport={{ once: true }}
           >
             <motion.button 
-              className="text-white px-10 py-5 rounded-2xl text-xl font-bold shadow-xl hover:shadow-2xl transition-all duration-300 inline-flex items-center space-x-3"
+              className="text-white px-10 py-5 rounded-2xl text-xl font-bold shadow-xl hover:shadow-2xl transition-all duration-300 inline-flex items-center space-x-3 cursor-pointer"
               style={{ backgroundColor: '#216ad9' }}
               whileHover={{ scale: 1.05, y: -3 }}
               whileTap={{ scale: 0.98 }}
+              onClick={handleBookConsultation}
             >
               <span>Book Consultation & Save</span>
               <ArrowRight className="w-6 h-6" />
@@ -823,7 +944,7 @@ const AmplifirmPricingPage = () => {
               },
               {
                 question: "What if my budget is very small?",
-                answer: "We work with businesses of all sizes, from startups with £1K budgets to enterprises investing £100K+. We'll design a solution that fits your budget and delivers real value, even if it means starting with the basics and scaling over time."
+                answer: "We work with businesses of all sizes, from startups with £500 budgets to enterprises investing £100K+. We'll design a solution that fits your budget and delivers real value, even if it means starting with the basics and scaling over time."
               },
               {
                 question: "Can I pay in installments?",
@@ -891,19 +1012,21 @@ const AmplifirmPricingPage = () => {
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
               <motion.button 
-                className="bg-white px-10 py-4 rounded-2xl text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-2"
+                className="bg-white px-10 py-4 rounded-2xl text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-2 cursor-pointer"
                 style={{ color: '#216ad9' }}
                 whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.95 }}
+                onClick={handleBookConsultation}
               >
                 <span>Book Free Consultation</span>
-                <ArrowRight className="w-5 h-5" />
+                <ExternalLink className="w-5 h-5" />
               </motion.button>
               
               <motion.button 
-                className="border-2 border-white/30 text-white px-10 py-4 rounded-2xl text-lg font-semibold hover:bg-white/10 transition-all duration-300"
+                className="border-2 border-white/30 text-white px-10 py-4 rounded-2xl text-lg font-semibold hover:bg-white/10 transition-all duration-300 cursor-pointer"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
+                onClick={handleViewCaseStudies}
               >
                 View Case Studies
               </motion.button>
@@ -915,6 +1038,67 @@ const AmplifirmPricingPage = () => {
           </motion.div>
         </div>
       </section>
+
+      {/* Calendly Modal */}
+      <AnimatePresence>
+        {isModalOpen && (
+          <motion.div
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            {/* Backdrop */}
+            <motion.div
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={handleCloseModal}
+            />
+            
+            {/* Modal Content */}
+            <motion.div
+              className="relative bg-white rounded-3xl shadow-2xl w-full max-w-4xl h-[90vh] max-h-[800px] overflow-hidden"
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              transition={{ duration: 0.3, type: "spring", damping: 25, stiffness: 300 }}
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between p-6 border-b border-gray-200" style={{ backgroundColor: '#216ad9' }}>
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center">
+                    <Calendar className="w-4 h-4 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-white">Book Your Free Consultation</h3>
+                    <p className="text-blue-100 text-sm">Get your custom quote in 24 hours</p>
+                  </div>
+                </div>
+                <motion.button
+                  onClick={handleCloseModal}
+                  className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-colors"
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                >
+                  <X className="w-5 h-5" />
+                </motion.button>
+              </div>
+              
+              {/* Calendly Embed */}
+              <div className="h-full pb-6">
+                <div 
+                  className="calendly-inline-widget" 
+                  data-url="https://calendly.com/amplifirm/done-with-you-program-booking" 
+                  style={{ minWidth: '320px', height: '100%', width: '100%' }}
+                />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-20">
@@ -929,7 +1113,7 @@ const AmplifirmPricingPage = () => {
               </div>
               <p className="text-gray-400 text-lg leading-relaxed max-w-md mb-6">
                 Award-winning business consultancy specializing in tailored solutions for operational, 
-                marketing, and financial challenges. Transforming businesses across all industries.
+                marketing, and financial challenges. Transforming businesses across all industries since 2021.
               </p>
               <div className="text-sm text-gray-500">
                 <p>AMPLIFIRM LTD</p>
@@ -957,13 +1141,13 @@ const AmplifirmPricingPage = () => {
                 <ul className="space-y-4">
                   {section.links.map((link) => (
                     <li key={link}>
-                      <motion.a 
-                        href="#" 
-                        className="text-gray-400 hover:text-white transition-colors"
+                      <motion.button
+                        className="text-gray-400 hover:text-white transition-colors text-left"
                         whileHover={{ x: 4 }}
+                        onClick={() => console.log(`Navigate to ${link}`)}
                       >
                         {link}
-                      </motion.a>
+                      </motion.button>
                     </li>
                   ))}
                 </ul>
@@ -976,9 +1160,9 @@ const AmplifirmPricingPage = () => {
               © 2024 Amplifirm Ltd. All rights reserved.
             </p>
             <div className="flex space-x-6">
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">Terms of Service</a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">Cookie Policy</a>
+              <button className="text-gray-400 hover:text-white transition-colors">Privacy Policy</button>
+              <button className="text-gray-400 hover:text-white transition-colors">Terms of Service</button>
+              <button className="text-gray-400 hover:text-white transition-colors">Cookie Policy</button>
             </div>
           </div>
         </div>
