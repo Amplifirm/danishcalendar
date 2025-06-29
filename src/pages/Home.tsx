@@ -1,5 +1,5 @@
 import  { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { 
   ArrowRight, 
   Target, 
@@ -7,7 +7,6 @@ import {
   TrendingUp,
   Play,
   Star,
-  ChevronDown,
   Building,
   Search,
   Shield,
@@ -19,23 +18,21 @@ import {
   Clock,
   DollarSign,
   Calendar,
-  FileText,
   Settings,
   Lightbulb,
   PieChart,
-  Smartphone,
   Code,
   Megaphone
 } from 'lucide-react';
 import HeroSection from '../components/HeroSection';
+import Navbar from '../components/Navbar';
 
 const AmplifirmHomepage = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [hoveredDropdown, setHoveredDropdown] = useState<string | null>(null);
   const [, setActiveFeature] = useState(0);
 
   useEffect(() => {
-    
+
     const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
     };
@@ -49,20 +46,6 @@ const AmplifirmHomepage = () => {
     }, 3000);
     return () => clearInterval(interval);
   }, []);
-
-  const servicesMenu = [
-    { name: 'Business Consultancy', href: '#', icon: Building },
-    { name: 'Marketing Solutions', href: '#', icon: Megaphone },
-    { name: 'Website Development', href: '#', icon: Code },
-    { name: 'Platform Development', href: '#', icon: Smartphone }
-  ];
-
-  const aboutMenu = [
-    { name: 'Our Story', href: '#', icon: Star },
-    { name: 'Meet the Team', href: '#', icon: Users },
-    { name: 'Awards & Recognition', href: '#', icon: Award },
-    { name: 'Case Studies', href: '#', icon: FileText }
-  ];
 
 
 
@@ -147,157 +130,8 @@ const AmplifirmHomepage = () => {
         }}
       />
 
-      {/* Navbar */}
-      <motion.nav 
-        className="fixed top-6 left-0 right-0 z-50 flex justify-center px-6"
-        initial={{ opacity: 0, y: -30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
-      >
-        <motion.div 
-          className="bg-white/85 backdrop-blur-2xl border border-gray-200/40 rounded-3xl shadow-xl px-8 py-4 max-w-6xl w-full"
-          whileHover={{ scale: 1.01, y: -1 }}
-          transition={{ duration: 0.2 }}
-        >
-          <div className="flex items-center justify-between w-full">
-            <div className="flex items-center space-x-8">
-              <motion.div 
-                className="flex items-center space-x-3"
-                whileHover={{ scale: 1.03 }}
-                transition={{ duration: 0.2 }}
-              >
-                <motion.div 
-                  className="w-9 h-9 rounded-2xl flex items-center justify-center shadow-lg"
-                  style={{ backgroundColor: '#216ad9' }}
-                  whileHover={{ rotate: 360 }}
-                  transition={{ duration: 0.6 }}
-                >
-                  <Lightbulb className="w-4 h-4 text-white" />
-                </motion.div>
-                <div>
-                  <span className="text-lg font-bold text-gray-900">Amplifirm</span>
-                </div>
-              </motion.div>
-              
-              <div className="hidden lg:flex items-center space-x-1">
-                <div 
-                  className="relative"
-                  onMouseEnter={() => setHoveredDropdown('services')}
-                  onMouseLeave={() => setHoveredDropdown(null)}
-                >
-                  <motion.button 
-                    className="flex items-center space-x-1 text-gray-700 hover:text-blue-600 text-sm font-medium px-3 py-2 rounded-xl transition-all duration-200 hover:bg-blue-50"
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    <Building className="w-4 h-4" />
-                    <span>Services</span>
-                    <ChevronDown className="w-3 h-3" />
-                  </motion.button>
-                  
-                  <AnimatePresence>
-                    {hoveredDropdown === 'services' && (
-                      <motion.div
-                        className="absolute top-full left-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-gray-100 py-2"
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 10 }}
-                        transition={{ duration: 0.2 }}
-                      >
-                        {servicesMenu.map((item, index) => (
-                          <motion.a
-                            key={item.name}
-                            href={item.href}
-                            className="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-colors"
-                            initial={{ opacity: 0, x: -10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: index * 0.05 }}
-                            whileHover={{ x: 4 }}
-                          >
-                            <item.icon className="w-4 h-4" />
-                            <span className="text-sm font-medium">{item.name}</span>
-                          </motion.a>
-                        ))}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
+      <Navbar/>
 
-                <div 
-                  className="relative"
-                  onMouseEnter={() => setHoveredDropdown('about')}
-                  onMouseLeave={() => setHoveredDropdown(null)}
-                >
-                  <motion.button 
-                    className="flex items-center space-x-1 text-gray-700 hover:text-blue-600 text-sm font-medium px-3 py-2 rounded-xl transition-all duration-200 hover:bg-blue-50"
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    <Users className="w-4 h-4" />
-                    <span>About</span>
-                    <ChevronDown className="w-3 h-3" />
-                  </motion.button>
-                  
-                  <AnimatePresence>
-                    {hoveredDropdown === 'about' && (
-                      <motion.div
-                        className="absolute top-full left-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-gray-100 py-2"
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 10 }}
-                        transition={{ duration: 0.2 }}
-                      >
-                        {aboutMenu.map((item, index) => (
-                          <motion.a
-                            key={item.name}
-                            href={item.href}
-                            className="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-colors"
-                            initial={{ opacity: 0, x: -10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: index * 0.05 }}
-                            whileHover={{ x: 4 }}
-                          >
-                            <item.icon className="w-4 h-4" />
-                            <span className="text-sm font-medium">{item.name}</span>
-                          </motion.a>
-                        ))}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-
-                {['Pricing', 'Contact'].map((item, index) => (
-                  <motion.a 
-                    key={item}
-                    href="#" 
-                    className="text-gray-700 hover:text-blue-600 text-sm font-medium px-3 py-2 rounded-xl transition-all duration-200 hover:bg-blue-50"
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.4, delay: index * 0.1 }}
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    {item}
-                  </motion.a>
-                ))}
-              </div>
-            </div>
-            
-            <motion.button 
-              className="text-white px-6 py-3 rounded-2xl text-sm font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
-              style={{ backgroundColor: '#216ad9' }}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.4, delay: 0.2 }}
-              whileHover={{ 
-                scale: 1.05, 
-                y: -2,
-                boxShadow: "0 20px 40px rgba(33, 106, 217, 0.3)"
-              }}
-              whileTap={{ scale: 0.95 }}
-            >
-              Book Free Consultation
-            </motion.button>
-          </div>
-        </motion.div>
-      </motion.nav>
 
       <HeroSection/>
 

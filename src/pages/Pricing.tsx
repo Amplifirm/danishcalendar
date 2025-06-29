@@ -7,7 +7,6 @@ import {
   TrendingUp,
   Star,
   ChevronRight,
-  ChevronDown,
   Building,
   Zap,
   Rocket,
@@ -15,20 +14,16 @@ import {
   CheckCircle,
   DollarSign,
   Calendar,
-  FileText,
   Lightbulb,
-  Smartphone,
-  Code,
-  Megaphone,
   Calculator,
   Heart,
   ExternalLink,
   X
 } from 'lucide-react';
+import Navbar from '../components/Navbar';
 
 const AmplifirmPricingPage = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [hoveredDropdown, setHoveredDropdown] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('foundation');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -89,15 +84,8 @@ const AmplifirmPricingPage = () => {
     scrollToSection('budget-tiers');
   };
 
-  const handleNavigateToServices = (serviceName: string) => {
-    console.log(`Navigating to ${serviceName} page...`);
-    // Add actual navigation logic here
-  };
+ 
 
-  const handleNavigateToAbout = (pageName: string) => {
-    console.log(`Navigating to ${pageName} page...`);
-    // Add actual navigation logic here
-  };
 
   const handleDiscussBudget = (budgetRange: string) => {
     console.log(`Discussing ${budgetRange} budget...`);
@@ -109,19 +97,6 @@ const AmplifirmPricingPage = () => {
     // Add navigation to case studies
   };
 
-  const servicesMenu = [
-    { name: 'Business Consultancy', href: '#', icon: Building },
-    { name: 'Marketing Solutions', href: '#', icon: Megaphone },
-    { name: 'Website Development', href: '#', icon: Code },
-    { name: 'Platform Development', href: '#', icon: Smartphone }
-  ];
-
-  const aboutMenu = [
-    { name: 'Our Story', href: '#', icon: Star },
-    { name: 'Meet the Team', href: '#', icon: Users },
-    { name: 'Awards & Recognition', href: '#', icon: Award },
-    { name: 'Case Studies', href: '#', icon: FileText }
-  ];
 
   const budgetTiers = [
     {
@@ -321,161 +296,7 @@ const AmplifirmPricingPage = () => {
         }}
       />
 
-      {/* Navbar */}
-      <motion.nav 
-        className="fixed top-6 left-0 right-0 z-50 flex justify-center px-6"
-        initial={{ opacity: 0, y: -30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
-      >
-        <motion.div 
-          className="bg-white/85 backdrop-blur-2xl border border-gray-200/40 rounded-3xl shadow-xl px-8 py-4 max-w-6xl w-full"
-          whileHover={{ scale: 1.01, y: -1 }}
-          transition={{ duration: 0.2 }}
-        >
-          <div className="flex items-center justify-between w-full">
-            <div className="flex items-center space-x-8">
-              <motion.button
-                className="flex items-center space-x-3 cursor-pointer"
-                whileHover={{ scale: 1.03 }}
-                transition={{ duration: 0.2 }}
-                onClick={() => scrollToSection('hero')}
-              >
-                <motion.div 
-                  className="w-9 h-9 rounded-2xl flex items-center justify-center shadow-lg"
-                  style={{ backgroundColor: '#216ad9' }}
-                  whileHover={{ rotate: 360 }}
-                  transition={{ duration: 0.6 }}
-                >
-                  <Lightbulb className="w-4 h-4 text-white" />
-                </motion.div>
-                <div>
-                  <span className="text-lg font-bold text-gray-900">Amplifirm</span>
-                </div>
-              </motion.button>
-              
-              <div className="hidden lg:flex items-center space-x-1">
-                <div 
-                  className="relative"
-                  onMouseEnter={() => setHoveredDropdown('services')}
-                  onMouseLeave={() => setHoveredDropdown(null)}
-                >
-                  <motion.button 
-                    className="flex items-center space-x-1 text-gray-700 hover:text-blue-600 text-sm font-medium px-3 py-2 rounded-xl transition-all duration-200 hover:bg-blue-50"
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    <Building className="w-4 h-4" />
-                    <span>Services</span>
-                    <ChevronDown className="w-3 h-3" />
-                  </motion.button>
-                  
-                  <AnimatePresence>
-                    {hoveredDropdown === 'services' && (
-                      <motion.div
-                        className="absolute top-full left-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-gray-100 py-2"
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 10 }}
-                        transition={{ duration: 0.2 }}
-                      >
-                        {servicesMenu.map((item, index) => (
-                          <motion.button
-                            key={item.name}
-                            className="w-full flex items-center space-x-3 px-4 py-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-colors text-left"
-                            initial={{ opacity: 0, x: -10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: index * 0.05 }}
-                            whileHover={{ x: 4 }}
-                            onClick={() => handleNavigateToServices(item.name)}
-                          >
-                            <item.icon className="w-4 h-4" />
-                            <span className="text-sm font-medium">{item.name}</span>
-                          </motion.button>
-                        ))}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-
-                <div 
-                  className="relative"
-                  onMouseEnter={() => setHoveredDropdown('about')}
-                  onMouseLeave={() => setHoveredDropdown(null)}
-                >
-                  <motion.button 
-                    className="flex items-center space-x-1 text-gray-700 hover:text-blue-600 text-sm font-medium px-3 py-2 rounded-xl transition-all duration-200 hover:bg-blue-50"
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    <Users className="w-4 h-4" />
-                    <span>About</span>
-                    <ChevronDown className="w-3 h-3" />
-                  </motion.button>
-                  
-                  <AnimatePresence>
-                    {hoveredDropdown === 'about' && (
-                      <motion.div
-                        className="absolute top-full left-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-gray-100 py-2"
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 10 }}
-                        transition={{ duration: 0.2 }}
-                      >
-                        {aboutMenu.map((item, index) => (
-                          <motion.button
-                            key={item.name}
-                            className="w-full flex items-center space-x-3 px-4 py-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-colors text-left"
-                            initial={{ opacity: 0, x: -10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: index * 0.05 }}
-                            whileHover={{ x: 4 }}
-                            onClick={() => handleNavigateToAbout(item.name)}
-                          >
-                            <item.icon className="w-4 h-4" />
-                            <span className="text-sm font-medium">{item.name}</span>
-                          </motion.button>
-                        ))}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-
-                <motion.button
-                  className="text-blue-600 text-sm font-medium px-3 py-2 rounded-xl transition-all duration-200 bg-blue-50"
-                  whileHover={{ scale: 1.05 }}
-                  onClick={() => scrollToSection('pricing-philosophy')}
-                >
-                  Pricing
-                </motion.button>
-
-                <motion.button
-                  className="text-gray-700 hover:text-blue-600 text-sm font-medium px-3 py-2 rounded-xl transition-all duration-200 hover:bg-blue-50"
-                  whileHover={{ scale: 1.05 }}
-                  onClick={handleBookConsultation}
-                >
-                  Contact
-                </motion.button>
-              </div>
-            </div>
-            
-            <motion.button 
-              className="text-white px-6 py-3 rounded-2xl text-sm font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
-              style={{ backgroundColor: '#216ad9' }}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.4, delay: 0.2 }}
-              whileHover={{ 
-                scale: 1.05, 
-                y: -2,
-                boxShadow: "0 20px 40px rgba(33, 106, 217, 0.3)"
-              }}
-              whileTap={{ scale: 0.95 }}
-              onClick={handleBookConsultation}
-            >
-              Book Free Consultation
-            </motion.button>
-          </div>
-        </motion.div>
-      </motion.nav>
+     <Navbar/>
 
       {/* Hero Section */}
       <section id="hero" className="relative z-40 max-w-6xl mx-auto px-6 lg:px-8 pt-44 pb-16 text-center">
