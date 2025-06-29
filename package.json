@@ -38,7 +38,7 @@
     "tailwind": "^4.0.0",
     "three": "^0.172.0",
     "use-debounce": "^10.0.4",
-    "vercel": "^39.3.0"
+    "vercel": "^39.4.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
