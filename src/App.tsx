@@ -3,6 +3,9 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 import AmplifirmHomepage from './pages/Home';
 import AmplifirmPricingPage from './pages/Pricing';
+import BusinessConsultancyPage from './pages/BusinessConsultancy';
+import MarketingSolutionsPage from './pages/MarketingPage';
+import ContactPage from './pages/Contact';
 
 
 function App() {
@@ -12,7 +15,10 @@ function App() {
         <Routes>
           <Route path="/" element={<AmplifirmHomepage />} />
           <Route path="/pricing" element={<AmplifirmPricingPage />} /> 
-          
+          <Route path="/contact" element={<ContactPage />} /> 
+          <Route path="/services/business-consultancy" element={<BusinessConsultancyPage />} /> 
+          <Route path="/services/marketing-solutions" element={<MarketingSolutionsPage />} /> 
+
           {/* <Route path="/signup" element={<SignupPage />} /> */}
           {/* <Route path="/dashboard" element={<Dashboard />} /> */}
           {/* <Route path="/profile" element={<ProfilePage />} /> */}
