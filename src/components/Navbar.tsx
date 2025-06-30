@@ -3,10 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ChevronDown,
   Building,
-  Users,
-  Star,
-  Award,
-  FileText,
   Code,
   Megaphone,
   Smartphone,
