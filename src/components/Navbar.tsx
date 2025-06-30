@@ -88,10 +88,6 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage = '' }) => {
     window.location.href = href;
   };
 
-  const handleNavigateToAbout = (href: string) => {
-    window.location.href = href;
-  };
-
   const servicesMenu = [
     { name: 'Business Consultancy', href: '/services/business-consultancy', icon: Building },
     { name: 'Marketing Solutions', href: '/services/marketing-solutions', icon: Megaphone },
@@ -99,14 +95,8 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage = '' }) => {
     { name: 'Platform Development', href: '/services/platform-development', icon: Smartphone }
   ];
 
-  const aboutMenu = [
-    { name: 'Our Story', href: '/about/our-story', icon: Star },
-    { name: 'Meet the Team', href: '/about/team', icon: Users },
-    { name: 'Awards & Recognition', href: '/about/awards', icon: Award },
-    { name: 'Case Studies', href: '/about/case-studies', icon: FileText }
-  ];
-
   const navigationItems = [
+    { name: 'About Us', href: '/about/our-story' },
     { name: 'Pricing', href: '/pricing' },
     { name: 'Contact', href: '/contact' }
   ];
@@ -184,53 +174,6 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage = '' }) => {
                             onClick={(e) => {
                               e.preventDefault();
                               handleNavigateToServices(item.href);
-                            }}
-                          >
-                            <item.icon className="w-4 h-4" />
-                            <span className="text-base font-medium">{item.name}</span>
-                          </motion.a>
-                        ))}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-
-                {/* About Dropdown */}
-                <div 
-                  className="relative"
-                  onMouseEnter={() => setHoveredDropdown('about')}
-                  onMouseLeave={() => setHoveredDropdown(null)}
-                >
-                  <motion.button 
-                    className="flex items-center space-x-1 text-gray-700 hover:text-blue-600 text-base font-medium px-3 py-2 rounded-xl transition-all duration-200 hover:bg-blue-50"
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    <Users className="w-4 h-4" />
-                    <span>About</span>
-                    <ChevronDown className="w-3 h-3" />
-                  </motion.button>
-                  
-                  <AnimatePresence>
-                    {hoveredDropdown === 'about' && (
-                      <motion.div
-                        className="absolute top-full left-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-gray-100 py-2"
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 10 }}
-                        transition={{ duration: 0.2 }}
-                      >
-                        {aboutMenu.map((item, index) => (
-                          <motion.a
-                            key={item.name}
-                            href={item.href}
-                            className="w-full flex items-center space-x-3 px-4 py-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-colors text-left"
-                            initial={{ opacity: 0, x: -10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: index * 0.05 }}
-                            whileHover={{ x: 4 }}
-                            onClick={(e) => {
-                              e.preventDefault();
-                              handleNavigateToAbout(item.href);
                             }}
                           >
                             <item.icon className="w-4 h-4" />
@@ -357,54 +300,6 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage = '' }) => {
                         transition={{ duration: 0.3 }}
                       >
                         {servicesMenu.map((item, index) => (
-                          <motion.button
-                            key={item.name}
-                            onClick={() => handleMobileNavigation(item.href)}
-                            className="w-full flex items-center space-x-3 p-3 text-left hover:bg-blue-50 rounded-xl transition-colors"
-                            initial={{ opacity: 0, x: -10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: index * 0.05 }}
-                            whileHover={{ x: 4 }}
-                          >
-                            <item.icon className="w-4 h-4 text-gray-500" />
-                            <span className="text-base font-medium text-gray-700">{item.name}</span>
-                          </motion.button>
-                        ))}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-
-                {/* About Section */}
-                <div>
-                  <motion.button
-                    onClick={() => toggleMobileSection('about')}
-                    className="w-full flex items-center justify-between p-4 bg-gray-50 rounded-2xl hover:bg-gray-100 transition-colors"
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <div className="flex items-center space-x-3">
-                      <Users className="w-5 h-5 text-gray-600" />
-                      <span className="text-lg font-semibold text-gray-900">About</span>
-                    </div>
-                    <motion.div
-                      animate={{ rotate: expandedMobileSection === 'about' ? 90 : 0 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <ChevronRight className="w-5 h-5 text-gray-400" />
-                    </motion.div>
-                  </motion.button>
-                  
-                  <AnimatePresence>
-                    {expandedMobileSection === 'about' && (
-                      <motion.div
-                        className="mt-3 space-y-2 pl-4"
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.3 }}
-                      >
-                        {aboutMenu.map((item, index) => (
                           <motion.button
                             key={item.name}
                             onClick={() => handleMobileNavigation(item.href)}
