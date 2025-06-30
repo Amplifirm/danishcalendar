@@ -6,7 +6,6 @@ import {
   Code,
   Megaphone,
   Smartphone,
-  Lightbulb,
   Calendar,
   X,
   Menu,
@@ -125,7 +124,11 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage = '' }) => {
                   whileHover={{ rotate: 360 }}
                   transition={{ duration: 0.6 }}
                 >
-                  <Lightbulb className="w-4 h-4 text-white" />
+                  <img 
+                    src="/AmpLogo.png" 
+                    alt="Amplifirm Logo" 
+                    className="w-5 h-5 object-contain"
+                  />
                 </motion.div>
                 <div>
                   <span className="text-xl font-bold text-gray-900">amplifirm.</span>
