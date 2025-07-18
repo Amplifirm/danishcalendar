@@ -1,1639 +1,1643 @@
-import  { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { 
-  ArrowRight, 
-  Target, 
-  Users, 
-  TrendingUp,
-  Play,
-  Star,
-  Building,
-  Search,
-  Shield,
-  Globe,
-  Rocket,
-  MessageSquare,
-  Award,
-  CheckCircle,
-  Clock,
-  DollarSign,
-  Calendar,
-  Settings,
-  Lightbulb,
-  PieChart,
-  Code,
-  Megaphone
-} from 'lucide-react';
-import HeroSection from '../components/HeroSection';
-import Navbar from '../components/Navbar';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
+import { Upload, FileText, Pen,  X, Check, RotateCcw, ChevronLeft, ChevronRight,  Send, Calendar, User, Building, Type, Link, Eye} from 'lucide-react';
 
-const AmplifirmHomepage = () => {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [, setActiveFeature] = useState(0);
+// Supabase Configuration
+const SUPABASE_URL = 'https://gaxzaskncmqbtpimzypw.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdheHphc2tuY21xYnRwaW16eXB3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI3OTI2MjYsImV4cCI6MjA2ODM2ODYyNn0.D2tLT4edbdVT7Sdu_4gpS8sa-tsdFsXBmJPbGlUp0Yk';
 
-  useEffect(() => {
+// Debug logging
+console.log('API Key length:', SUPABASE_ANON_KEY.length);
+console.log('API Key starts with:', SUPABASE_ANON_KEY.substring(0, 20));
+console.log('Is API key configured?', SUPABASE_ANON_KEY !== 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdheHphc2tuY21xYnRwaW16eXB3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI3OTI2MjYsImV4cCI6MjA2ODM2ODYyNn0.D2tLT4edbdVT7Sdu_4gpS8sa-tsdFsXBmJPbGlUp0Yk');
 
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
-    };
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
+// Simple Supabase client using standard fetch
+class SupabaseClient {
+  private baseUrl: string;
+  private apiKey: string;
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveFeature((prev) => (prev + 1) % 4);
-    }, 3000);
-    return () => clearInterval(interval);
-  }, []);
+  constructor(url: string, key: string) {
+    this.baseUrl = url;
+    this.apiKey = key;
+  }
 
+  private async request(method: string, path: string, body?: any) {
+    const response = await fetch(`${this.baseUrl}/rest/v1${path}`, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': this.apiKey,
+        'Authorization': `Bearer ${this.apiKey}`,
+        'Prefer': method === 'POST' ? 'return=representation' : method === 'PATCH' ? 'return=minimal' : ''
+      },
+      body: body ? JSON.stringify(body) : undefined
+    });
 
-
-  const trustedCompanies = [
-    'TechStart', 'GrowthCorp', 'ScaleUp', 'InnovateLab', 'CloudFlow', 'RetailTech', 
-    'FinanceFlow', 'StartupX', 'BuildFast', 'MarketLeap', 'TechFlow', 'VentureBase'
-  ];
-
-  const howItWorksSteps = [
-    {
-      number: '01',
-      title: 'Book Your Discovery Call',
-      description: 'Schedule a free consultation via Calendly. We\'ll dive deep into your business challenges and growth goals.',
-      icon: Calendar,
-      color: 'from-blue-500 to-blue-600'
-    },
-    {
-      number: '02', 
-      title: 'Problem Analysis & Strategy',
-      description: 'Our experts analyze your operations, marketing, and financials to identify opportunities and create tailored solutions.',
-      icon: Search,
-      color: 'from-blue-500 to-blue-600'
-    },
-    {
-      number: '03',
-      title: 'Implement & Scale',
-      description: 'We implement the solutions, whether it\'s marketing campaigns, operational systems, or custom development.',
-      icon: Rocket,
-      color: 'from-blue-500 to-blue-600'
+    if (!response.ok) {
+      throw new Error(`Supabase error: ${response.status} ${response.statusText}`);
     }
-  ];
 
+    // Handle empty responses
+    const text = await response.text();
+    if (!text) return null;
+    
+    try {
+      return JSON.parse(text);
+    } catch (e) {
+      return null;
+    }
+  }
 
+  async upsert(table: string, data: any) {
+    const response = await fetch(`${this.baseUrl}/rest/v1/${table}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': this.apiKey,
+        'Authorization': `Bearer ${this.apiKey}`,
+        'Prefer': 'resolution=merge-duplicates,return=minimal'
+      },
+      body: JSON.stringify(data)
+    });
 
-  const stats = [
-    { value: '150+', label: 'Clients Served', icon: Users },
-    { value: '300+', label: 'Websites Built', icon: Code },
-    { value: '3+', label: 'Years Experience', icon: Clock },
-    { value: '100%', label: 'Tailored Solutions', icon: Target }
-  ];
+    if (!response.ok) {
+      throw new Error(`Upsert error: ${response.status} ${response.statusText}`);
+    }
 
+    return { success: true };
+  }
+
+  async select(table: string, query: string = '*') {
+    return this.request('GET', `/${table}?select=${query}`);
+  }
+
+  async insert(table: string, data: any) {
+    return this.request('POST', `/${table}`, data);
+  }
+
+  async update(table: string, data: any, filter: string) {
+    return this.request('PATCH', `/${table}?${filter}`, data);
+  }
+
+  async uploadFile(bucket: string, path: string, file: File) {
+    const response = await fetch(`${this.baseUrl}/storage/v1/object/${bucket}/${path}`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${this.apiKey}`,
+        'apikey': this.apiKey,
+      },
+      body: file
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Upload error: ${response.status} ${response.statusText} - ${errorText}`);
+    }
+
+    return response.json();
+  }
+
+  getPublicUrl(bucket: string, path: string) {
+    return `${this.baseUrl}/storage/v1/object/public/${bucket}/${path}`;
+  }
+}
+
+// Only create client if API key is configured
+const isApiKeyConfigured = SUPABASE_ANON_KEY.length > 50 && SUPABASE_ANON_KEY.startsWith('eyJ');
+console.log('Creating Supabase client...', { 
+  isApiKeyConfigured, 
+  hasApiKey: !!SUPABASE_ANON_KEY,
+  keyLength: SUPABASE_ANON_KEY.length,
+  startsCorrectly: SUPABASE_ANON_KEY.startsWith('eyJ')
+});
+
+const supabase = isApiKeyConfigured 
+  ? new SupabaseClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+  : null;
+
+console.log('Supabase client created:', !!supabase);
+
+interface DocumentField {
+  id: string;
+  type: 'signature' | 'text' | 'date' | 'name' | 'company';
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  page: number;
+  label: string;
+  required: boolean;
+  value?: string;
+  signatureData?: string;
+}
+
+interface Document {
+  id: string;
+  name: string;
+  fields: DocumentField[];
+  status: 'draft' | 'sent' | 'completed';
+  clientLink?: string;
+  pdfUrl?: string;
+  signedPdfUrl?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+interface SignatureModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSave: (signature: string) => void;
+}
+
+interface TextInputModalProps {
+  isOpen: boolean;
+  field: DocumentField | null;
+  onClose: () => void;
+  onSave: (value: string) => void;
+}
+
+const SignatureModal: React.FC<SignatureModalProps> = ({ isOpen, onClose, onSave }) => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [isDrawing, setIsDrawing] = useState(false);
+  const [hasDrawn, setHasDrawn] = useState(false);
+
+  const startDrawing = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    
+    const rect = canvas.getBoundingClientRect();
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    
+    setIsDrawing(true);
+    ctx.beginPath();
+    ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+  };
+
+  const draw = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    if (!isDrawing) return;
+    
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    
+    const rect = canvas.getBoundingClientRect();
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    
+    ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+    ctx.strokeStyle = '#000';
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+    ctx.stroke();
+    setHasDrawn(true);
+  };
+
+  const stopDrawing = () => {
+    setIsDrawing(false);
+  };
+
+  const clearCanvas = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    setHasDrawn(false);
+  };
+
+  const saveSignature = () => {
+    const canvas = canvasRef.current;
+    if (!canvas || !hasDrawn) return;
+    
+    const dataUrl = canvas.toDataURL();
+    onSave(dataUrl);
+  };
+
+  if (!isOpen) return null;
 
   return (
-    <div className="min-h-screen bg-white relative overflow-hidden" style={{ fontFamily: 'Satoshi, sans-serif' }}>
-      {/* Enhanced background grid */}
-      <div className="fixed inset-0 pointer-events-none">
-        <div 
-          className="absolute inset-0 opacity-[0.4]"
-          style={{
-            backgroundImage: `
-              linear-gradient(rgba(33,106,217,0.05) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(33,106,217,0.05) 1px, transparent 1px)
-            `,
-            backgroundSize: '40px 40px'
-          }}
-        />
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-xl p-6 w-[500px] shadow-2xl">
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="text-xl font-semibold text-gray-800">Create Your Signature</h3>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+            <X size={24} />
+          </button>
+        </div>
         
-        {/* Subtle background enhancement */}
-        <motion.div 
-          className="absolute top-10 left-10 w-32 h-32 bg-blue-100/20 rounded-full blur-3xl"
-          animate={{ 
-            scale: [1, 1.2, 1],
-            opacity: [0.1, 0.3, 0.1]
-          }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div 
-          className="absolute bottom-20 right-20 w-40 h-40 bg-blue-200/20 rounded-full blur-3xl"
-          animate={{ 
-            scale: [1, 1.3, 1],
-            opacity: [0.1, 0.2, 0.1]
-          }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 3 }}
-        />
+        <div className="mb-6">
+          <p className="text-sm text-gray-600 mb-3">Draw your signature in the box below:</p>
+          <canvas
+            ref={canvasRef}
+            width={452}
+            height={150}
+            className="border-2 border-gray-200 rounded-lg cursor-crosshair bg-gray-50"
+            onMouseDown={startDrawing}
+            onMouseMove={draw}
+            onMouseUp={stopDrawing}
+            onMouseLeave={stopDrawing}
+          />
+        </div>
+        
+        <div className="flex justify-between">
+          <button
+            onClick={clearCanvas}
+            className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+          >
+            <RotateCcw size={16} />
+            Clear
+          </button>
+          
+          <div className="flex gap-3">
+            <button
+              onClick={onClose}
+              className="px-6 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={saveSignature}
+              disabled={!hasDrawn}
+              className="flex items-center gap-2 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 transition-colors"
+            >
+              <Check size={16} />
+              Save Signature
+            </button>
+          </div>
+        </div>
       </div>
-
-      {/* Mouse gradient effect */}
-      <motion.div 
-        className="absolute inset-0 opacity-[0.02]"
-        style={{
-          background: `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(33, 106, 217, 0.3), transparent 40%)`
-        }}
-      />
-
-      <Navbar/>
-
-
-      <HeroSection/>
-
-
-      {/* Client Success Showcase */}
-      <motion.div 
-        className="relative z-30 max-w-7xl mx-auto px-6 lg:px-8 pb-32"
-        initial={{ opacity: 0, y: 100 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1.2, delay: 2.4 }}
-      >
-        <motion.div 
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 2.6 }}
-        >
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">Real Problems. Real Solutions. Real Results.</h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            See how we've transformed businesses across industries with our tailored approach
-          </p>
-        </motion.div>
-
-        <div className="grid lg:grid-cols-3 gap-8">
-          {[
-            {
-              problem: "E-commerce store struggling with 0.8% conversion rate",
-              solution: "Implemented conversion optimization strategy + new checkout flow",
-              result: "Increased to 4.2% conversion rate (+425% improvement)",
-              industry: "E-commerce",
-              timeframe: "3 months",
-              color: "from-green-500 to-emerald-600"
-            },
-            {
-              type: "video",
-              videoId: "pOgzx82g0SU",
-              caption: "Julian Schöffrman at Saviour",
-              title: "Client Success Story",
-              description: "See how we helped transform Saviour's business operations and growth strategy."
-            },
-            {
-              problem: "Local service business relying only on word-of-mouth",
-              solution: "Built digital presence + local SEO + automated lead system",
-              result: "Generated 150+ qualified leads monthly",
-              industry: "Local Services",
-              timeframe: "4 months",
-              color: "from-purple-500 to-pink-600"
-            }
-          ].map((story, index) => (
-            <motion.div 
-              key={index}
-              className="bg-white rounded-3xl p-8 shadow-xl border border-gray-200 hover:shadow-2xl transition-all duration-300"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 2.8 + index * 0.2 }}
-              whileHover={{ y: -5, scale: 1.02 }}
-            >
-              {story.type === "video" ? (
-                <div className="space-y-6">
-                  <div className="text-center">
-                    <h4 className="text-xl font-bold text-gray-900 mb-2">{story.title}</h4>
-                    <p className="text-gray-600">{story.description}</p>
-                  </div>
-                  
-                  <div className="relative rounded-xl overflow-hidden bg-gray-100 aspect-video">
-                    <iframe
-                      src={`https://www.youtube.com/embed/${story.videoId}`}
-                      title="Client Success Story"
-                      className="w-full h-full"
-                      frameBorder="0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                    />
-                  </div>
-                  
-                  <div className="text-center">
-                    <p className="text-sm font-medium text-gray-700 italic">
-                      "{story.caption}"
-                    </p>
-                  </div>
-                </div>
-              ) : (
-                <>
-                  <div className="flex items-center justify-between mb-6">
-                    <span className="text-sm font-bold px-3 py-1 rounded-full bg-gray-100 text-gray-700">
-                      {story.industry}
-                    </span>
-                    <span className="text-sm text-gray-500 font-medium">{story.timeframe}</span>
-                  </div>
-                  
-                  <div className="space-y-6">
-                    <div>
-                      <h4 className="text-sm font-bold text-red-600 mb-2 uppercase tracking-wider">The Problem</h4>
-                      <p className="text-gray-700 leading-relaxed">{story.problem}</p>
-                    </div>
-                    
-                    <div>
-                      <h4 className="text-sm font-bold text-blue-600 mb-2 uppercase tracking-wider">Our Solution</h4>
-                      <p className="text-gray-700 leading-relaxed">{story.solution}</p>
-                    </div>
-                    
-                    <div>
-                      <h4 className="text-sm font-bold text-green-600 mb-2 uppercase tracking-wider">The Result</h4>
-                      <p className="text-gray-900 font-semibold leading-relaxed">{story.result}</p>
-                    </div>
-                  </div>
-                  
-                  <motion.div 
-                    className={`mt-6 h-1 bg-gradient-to-r ${story.color} rounded-full`}
-                    initial={{ width: 0 }}
-                    animate={{ width: "100%" }}
-                    transition={{ duration: 1, delay: 3 + index * 0.3 }}
-                  />
-                </>
-              )}
-            </motion.div>
-          ))}
-        </div>
-        
-        <motion.div 
-          className="text-center mt-12"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 4 }}
-        >
-          <motion.button 
-            className="text-white px-8 py-4 rounded-2xl text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 inline-flex items-center space-x-2"
-            style={{ backgroundColor: '#216ad9' }}
-            whileHover={{ scale: 1.05, y: -2 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <span>See More Success Stories</span>
-            <ArrowRight className="w-5 h-5" />
-          </motion.button>
-        </motion.div>
-      </motion.div>
-
-      {/* Trusted By Section */}
-      <section className="py-20 bg-gray-50 overflow-hidden relative">
-        <motion.div 
-          className="absolute top-10 left-10 w-20 h-20 bg-blue-200/30 rounded-full blur-xl"
-          animate={{ 
-            y: [0, -30, 0],
-            x: [0, 20, 0],
-            scale: [1, 1.2, 1]
-          }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        />
-        
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
-          <motion.div 
-            className="text-center mb-12"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-          >
-            <motion.p 
-              className="text-sm font-medium text-gray-500 mb-2 uppercase tracking-wider"
-              animate={{ y: [0, -2, 0] }}
-              transition={{ duration: 4, repeat: Infinity }}
-            >
-              Trusted by businesses across industries
-            </motion.p>
-          </motion.div>
-          
-          {/* Moving companies carousel */}
-          <div className="relative">
-            <motion.div 
-              className="flex space-x-12 items-center"
-              animate={{ x: [0, -50 * trustedCompanies.length] }}
-              transition={{
-                duration: 25,
-                repeat: Infinity,
-                ease: "linear"
-              }}
-            >
-              {[...trustedCompanies, ...trustedCompanies].map((company, index) => (
-                <motion.div 
-                  key={`${company}-${index}`}
-                  className="text-2xl font-bold text-gray-400 hover:text-gray-600 transition-colors cursor-pointer whitespace-nowrap"
-                  whileHover={{ 
-                    scale: 1.15, 
-                    y: -5,
-                    color: '#216ad9'
-                  }}
-                  animate={{
-                    y: [0, -3, 0]
-                  }}
-                  transition={{
-                    y: { duration: 3, repeat: Infinity, delay: index * 0.2 }
-                  }}
-                >
-                  {company}
-                </motion.div>
-              ))}
-            </motion.div>
-          </div>
-        </div>
-        
-        {/* Awards Section */}
-        <motion.div 
-          className="mt-20 px-6 lg:px-8"
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.3 }}
-          viewport={{ once: true }}
-        >
-          <div className="max-w-5xl mx-auto">
-            <motion.div 
-              className="bg-gradient-to-r from-yellow-50 via-orange-50 to-red-50 border-2 border-yellow-300 rounded-3xl p-10 relative overflow-hidden"
-              whileHover={{ scale: 1.02, y: -5 }}
-              animate={{ 
-                borderColor: ["#fcd34d", "#f59e0b", "#ef4444", "#fcd34d"],
-                boxShadow: [
-                  "0 0 0 0 rgba(251, 191, 36, 0.5)",
-                  "0 0 0 25px rgba(251, 191, 36, 0)",
-                  "0 0 0 0 rgba(251, 191, 36, 0)"
-                ]
-              }}
-              transition={{ 
-                borderColor: { duration: 4, repeat: Infinity },
-                boxShadow: { duration: 3, repeat: Infinity },
-                scale: { duration: 0.3 },
-                y: { duration: 0.3 }
-              }}
-            >
-              <motion.div 
-                className="absolute top-5 right-5 text-4xl"
-                animate={{ 
-                  rotate: [0, 15, -15, 0],
-                  scale: [1, 1.2, 1]
-                }}
-                transition={{ duration: 4, repeat: Infinity }}
-              >
-                🏆
-              </motion.div>
-              
-              <div className="text-center relative z-10">
-                <motion.div 
-                  className="text-yellow-600 text-lg font-bold uppercase tracking-wider mb-4"
-                  animate={{ 
-                    scale: [1, 1.05, 1],
-                    textShadow: ["0 0 0px rgba(0,0,0,0)", "0 0 10px rgba(251,191,36,0.5)", "0 0 0px rgba(0,0,0,0)"]
-                  }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                >
-                  🏆 Award Winning Consultancy 🏆
-                </motion.div>
-                <motion.h3 
-                  className="text-3xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight"
-                  animate={{ y: [0, -3, 0] }}
-                  transition={{ duration: 5, repeat: Infinity }}
-                >
-                  <motion.span 
-                    className="bg-gradient-to-r from-yellow-600 to-orange-600 bg-clip-text text-transparent"
-                  >
-                    AI Startup of the Year
-                  </motion.span>
-                  <span className="mx-3 text-gray-400">•</span> 
-                  <motion.span 
-                    className="bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent"
-                  >
-                    Equity Backed Startup
-                  </motion.span>
-                  <div className="text-2xl md:text-3xl mt-2 font-semibold text-gray-700">
-                    Finalist (UK)
-                  </div>
-                </motion.h3>
-                <motion.p 
-                  className="text-xl text-gray-600 font-medium max-w-3xl mx-auto"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.5 }}
-                >
-                  Recognized for excellence in business transformation and innovative solutions
-                </motion.p>
-              </div>
-            </motion.div>
-          </div>
-        </motion.div>
-      </section>
-
-      {/* How It Works Section */}
-      <section className="py-32 bg-white">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <motion.div 
-            className="text-center mb-20"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="text-5xl font-bold text-gray-900 mb-6">
-              How we transform your business
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Our proven three-step process takes you from consultation to implementation, 
-              with tailored solutions designed specifically for your business.
-            </p>
-          </motion.div>
-
-          <div className="grid lg:grid-cols-3 gap-12">
-            {howItWorksSteps.map((step, index) => (
-              <motion.div 
-                key={index}
-                className="relative"
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: index * 0.2 }}
-                viewport={{ once: true }}
-              >
-                <motion.div 
-                  className="bg-white rounded-3xl p-8 shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-300"
-                  whileHover={{ y: -5, scale: 1.02 }}
-                >
-                  <div className="flex items-center mb-6">
-                    <motion.div 
-                      className="w-16 h-16 rounded-2xl flex items-center justify-center mr-4"
-                      style={{ backgroundColor: '#216ad9' }}
-                      whileHover={{ rotate: 360, scale: 1.1 }}
-                      transition={{ duration: 0.6 }}
-                    >
-                      <step.icon className="w-8 h-8 text-white" />
-                    </motion.div>
-                    <div className="text-6xl font-bold text-gray-200">
-                      {step.number}
-                    </div>
-                  </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                    {step.title}
-                  </h3>
-                  <p className="text-gray-600 leading-relaxed">
-                    {step.description}
-                  </p>
-                </motion.div>
-                
-                {index < howItWorksSteps.length - 1 && (
-                  <motion.div 
-                    className="hidden lg:block absolute top-1/2 -right-6 transform -translate-y-1/2"
-                    initial={{ opacity: 0, scale: 0 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.5, delay: index * 0.2 + 0.5 }}
-                    viewport={{ once: true }}
-                  >
-                    <ArrowRight className="w-8 h-8 text-gray-300" />
-                  </motion.div>
-                )}
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Problem-Solution Approach */}
-      <section className="py-32 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <motion.div 
-            className="text-center mb-20"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="text-5xl font-bold text-gray-900 mb-6">
-              We solve the problems that hold you back
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Every business faces unique challenges. We identify yours and implement solutions that work.
-            </p>
-          </motion.div>
-
-          <div className="grid lg:grid-cols-2 gap-16">
-            {/* Problems Side */}
-            <div className="space-y-8">
-              <motion.div 
-                className="text-center mb-8"
-                initial={{ opacity: 0, x: -30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8 }}
-                viewport={{ once: true }}
-              >
-                <h3 className="text-3xl font-bold text-red-600 mb-4">Common Business Problems</h3>
-                <p className="text-gray-600">Sound familiar? We've solved these before.</p>
-              </motion.div>
-
-              {[
-                {
-                  icon: TrendingUp,
-                  title: "Stagnant Growth",
-                  description: "Revenue plateaued, can't break through to the next level, unclear growth strategy"
-                },
-                {
-                  icon: Megaphone,
-                  title: "Ineffective Marketing", 
-                  description: "Marketing spend not generating ROI, low conversion rates, poor lead quality"
-                },
-                {
-                  icon: Settings,
-                  title: "Operational Chaos",
-                  description: "Manual processes, team inefficiencies, no clear systems or workflows"
-                },
-                {
-                  icon: DollarSign,
-                  title: "Cash Flow Issues",
-                  description: "Unpredictable revenue, poor financial planning, difficulty securing funding"
-                },
-                {
-                  icon: Code,
-                  title: "Outdated Technology",
-                  description: "Website doesn't convert, no digital presence, manual systems holding you back"
-                }
-              ].map((problem, index) => (
-                <motion.div 
-                  key={index}
-                  className="bg-red-50 border-l-4 border-red-500 rounded-xl p-6 hover:shadow-lg transition-all duration-300"
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                  whileHover={{ x: 4 }}
-                >
-                  <div className="flex items-start space-x-4">
-                    <div className="w-12 h-12 bg-red-500 rounded-xl flex items-center justify-center flex-shrink-0">
-                      <problem.icon className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                      <h4 className="text-xl font-bold text-gray-900 mb-2">{problem.title}</h4>
-                      <p className="text-gray-600">{problem.description}</p>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-
-            {/* Solutions Side */}
-            <div className="space-y-8">
-              <motion.div 
-                className="text-center mb-8"
-                initial={{ opacity: 0, x: 30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8 }}
-                viewport={{ once: true }}
-              >
-                <h3 className="text-3xl font-bold mb-4" style={{ color: '#216ad9' }}>Our Tailored Solutions</h3>
-                <p className="text-gray-600">Designed specifically for your business.</p>
-              </motion.div>
-
-              {[
-                {
-                  icon: Rocket,
-                  title: "Growth Strategy & Implementation",
-                  description: "Data-driven growth plans, market expansion strategies, revenue optimization systems"
-                },
-                {
-                  icon: Target,
-                  title: "Marketing That Actually Works", 
-                  description: "Our proven 4-phase marketing approach: Research → Create → Test → Scale"
-                },
-                {
-                  icon: Building,
-                  title: "Operational Excellence",
-                  description: "Process automation, team optimization, workflow systemization, efficiency improvements"
-                },
-                {
-                  icon: PieChart,
-                  title: "Financial Optimization",
-                  description: "Cash flow management, financial planning, funding preparation, budget optimization"
-                },
-                {
-                  icon: Globe,
-                  title: "Digital Transformation",
-                  description: "Website development, platform creation, digital systems, online presence optimization"
-                }
-              ].map((solution, index) => (
-                <motion.div 
-                  key={index}
-                  className="bg-blue-50 border-l-4 rounded-xl p-6 hover:shadow-lg transition-all duration-300"
-                  style={{ borderColor: '#216ad9' }}
-                  initial={{ opacity: 0, x: 20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                  whileHover={{ x: -4 }}
-                >
-                  <div className="flex items-start space-x-4">
-                    <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: '#216ad9' }}>
-                      <solution.icon className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                      <h4 className="text-xl font-bold text-gray-900 mb-2">{solution.title}</h4>
-                      <p className="text-gray-600">{solution.description}</p>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-
-          <motion.div 
-            className="text-center mt-16"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-            viewport={{ once: true }}
-          >
-            <div className="bg-white rounded-3xl p-8 shadow-xl border border-gray-200 max-w-4xl mx-auto">
-              <h3 className="text-3xl font-bold text-gray-900 mb-4">
-                Don't see your specific problem?
-              </h3>
-              <p className="text-xl text-gray-600 mb-6">
-                We've worked across 25+ industries solving unique challenges. Book a free consultation to discuss your specific situation.
-              </p>
-              <motion.button 
-                className="text-white px-8 py-4 rounded-2xl text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 inline-flex items-center space-x-2"
-                style={{ backgroundColor: '#216ad9' }}
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <span>Book Free Consultation</span>
-                <ArrowRight className="w-5 h-5" />
-              </motion.button>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Stats Section */}
-      <section className="py-32 bg-white">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <motion.div 
-            className="text-center mb-20"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="text-5xl font-bold text-gray-900 mb-6">
-              Proven track record of success
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              3+ years of helping businesses across industries achieve their goals 
-              with tailored solutions and expert guidance.
-            </p>
-          </motion.div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {stats.map((stat, index) => (
-              <motion.div 
-                key={index}
-                className="text-center"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                viewport={{ once: true }}
-              >
-                <motion.div 
-                  className="w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6"
-                  style={{ backgroundColor: '#216ad9' }}
-                  whileHover={{ rotate: 360, scale: 1.1 }}
-                  transition={{ duration: 0.6 }}
-                >
-                  <stat.icon className="w-10 h-10 text-white" />
-                </motion.div>
-                <motion.div 
-                  className="text-5xl font-bold text-gray-900 mb-2"
-                  animate={{ scale: [1, 1.05, 1] }}
-                  transition={{ duration: 2, repeat: Infinity, delay: index * 0.5 }}
-                >
-                  {stat.value}
-                </motion.div>
-                <div className="text-xl text-gray-600">
-                  {stat.label}
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Cross-Industry Expertise */}
-      <section className="py-32 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <motion.div 
-            className="text-center mb-20"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="text-5xl font-bold text-gray-900 mb-6">
-              Proven expertise across <span style={{ color: '#216ad9' }}>diverse industries</span>
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              From cutting-edge tech startups to established traditional businesses - 
-              we understand the unique challenges of every sector and create solutions that work.
-            </p>
-          </motion.div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-            {[
-              {
-                category: "Technology & Software",
-                industries: ["SaaS Platforms", "E-commerce", "FinTech", "EdTech", "Artificial Intelligence"],
-                icon: Code,
-                color: "from-blue-500 to-cyan-600"
-              },
-              {
-                category: "Professional Services",
-                industries: ["Consulting", "Legal Services", "Accounting", "Real Estate", "Financial Advisory"],
-                icon: Building,
-                color: "from-purple-500 to-pink-600"
-              },
-              {
-                category: "Healthcare & Wellness",
-                industries: ["Medical Practices", "Dental Clinics", "Fitness Centers", "Mental Health", "Pharmaceuticals"],
-                icon: Shield,
-                color: "from-green-500 to-emerald-600"
-              },
-              {
-                category: "Manufacturing & Production",
-                industries: ["Industrial Manufacturing", "Food Production", "Automotive", "Construction", "Energy"],
-                icon: Settings,
-                color: "from-orange-500 to-red-600"
-              },
-              {
-                category: "Hospitality & Retail",
-                industries: ["Restaurants & Cafes", "Hotels & Travel", "Retail Stores", "Entertainment", "Fashion"],
-                icon: Globe,
-                color: "from-teal-500 to-blue-600"
-              },
-              {
-                category: "Education & Non-Profit",
-                industries: ["Educational Institutions", "Training Organizations", "Non-Profit Organizations", "Government", "Associations"],
-                icon: Users,
-                color: "from-yellow-500 to-orange-600"
-              }
-            ].map((sector, index) => (
-              <motion.div 
-                key={index}
-                className="bg-white rounded-3xl p-8 shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-300"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                whileHover={{ y: -5, scale: 1.02 }}
-              >
-                <motion.div 
-                  className={`w-16 h-16 bg-gradient-to-r ${sector.color} rounded-2xl flex items-center justify-center mb-6`}
-                  whileHover={{ rotate: 360, scale: 1.1 }}
-                  transition={{ duration: 0.6 }}
-                >
-                  <sector.icon className="w-8 h-8 text-white" />
-                </motion.div>
-                
-                <h3 className="text-xl font-bold text-gray-900 mb-4">{sector.category}</h3>
-                
-                <div className="space-y-2">
-                  {sector.industries.map((industry, industryIndex) => (
-                    <div key={industryIndex} className="flex items-center space-x-2">
-                      <div className="w-2 h-2 rounded-full" style={{ backgroundColor: '#216ad9' }} />
-                      <span className="text-gray-600 text-sm">{industry}</span>
-                    </div>
-                  ))}
-                </div>
-              </motion.div>
-            ))}
-          </div>
-
-          <motion.div 
-            className="text-center"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-            viewport={{ once: true }}
-          >
-            <div className="bg-white rounded-3xl p-8 shadow-xl border border-gray-200 max-w-4xl mx-auto">
-              <h3 className="text-3xl font-bold text-gray-900 mb-4">
-                Your industry not listed?
-              </h3>
-              <p className="text-xl text-gray-600 mb-6">
-                We've successfully worked with businesses across many more sectors. 
-                Every industry has unique challenges, and we create solutions that work specifically for your market.
-              </p>
-              <motion.button 
-                className="text-white px-8 py-4 rounded-2xl text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 inline-flex items-center space-x-2"
-                style={{ backgroundColor: '#216ad9' }}
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <span>Discuss Your Industry</span>
-                <ArrowRight className="w-5 h-5" />
-              </motion.button>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Pricing Section */}
-      <section className="py-32 bg-white">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <motion.div 
-            className="text-center mb-20"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="text-5xl font-bold text-gray-900 mb-6">
-              Transparent, tailored pricing
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              No fixed pricing because no two businesses are the same. We create custom solutions 
-              that fit your budget and deliver maximum value.
-            </p>
-          </motion.div>
-
-          <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            <motion.div 
-              className="bg-white rounded-3xl p-8 shadow-lg border-2 border-gray-200 transition-all duration-300 hover:border-blue-300"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              viewport={{ once: true }}
-              whileHover={{ y: -5 }}
-            >
-              <div className="text-center mb-8">
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                  Discovery Call
-                </h3>
-                <div className="mb-4">
-                  <span className="text-5xl font-bold text-gray-900">
-                    Free
-                  </span>
-                </div>
-                <p className="text-gray-600">
-                  Start with a comprehensive business analysis
-                </p>
-              </div>
-              
-              <div className="space-y-4 mb-8">
-                {[
-                  'Complete business analysis',
-                  'Problem identification', 
-                  'Strategic recommendations',
-                  'Custom quote preparation',
-                  'Early bird discount eligibility'
-                ].map((feature, featureIndex) => (
-                  <div key={featureIndex} className="flex items-center space-x-3">
-                    <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
-                    <span className="text-gray-700">{feature}</span>
-                  </div>
-                ))}
-              </div>
-              
-              <motion.button 
-                className="w-full py-4 rounded-2xl font-semibold transition-all duration-300 text-white shadow-lg hover:shadow-xl"
-                style={{ backgroundColor: '#216ad9' }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                Book Free Consultation
-              </motion.button>
-            </motion.div>
-
-            <motion.div 
-              className="bg-white rounded-3xl p-8 shadow-lg border-2 border-blue-500 ring-2 ring-blue-200 scale-105 relative"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              viewport={{ once: true }}
-              whileHover={{ y: -5 }}
-            >
-              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                <div className="text-white px-6 py-2 rounded-full text-sm font-semibold" style={{ backgroundColor: '#216ad9' }}>
-                  Most Popular
-                </div>
-              </div>
-              
-              <div className="text-center mb-8">
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                  Your Budget
-                </h3>
-                <div className="mb-4">
-                  <span className="text-5xl font-bold text-gray-900">
-                    Any Size
-                  </span>
-                </div>
-                <p className="text-gray-600">
-                  Solutions designed for your specific budget
-                </p>
-              </div>
-              
-              <div className="space-y-4 mb-8">
-                {[
-                  'Completely customized approach',
-                  'Budget-conscious planning',
-                  'Scalable solutions',
-                  'Payment plans available',
-                  'Early bird discounts included'
-                ].map((feature, featureIndex) => (
-                  <div key={featureIndex} className="flex items-center space-x-3">
-                    <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
-                    <span className="text-gray-700">{feature}</span>
-                  </div>
-                ))}
-              </div>
-              
-              <motion.button 
-                className="w-full py-4 rounded-2xl font-semibold transition-all duration-300 text-white shadow-lg hover:shadow-xl"
-                style={{ backgroundColor: '#216ad9' }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                Get Custom Quote
-              </motion.button>
-            </motion.div>
-
-            <motion.div 
-              className="bg-white rounded-3xl p-8 shadow-lg border-2 border-gray-200 transition-all duration-300 hover:border-blue-300"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              viewport={{ once: true }}
-              whileHover={{ y: -5 }}
-            >
-              <div className="text-center mb-8">
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                  Enterprise
-                </h3>
-                <div className="mb-4">
-                  <span className="text-5xl font-bold text-gray-900">
-                    Custom
-                  </span>
-                </div>
-                <p className="text-gray-600">
-                  Full-scale business transformation
-                </p>
-              </div>
-              
-              <div className="space-y-4 mb-8">
-                {[
-                  'Multi-department solutions',
-                  'Dedicated project team',
-                  'Ongoing support & optimization',
-                  'Performance guarantees',
-                  'Priority support'
-                ].map((feature, featureIndex) => (
-                  <div key={featureIndex} className="flex items-center space-x-3">
-                    <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
-                    <span className="text-gray-700">{feature}</span>
-                  </div>
-                ))}
-              </div>
-              
-              <motion.button 
-                className="w-full py-4 rounded-2xl font-semibold transition-all duration-300 bg-gray-100 text-gray-900 hover:bg-gray-200"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                Contact Us
-              </motion.button>
-            </motion.div>
-          </div>
-
-          <motion.div 
-            className="text-center mt-16"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-            viewport={{ once: true }}
-          >
-            <div className="bg-white rounded-3xl p-8 shadow-xl border border-gray-200 max-w-4xl mx-auto">
-              <h3 className="text-3xl font-bold text-gray-900 mb-4">Early Bird Discounts Available</h3>
-              <div className="grid md:grid-cols-2 gap-6 mb-8">
-                <div className="text-center">
-                  <div className="text-3xl font-bold mb-2" style={{ color: '#216ad9' }}>Super Early Bird</div>
-                  <p className="text-gray-600">Sign within 24 hours of consultation for maximum savings</p>
-                </div>
-                <div className="text-center">
-                  <div className="text-3xl font-bold mb-2" style={{ color: '#216ad9' }}>Early Bird</div>
-                  <p className="text-gray-600">Sign within 3 days of consultation for great savings</p>
-                </div>
-              </div>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <motion.button 
-                  className="text-white px-8 py-4 rounded-2xl text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 inline-flex items-center space-x-2"
-                  style={{ backgroundColor: '#216ad9' }}
-                  whileHover={{ scale: 1.05, y: -2 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <span>Book Free Consultation</span>
-                  <ArrowRight className="w-5 h-5" />
-                </motion.button>
-                <motion.a 
-                  href="/pricing"
-                  className="border-2 text-gray-700 hover:text-blue-600 px-8 py-4 rounded-2xl text-lg font-semibold hover:bg-blue-50 transition-all duration-300 inline-flex items-center space-x-2"
-                  style={{ borderColor: '#216ad9' }}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <span>Find Out More</span>
-                  <ArrowRight className="w-5 h-5" />
-                </motion.a>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Marketing 4-Phase Approach */}
-      <section className="py-32 bg-gradient-to-br from-blue-50 via-white to-teal-50">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <motion.div 
-            className="text-center mb-20"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-          >
-            <motion.div 
-              className="inline-flex items-center space-x-2 bg-blue-100 border border-blue-200 rounded-full px-5 py-3 mb-8"
-              whileHover={{ scale: 1.05 }}
-            >
-              <Megaphone className="w-4 h-4" style={{ color: '#216ad9' }} />
-              <span className="text-sm font-semibold" style={{ color: '#216ad9' }}>Marketing Excellence</span>
-            </motion.div>
-            
-            <h2 className="text-5xl font-bold text-gray-900 mb-6">
-              Our proven <span style={{ color: '#216ad9' }}>4-phase marketing</span> approach
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              We don't waste your budget. Every campaign is strategically planned, 
-              carefully executed, and continuously optimized for maximum ROI.
-            </p>
-          </motion.div>
-
-          {/* Visual Process Flow */}
-          <div className="relative mb-16">
-            <motion.div 
-              className="absolute top-1/2 left-0 right-0 h-1 transform -translate-y-1/2 hidden lg:block"
-              style={{ background: 'linear-gradient(90deg, #216ad9 0%, #10b981 100%)' }}
-              initial={{ width: 0 }}
-              whileInView={{ width: "100%" }}
-              transition={{ duration: 2, delay: 0.5 }}
-              viewport={{ once: true }}
-            />
-            
-            <div className="grid lg:grid-cols-4 gap-8 relative">
-              {[
-                {
-                  phase: "01",
-                  title: "Research & Strategy",
-                  description: "Deep market analysis, competitor research, and strategic planning. No budget wasted on guesswork.",
-                  icon: Search,
-                  color: "from-red-500 to-pink-600",
-                  features: ["Market analysis", "Competitor research", "Audience profiling", "Strategy development"],
-                  highlight: "Industry benchmarks analysis"
-                },
-                {
-                  phase: "02", 
-                  title: "Create & Develop",
-                  description: "Creative development, video production, and asset creation that resonates with your audience.",
-                  icon: Lightbulb,
-                  color: "from-orange-500 to-yellow-600",
-                  features: ["Creative development", "Video production", "Copy writing", "Asset creation"],
-                  highlight: "Professional creative assets"
-                },
-                {
-                  phase: "03",
-                  title: "Test & Launch",
-                  description: "Strategic campaign launch with built-in A/B testing. Data guides every decision we make.",
-                  icon: Rocket,
-                  color: "from-blue-500 to-cyan-600",
-                  features: ["Campaign launch", "A/B testing", "Performance monitoring", "Real-time optimization"],
-                  highlight: "A/B testing protocols"
-                },
-                {
-                  phase: "04",
-                  title: "Scale & Optimize",
-                  description: "Scale winning campaigns while continuously optimizing for better results and lower costs.",
-                  icon: TrendingUp,
-                  color: "from-green-500 to-emerald-600",
-                  features: ["Performance scaling", "Cost optimization", "ROI maximization", "Continuous improvement"],
-                  highlight: "ROI optimization"
-                }
-              ].map((phase, index) => (
-                <motion.div 
-                  key={index}
-                  className="relative"
-                  initial={{ opacity: 0, y: 50 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: index * 0.2 }}
-                  viewport={{ once: true }}
-                >
-                  {/* Phase Circle */}
-                  <motion.div 
-                    className="relative mb-8 mx-auto w-24 h-24 lg:w-32 lg:h-32"
-                    whileHover={{ scale: 1.1 }}
-                  >
-                    <motion.div 
-                      className={`w-full h-full bg-gradient-to-r ${phase.color} rounded-full flex items-center justify-center shadow-xl relative z-10`}
-                      animate={{ 
-                        boxShadow: [
-                          "0 10px 30px rgba(0,0,0,0.2)",
-                          "0 20px 50px rgba(0,0,0,0.3)",
-                          "0 10px 30px rgba(0,0,0,0.2)"
-                        ]
-                      }}
-                      transition={{ duration: 3, repeat: Infinity, delay: index * 0.5 }}
-                    >
-                      <phase.icon className="w-8 h-8 lg:w-12 lg:h-12 text-white" />
-                    </motion.div>
-                    <motion.div 
-                      className="absolute -bottom-2 -right-2 bg-white rounded-full w-10 h-10 flex items-center justify-center shadow-lg"
-                      initial={{ scale: 0 }}
-                      whileInView={{ scale: 1 }}
-                      transition={{ duration: 0.5, delay: index * 0.2 + 0.5 }}
-                      viewport={{ once: true }}
-                    >
-                      <span className="text-sm font-bold text-gray-700">{phase.phase}</span>
-                    </motion.div>
-                  </motion.div>
-                  
-                  <motion.div 
-                    className="bg-white rounded-3xl p-6 shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-300"
-                    whileHover={{ y: -5 }}
-                  >
-                    <h3 className="text-xl font-bold text-gray-900 mb-3">
-                      {phase.title}
-                    </h3>
-                    <p className="text-gray-600 leading-relaxed mb-4">
-                      {phase.description}
-                    </p>
-                    
-                    <div className="mb-4">
-                      <div className="text-sm font-bold mb-2" style={{ color: '#216ad9' }}>
-                        Key Focus: {phase.highlight}
-                      </div>
-                    </div>
-                    
-                    <div className="space-y-2">
-                      {phase.features.slice(0, 3).map((feature, featureIndex) => (
-                        <div key={featureIndex} className="flex items-center space-x-2">
-                          <CheckCircle className="w-4 h-4 text-green-500" />
-                          <span className="text-sm text-gray-600">{feature}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </motion.div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-
-          {/* Call-to-Action Section */}
-          <motion.div 
-            className="text-center"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1 }}
-            viewport={{ once: true }}
-          >
-            <div className="bg-white rounded-3xl p-10 shadow-2xl border border-gray-200 max-w-5xl mx-auto relative overflow-hidden">
-              <motion.div 
-                className="absolute top-0 right-0 w-32 h-32 bg-blue-100 rounded-full -mr-16 -mt-16 opacity-50"
-                animate={{ rotate: 360 }}
-                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-              />
-              
-              <div className="relative z-10">
-                <h3 className="text-4xl font-bold text-gray-900 mb-6">
-                  Ready to transform your marketing?
-                </h3>
-                <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-                  From VSL funnels and email marketing to pixel optimization and landing pages - 
-                  we build everything you need for marketing success, tailored to your specific goals and budget.
-                </p>
-                
-                <div className="grid md:grid-cols-3 gap-6 mb-8">
-                  {[
-                    { label: "VSL Funnels", icon: Play },
-                    { label: "Email Marketing", icon: MessageSquare },
-                    { label: "Landing Pages", icon: Globe }
-                  ].map((service, index) => (
-                    <motion.div 
-                      key={index}
-                      className="bg-blue-50 rounded-2xl p-4 flex items-center space-x-3"
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      whileInView={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.5, delay: index * 0.1 }}
-                      viewport={{ once: true }}
-                      whileHover={{ scale: 1.05 }}
-                    >
-                      <service.icon className="w-6 h-6" style={{ color: '#216ad9' }} />
-                      <span className="font-semibold text-gray-700">{service.label}</span>
-                    </motion.div>
-                  ))}
-                </div>
-                
-                <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                  <motion.a 
-                    href="/marketing-solutions"
-                    className="text-white px-10 py-4 rounded-2xl text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 inline-flex items-center space-x-2"
-                    style={{ backgroundColor: '#216ad9' }}
-                    whileHover={{ scale: 1.05, y: -2 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <span>Explore Marketing Solutions</span>
-                    <ArrowRight className="w-5 h-5" />
-                  </motion.a>
-                  
-                  <motion.button 
-                    className="border-2 text-gray-700 hover:text-blue-600 px-10 py-4 rounded-2xl text-lg font-semibold hover:bg-blue-50 transition-all duration-300 inline-flex items-center space-x-2"
-                    style={{ borderColor: '#216ad9' }}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <span>Book Marketing Consultation</span>
-                    <Calendar className="w-5 h-5" />
-                  </motion.button>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Why Choose Us */}
-      <section className="py-32 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <motion.div 
-            className="text-center mb-20"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="text-5xl font-bold text-gray-900 mb-6">
-              Why businesses choose Amplifirm
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              We're not just another consultancy. We're partners in your success, 
-              with a proven track record and approach that delivers real results.
-            </p>
-          </motion.div>
-
-          <div className="grid lg:grid-cols-3 gap-8">
-            {[
-              {
-                title: "No Cookie-Cutter Solutions",
-                description: "Every solution is designed specifically for your business, industry, and budget. We don't believe in one-size-fits-all approaches.",
-                icon: Target,
-                benefits: ["Tailored strategies", "Industry-specific solutions", "Budget-conscious planning"]
-              },
-              {
-                title: "Proven Track Record", 
-                description: "150+ successful projects, 300+ websites built, and recognition as AI Startup Finalist. Our results speak for themselves.",
-                icon: Award,
-                benefits: ["Award-winning team", "150+ clients served", "Verified success stories"]
-              },
-              {
-                title: "End-to-End Support",
-                description: "From initial consultation to ongoing optimization, we're with you every step of the way. No handoffs, no confusion.",
-                icon: Shield,
-                benefits: ["Complete support", "Ongoing optimization", "Single point of contact"]
-              }
-            ].map((reason, index) => (
-              <motion.div 
-                key={index}
-                className="bg-white rounded-3xl p-8 shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-300"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.2 }}
-                viewport={{ once: true }}
-                whileHover={{ y: -5, scale: 1.02 }}
-              >
-                <motion.div 
-                  className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6"
-                  style={{ backgroundColor: '#216ad9' }}
-                  whileHover={{ rotate: 360, scale: 1.1 }}
-                  transition={{ duration: 0.6 }}
-                >
-                  <reason.icon className="w-8 h-8 text-white" />
-                </motion.div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">{reason.title}</h3>
-                <p className="text-gray-600 mb-6 leading-relaxed">{reason.description}</p>
-                <div className="space-y-3">
-                  {reason.benefits.map((benefit, benefitIndex) => (
-                    <div key={benefitIndex} className="flex items-center space-x-2">
-                      <CheckCircle className="w-5 h-5 text-green-500" />
-                      <span className="text-gray-700">{benefit}</span>
-                    </div>
-                  ))}
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Client Testimonials */}
-      <section className="py-32 bg-white overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <motion.div 
-            className="text-center mb-20"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="text-5xl font-bold text-gray-900 mb-6">
-              What our <span style={{ color: '#216ad9' }}>clients</span> say
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Real feedback from real businesses who've transformed their operations 
-              with our tailored solutions.
-            </p>
-          </motion.div>
-
-          {/* Testimonials Grid */}
-          <div className="grid lg:grid-cols-3 gap-8 mb-16">
-            {[
-              {
-                content: "Amplifirm transformed our entire marketing approach. Our conversion rate went from 1.2% to 4.8% in just 3 months. The ROI has been incredible.",
-                name: "Sarah Mitchell",
-                role: "Founder",
-                company: "TechFlow Solutions",
-                rating: 5
-              },
-              {
-                content: "We were struggling with operational inefficiencies. Amplifirm streamlined our processes and saved us 15 hours per week. Game-changing.",
-                name: "James Wilson",
-                role: "Operations Director", 
-                company: "ScaleUp Manufacturing",
-                rating: 5
-              },
-              {
-                content: "Their tailored approach to our industry was exactly what we needed. They understood our challenges and delivered solutions that actually work.",
-                name: "Emily Rodriguez",
-                role: "CEO",
-                company: "Healthcare Innovations",
-                rating: 5
-              }
-            ].map((testimonial, index) => (
-              <motion.div 
-                key={index}
-                className="bg-gray-50 rounded-3xl p-8 shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-300"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.2 }}
-                viewport={{ once: true }}
-                whileHover={{ y: -5, scale: 1.02 }}
-              >
-                <div className="flex items-center space-x-1 mb-6">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
-                  ))}
-                </div>
-                
-                <p className="text-gray-700 mb-6 leading-relaxed text-lg italic">
-                  "{testimonial.content}"
-                </p>
-                
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 rounded-full flex items-center justify-center text-xl" style={{ backgroundColor: '#216ad9', color: 'white' }}>
-                    {testimonial.name.charAt(0)}
-                  </div>
-                  <div>
-                    <div className="font-bold text-gray-900">
-                      {testimonial.name}
-                    </div>
-                    <div className="text-gray-600">
-                      {testimonial.role}, {testimonial.company}
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-
-      {/* FAQ Section */}
-      <section className="py-32 bg-gray-50">
-        <div className="max-w-4xl mx-auto px-6 lg:px-8">
-          <motion.div 
-            className="text-center mb-20"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="text-5xl font-bold text-gray-900 mb-6">
-              Frequently asked questions
-            </h2>
-            <p className="text-xl text-gray-600">
-              Everything you need to know about working with Amplifirm.
-            </p>
-          </motion.div>
-
-          <div className="space-y-6">
-            {[
-              {
-                question: "How do you determine pricing for each project?",
-                answer: "We don't have fixed pricing because every business is unique. After our free consultation, we understand your specific needs, budget, and goals, then create a custom quote that delivers maximum value within your budget range."
-              },
-              {
-                question: "What industries do you work with?",
-                answer: "We work with businesses across all industries - from tech startups to traditional manufacturing, healthcare to hospitality. Our approach is to understand your specific industry challenges and create solutions that work for your market."
-              },
-              {
-                question: "How long does it typically take to see results?",
-                answer: "This depends on the type of solution, but most clients see initial improvements within 4-6 weeks. Marketing campaigns can show results even faster, while operational changes may take 2-3 months to fully implement and optimize."
-              },
-              {
-                question: "Do you work with small businesses or just large companies?",
-                answer: "We work with businesses of all sizes - from startups just getting off the ground to established companies generating millions. Our solutions are tailored to your current size and growth stage."
-              },
-              {
-                question: "What's included in the free consultation?",
-                answer: "A comprehensive business analysis where we identify problems, discuss your goals, and provide strategic recommendations. You'll leave with actionable insights regardless of whether you choose to work with us."
-              },
-              {
-                question: "How do the early bird discounts work?",
-                answer: "Super Early Bird (24-hour decision): Maximum discount on your custom quote. Early Bird (3-day decision): Significant discount on your custom quote. These incentives reward quick decision-making after our consultation."
-              },
-              {
-                question: "What makes your 4-phase marketing approach different?",
-                answer: "Unlike agencies that jump straight into campaigns, we start with deep research and strategy. This ensures no budget is wasted on guesswork. Our systematic approach of Research → Create → Test → Scale has consistently delivered better ROI for our clients."
-              },
-              {
-                question: "Can you handle both consultancy and marketing for the same business?",
-                answer: "Absolutely! Many of our clients benefit from our integrated approach. We can optimize your operations while simultaneously improving your marketing, creating synergies that amplify results across your entire business."
-              }
-            ].map((faq, index) => (
-              <motion.div 
-                key={index}
-                className="bg-white rounded-2xl p-8 shadow-lg border border-gray-200"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                viewport={{ once: true }}
-              >
-                <h3 className="text-xl font-bold text-gray-900 mb-4">
-                  {faq.question}
-                </h3>
-                <p className="text-gray-600 leading-relaxed">
-                  {faq.answer}
-                </p>
-              </motion.div>
-            ))}
-          </div>
-
-          <motion.div 
-            className="text-center mt-16"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-            viewport={{ once: true }}
-          >
-            <div className="bg-white rounded-3xl p-8 shadow-xl border border-gray-200">
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                Still have questions?
-              </h3>
-              <p className="text-gray-600 mb-6">
-                Book a free consultation and we'll answer all your questions while analyzing your business.
-              </p>
-              <motion.button 
-                className="text-white px-8 py-4 rounded-2xl text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 inline-flex items-center space-x-2"
-                style={{ backgroundColor: '#216ad9' }}
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <span>Book Free Consultation</span>
-                <ArrowRight className="w-5 h-5" />
-              </motion.button>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Final CTA Section */}
-      <section className="py-32 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #216ad9 0%, #1e5cb3 100%)' }}>
-        <motion.div 
-          className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -mr-20 -mt-20"
-          animate={{ rotate: 360 }}
-          transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-        />
-        
-        <div className="max-w-4xl mx-auto px-6 lg:px-8 text-center relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="text-5xl font-bold text-white mb-6">
-              Ready to transform your business?
-            </h2>
-            <p className="text-xl text-blue-100 mb-10 leading-relaxed">
-              Book your free consultation today and discover how our tailored solutions 
-              can solve your business challenges and accelerate your growth.
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <motion.button 
-                className="bg-white px-10 py-4 rounded-2xl text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-2"
-                style={{ color: '#216ad9' }}
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <span>Book Free Consultation</span>
-                <ArrowRight className="w-5 h-5" />
-              </motion.button>
-              
-              <motion.button 
-                className="border-2 border-white/30 text-white px-10 py-4 rounded-2xl text-lg font-semibold hover:bg-white/10 transition-all duration-300"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                Learn More
-              </motion.button>
-            </div>
-            
-            <p className="text-sm text-blue-200 mt-6">
-              Free consultation • No obligations • Custom solutions designed for you
-            </p>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-20">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="grid md:grid-cols-5 gap-12 mb-16">
-            <div className="md:col-span-2">
-              <div className="flex items-center space-x-3 mb-6">
-                <div className="w-10 h-10 rounded-2xl flex items-center justify-center" style={{ backgroundColor: '#216ad9' }}>
-                  <Lightbulb className="w-5 h-5 text-white" />
-                </div>
-                <span className="text-xl font-bold">Amplifirm</span>
-              </div>
-              <p className="text-gray-400 text-lg leading-relaxed max-w-md mb-6">
-                Award-winning business consultancy specializing in tailored solutions for operational, 
-                marketing, and financial challenges. Transforming businesses across all industries.
-              </p>
-              <div className="text-sm text-gray-500">
-                <p>AMPLIFIRM LTD</p>
-                <p>Company Number: 15426833</p>
-                <p>Registered in England & Wales</p>
-              </div>
-            </div>
-            
-            {[
-              { 
-                title: 'Services', 
-                links: ['Business Consultancy', 'Marketing Solutions', 'Website Development', 'Platform Development', 'Custom Solutions'] 
-              },
-              { 
-                title: 'Company', 
-                links: ['About Us', 'Our Team', 'Case Studies', 'Awards', 'Careers'] 
-              },
-              { 
-                title: 'Support', 
-                links: ['Contact Us', 'Book Consultation', 'FAQ', 'Resources', 'Blog'] 
-              }
-            ].map((section, index) => (
-              <div key={index}>
-                <h4 className="font-bold text-lg mb-6">{section.title}</h4>
-                <ul className="space-y-4">
-                  {section.links.map((link) => (
-                    <li key={link}>
-                      <motion.a 
-                        href="#" 
-                        className="text-gray-400 hover:text-white transition-colors"
-                        whileHover={{ x: 4 }}
-                      >
-                        {link}
-                      </motion.a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-          
-          <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-gray-800">
-            <p className="text-gray-400 mb-4 md:mb-0">
-              © 2024 Amplifirm Ltd. All rights reserved.
-            </p>
-            <div className="flex space-x-6">
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">Terms of Service</a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">Cookie Policy</a>
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 };
 
-export default AmplifirmHomepage;
+const TextInputModal: React.FC<TextInputModalProps> = ({ isOpen, field, onClose, onSave }) => {
+  const [value, setValue] = useState('');
+
+  useEffect(() => {
+    if (field?.value) {
+      setValue(field.value);
+    } else {
+      setValue('');
+    }
+  }, [field]);
+
+  const handleSave = () => {
+    onSave(value);
+    setValue('');
+  };
+
+  if (!isOpen || !field) return null;
+
+  const getPlaceholder = () => {
+    switch (field.type) {
+      case 'name': return 'Enter your full name';
+      case 'company': return 'Enter your company name';
+      case 'date': return 'MM/DD/YYYY';
+      case 'text': return 'Enter text';
+      default: return 'Enter value';
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-xl p-6 w-96 shadow-2xl">
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="text-xl font-semibold text-gray-800">{field.label}</h3>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+            <X size={24} />
+          </button>
+        </div>
+        
+        <div className="mb-6">
+          {field.type === 'date' ? (
+            <input
+              type="date"
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          ) : (
+            <input
+              type="text"
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+              placeholder={getPlaceholder()}
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          )}
+        </div>
+        
+        <div className="flex gap-3 justify-end">
+          <button
+            onClick={onClose}
+            className="px-6 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleSave}
+            disabled={!value.trim()}
+            className="flex items-center gap-2 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 transition-colors"
+          >
+            <Check size={16} />
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default function AmplifirmDocumentPlatform() {
+  // Authentication state
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loginForm, setLoginForm] = useState({ username: '', password: '' });
+  const [loginError, setLoginError] = useState('');
+  
+  // App state
+  const [mode, setMode] = useState<'admin' | 'client'>('admin');
+  const [loading, setLoading] = useState(false);
+  const [autoSaving, setAutoSaving] = useState(false);
+  const [error, setError] = useState<string>('');
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  
+  // Document state
+  const [documents, setDocuments] = useState<Document[]>([]);
+  const [currentDocument, setCurrentDocument] = useState<Document | null>(null);
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
+
+  console.log(documents);
+  
+  // PDF rendering
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const [pdfDoc, setPdfDoc] = useState<any>(null);
+  const [pageScale] = useState(1.5);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  // Field placement and manipulation
+  const [selectedFieldType, setSelectedFieldType] = useState<DocumentField['type'] | null>(null);
+  const [placingField, setPlacingField] = useState(false);
+  const [selectedField, setSelectedField] = useState<DocumentField | null>(null);
+  const [dragging, setDragging] = useState(false);
+  const [resizing, setResizing] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [fieldSettings, setFieldSettings] = useState({
+    fontSize: 12,
+    signatureSize: { width: 200, height: 60 },
+    textSize: { width: 200, height: 40 }
+  });
+  
+  // Modals
+  const [showSignatureModal, setShowSignatureModal] = useState(false);
+  const [showTextModal, setShowTextModal] = useState(false);
+  const [activeField, setActiveField] = useState<DocumentField | null>(null);
+
+  // Debounce utility function
+  function debounce(func: Function, wait: number) {
+    let timeout: NodeJS.Timeout;
+    return function executedFunction(...args: any[]) {
+      const later = () => {
+        clearTimeout(timeout);
+        func(...args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
+  }
+
+  // Authentication
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (loginForm.username === 'AMPLIFIRMCONTRACTSOFTWARE' && loginForm.password === 'MASHALLAH123') {
+      setIsAuthenticated(true);
+      setLoginError('');
+      setLoginForm({ username: '', password: '' });
+    } else {
+      setLoginError('Invalid credentials. Please try again.');
+    }
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    setCurrentDocument(null);
+    setMode('admin');
+  };
+
+  // Test Supabase connection
+  
+
+  // Save document to Supabase
+  const saveDocumentToDatabase = async (doc: Document, skipLocalUpdate = false) => {
+    if (!supabase) {
+      console.log('Supabase not configured, working in local mode');
+      if (!skipLocalUpdate) {
+        setDocuments(prev => [...prev.filter(d => d.id !== doc.id), doc]);
+      }
+      return;
+    }
+
+    try {
+      console.log('Saving document to Supabase:', doc.id);
+      
+      const docData = {
+        id: doc.id,
+        name: doc.name,
+        status: doc.status,
+        fields: JSON.stringify(doc.fields),
+        pdf_url: doc.pdfUrl || null,
+        signed_pdf_url: doc.signedPdfUrl || null,
+        client_link: doc.clientLink || null,
+        updated_at: new Date().toISOString()
+      };
+
+      console.log('Document data to save:', docData);
+      
+      // Use upsert for reliable save
+      await supabase.upsert('documents', docData);
+      console.log('Document saved successfully with upsert');
+      
+      if (!skipLocalUpdate) {
+        setDocuments(prev => [...prev.filter(d => d.id !== doc.id), doc]);
+      }
+    } catch (err) {
+      console.error('Error saving document:', err);
+      // Still update local state
+      if (!skipLocalUpdate) {
+        setDocuments(prev => [...prev.filter(d => d.id !== doc.id), doc]);
+      }
+    }
+  };
+
+  // Auto-save function with debouncing
+  const autoSaveDocument = useCallback(
+    debounce(async (doc: Document) => {
+      if (doc) {
+        console.log('Auto-saving document changes...');
+        setAutoSaving(true);
+        try {
+          await saveDocumentToDatabase(doc, true);
+          setLastSaved(new Date());
+          console.log('Auto-save completed');
+        } catch (err) {
+          console.error('Auto-save failed:', err);
+        } finally {
+          setAutoSaving(false);
+        }
+      }
+    }, 2000),
+    []
+  );
+
+  // Load document from Supabase
+  const loadDocumentFromDatabase = async (docId: string) => {
+    if (!supabase) {
+      console.log('Supabase not configured, cannot load document from database');
+      return null;
+    }
+
+    try {
+      setLoading(true);
+      console.log('Loading document from Supabase:', docId);
+      
+      const docs = await supabase.select('documents', '*');
+      console.log('Documents from database:', docs);
+      
+      const doc = docs.find((d: any) => d.id === docId);
+      
+      if (doc) {
+        console.log('Found document:', doc);
+        const loadedDoc: Document = {
+          id: doc.id,
+          name: doc.name,
+          status: doc.status,
+          fields: JSON.parse(doc.fields || '[]'),
+          pdfUrl: doc.pdf_url,
+          signedPdfUrl: doc.signed_pdf_url,
+          clientLink: doc.client_link
+        };
+        
+        setCurrentDocument(loadedDoc);
+        
+        // Load PDF from URL
+        if (doc.pdf_url) {
+          const response = await fetch(doc.pdf_url);
+          const arrayBuffer = await response.arrayBuffer();
+          
+          // @ts-ignore
+          const loadingTask = window.pdfjsLib.getDocument(arrayBuffer);
+          const pdf = await loadingTask.promise;
+          
+          setPdfDoc(pdf);
+          setTotalPages(pdf.numPages);
+          setCurrentPage(1);
+        }
+        
+        return loadedDoc;
+      } else {
+        console.log('Document not found in database');
+      }
+    } catch (err) {
+      console.error('Error loading document:', err);
+      setError('Failed to load document from database.');
+    } finally {
+      setLoading(false);
+    }
+    return null;
+  };
+
+  // Client Functions
+  const loadClientDocument = async (docId: string) => {
+    const doc = await loadDocumentFromDatabase(docId);
+    if (doc) {
+      setMode('client');
+    }
+  };
+
+  // Load PDF.js and PDF-lib
+  useEffect(() => {
+    // Load PDF.js
+    const pdfScript = document.createElement('script');
+    pdfScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+    pdfScript.onload = () => {
+      // @ts-ignore
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    };
+    document.head.appendChild(pdfScript);
+
+    // Load PDF-lib for PDF manipulation
+    const pdfLibScript = document.createElement('script');
+    pdfLibScript.src = 'https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js';
+    document.head.appendChild(pdfLibScript);
+
+    return () => {
+      document.head.removeChild(pdfScript);
+      document.head.removeChild(pdfLibScript);
+    };
+  }, []);
+
+  // Check for client mode in URL on mount
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const docId = urlParams.get('doc');
+    const urlMode = urlParams.get('mode');
+    
+    if (docId && urlMode === 'client') {
+      setMode('client');
+      setIsAuthenticated(true); // Auto-authenticate for client mode
+      loadClientDocument(docId);
+    }
+  }, []);
+
+  useEffect(() => {
+    // Test Supabase connection on mount if configured
+    console.log('useEffect running - checking Supabase client...');
+    console.log('supabase exists:', !!supabase);
+    console.log('SUPABASE_URL:', SUPABASE_URL);
+    console.log('API key first 10 chars:', SUPABASE_ANON_KEY.substring(0, 10));
+    
+    if (supabase) {
+      console.log('✅ Supabase client initialized successfully');
+    } else {
+      console.log('❌ Supabase client not initialized - working in local mode');
+    }
+  }, []);
+
+  const renderPage = useCallback(async (pageNum: number) => {
+    if (!pdfDoc || !canvasRef.current) return;
+    
+    const page = await pdfDoc.getPage(pageNum);
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    
+    const viewport = page.getViewport({ scale: pageScale });
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
+    
+    const renderContext = {
+      canvasContext: ctx,
+      viewport: viewport,
+    };
+    
+    await page.render(renderContext).promise;
+  }, [pdfDoc, pageScale]);
+
+  useEffect(() => {
+    if (pdfDoc) {
+      renderPage(currentPage);
+    }
+  }, [pdfDoc, currentPage, renderPage]);
+
+  // Generate PDF with embedded signatures and form data
+  const generateSignedPDF = async (doc: Document): Promise<Uint8Array> => {
+    try {
+      // @ts-ignore
+      const { PDFDocument, rgb } = window.PDFLib;
+      
+      let pdfBytes: Uint8Array;
+      
+      if (doc.pdfUrl) {
+        // Load the original PDF from URL
+        const response = await fetch(doc.pdfUrl);
+        pdfBytes = new Uint8Array(await response.arrayBuffer());
+      } else if (pdfFile) {
+        // Use the local file
+        pdfBytes = new Uint8Array(await pdfFile.arrayBuffer());
+      } else {
+        throw new Error('No PDF source available');
+      }
+
+      const pdfDoc = await PDFDocument.load(pdfBytes);
+      const pages = pdfDoc.getPages();
+
+      // Process each field
+      for (const field of doc.fields) {
+        if (!field.value && !field.signatureData) continue;
+        
+        const page = pages[field.page - 1];
+        if (!page) continue;
+
+        const { width: pageWidth, height: pageHeight } = page.getSize();
+        console.log(pageWidth)
+        
+        // Fix coordinate conversion - account for scaling and coordinate system
+        const scaledX = field.x / pageScale;
+        const scaledY = field.y / pageScale;
+        const scaledWidth = field.width / pageScale;
+        const scaledHeight = field.height / pageScale;
+        
+        // Convert from top-left (HTML) to bottom-left (PDF) coordinate system
+        const pdfX = scaledX;
+        const pdfY = pageHeight - scaledY - scaledHeight;
+
+        if (field.type === 'signature' && field.signatureData) {
+          try {
+            // Convert data URL to image bytes
+            const imageBytes = await fetch(field.signatureData).then(res => res.arrayBuffer());
+            const image = await pdfDoc.embedPng(new Uint8Array(imageBytes));
+            
+            page.drawImage(image, {
+              x: pdfX,
+              y: pdfY,
+              width: scaledWidth,
+              height: scaledHeight,
+            });
+          } catch (err) {
+            console.error('Error embedding signature:', err);
+          }
+        } else if (field.value) {
+          // Add text field - position text in center of field
+          const fontSize = Math.min(fieldSettings.fontSize, scaledHeight * 0.8);
+          page.drawText(field.value, {
+            x: pdfX + 5, // Small padding from left
+            y: pdfY + (scaledHeight / 2) - (fontSize / 2), // Center vertically
+            size: fontSize,
+            color: rgb(0, 0, 0),
+          });
+        }
+      }
+
+      return await pdfDoc.save();
+    } catch (err) {
+      console.error('Error generating signed PDF:', err);
+      throw err;
+    }
+  };
+
+  const downloadSignedDocument = async () => {
+    if (!currentDocument) return;
+    
+    try {
+      setLoading(true);
+      console.log('Generating signed PDF...');
+      
+      // Generate PDF with embedded signatures
+      const signedPdfBytes = await generateSignedPDF(currentDocument);
+      
+      // Upload the signed PDF to Supabase storage
+      let signedPdfUrl = '';
+      if (supabase) {
+        try {
+          const signedFileName = `signed_${Date.now()}_${currentDocument.name}`;
+          const signedFile = new File([signedPdfBytes], signedFileName, { type: 'application/pdf' });
+          
+          await supabase.uploadFile('documents', signedFileName, signedFile);
+          signedPdfUrl = supabase.getPublicUrl('documents', signedFileName);
+          console.log('Signed PDF uploaded to:', signedPdfUrl);
+        } catch (uploadErr) {
+          console.error('Failed to upload signed PDF:', uploadErr);
+        }
+      }
+      
+      // Mark document as completed and save
+      const completedDoc = {
+        ...currentDocument,
+        status: 'completed' as const,
+        signedPdfUrl
+      };
+      
+      await saveDocumentToDatabase(completedDoc);
+      setCurrentDocument(completedDoc);
+      
+      // Download the PDF
+      const blob = new Blob([signedPdfBytes], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `signed_${currentDocument.name}`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      setError('✅ Document signed and downloaded successfully!');
+      
+    } catch (err) {
+      console.error('Error downloading document:', err);
+      setError('Failed to generate signed PDF. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Admin Functions
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file && file.type === 'application/pdf') {
+      try {
+        setLoading(true);
+        setPdfFile(file);
+
+        // Upload PDF to Supabase Storage
+        const fileName = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
+        
+        if (supabase) {
+          try {
+            await supabase.uploadFile('documents', fileName, file);
+            const pdfUrl = supabase.getPublicUrl('documents', fileName);
+            
+            const arrayBuffer = await file.arrayBuffer();
+            
+            // @ts-ignore
+            const loadingTask = window.pdfjsLib.getDocument(arrayBuffer);
+            const pdf = await loadingTask.promise;
+            
+            setPdfDoc(pdf);
+            setTotalPages(pdf.numPages);
+            setCurrentPage(1);
+            
+            // Create new document
+            const newDoc: Document = {
+              id: Date.now().toString(),
+              name: file.name,
+              fields: [],
+              status: 'draft',
+              pdfUrl
+            };
+            
+            setCurrentDocument(newDoc);
+            return; // Success, exit early
+          } catch (uploadError) {
+            console.error('Upload failed, using local mode:', uploadError);
+            setError('Upload failed, working in local mode. Check your API key and bucket setup.');
+          }
+        }
+        
+        // Fallback: work with local file
+        const arrayBuffer = await file.arrayBuffer();
+        
+        // @ts-ignore
+        const loadingTask = window.pdfjsLib.getDocument(arrayBuffer);
+        const pdf = await loadingTask.promise;
+        
+        setPdfDoc(pdf);
+        setTotalPages(pdf.numPages);
+        setCurrentPage(1);
+        
+        // Create new document without PDF URL
+        const newDoc: Document = {
+          id: Date.now().toString(),
+          name: file.name,
+          fields: [],
+          status: 'draft'
+        };
+        
+        setCurrentDocument(newDoc);
+      } catch (err) {
+        console.error('Error uploading file:', err);
+        setError('Failed to upload PDF. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
+  const startPlacingField = (fieldType: DocumentField['type']) => {
+    setSelectedFieldType(fieldType);
+    setPlacingField(true);
+    setSelectedField(null);
+  };
+
+  const handleCanvasClick = (event: React.MouseEvent<HTMLCanvasElement>) => {
+    if (!placingField || !selectedFieldType || !currentDocument) return;
+    
+    const rect = event.currentTarget.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    
+    const fieldLabels = {
+      signature: 'Signature',
+      name: 'Full Name',
+      company: 'Company Name',
+      date: 'Date',
+      text: 'Text Field'
+    };
+    
+    const fieldSizes = {
+      signature: fieldSettings.signatureSize,
+      name: fieldSettings.textSize,
+      company: fieldSettings.textSize,
+      date: { width: 150, height: fieldSettings.textSize.height },
+      text: fieldSettings.textSize
+    };
+    
+    const newField: DocumentField = {
+      id: Date.now().toString(),
+      type: selectedFieldType,
+      x,
+      y,
+      width: fieldSizes[selectedFieldType].width,
+      height: fieldSizes[selectedFieldType].height,
+      page: currentPage,
+      label: fieldLabels[selectedFieldType],
+      required: true,
+    };
+    
+    setCurrentDocument({
+      ...currentDocument,
+      fields: [...currentDocument.fields, newField]
+    });
+    
+    setPlacingField(false);
+    setSelectedFieldType(null);
+  };
+
+  // Field manipulation
+  const handleFieldMouseDown = (e: React.MouseEvent, field: DocumentField) => {
+    e.stopPropagation();
+    setSelectedField(field);
+    setDragStart({ x: e.clientX - field.x, y: e.clientY - field.y });
+    setDragging(true);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (dragging && selectedField && currentDocument) {
+      const newX = e.clientX - dragStart.x;
+      const newY = e.clientY - dragStart.y;
+      
+      const updatedFields = currentDocument.fields.map(field =>
+        field.id === selectedField.id
+          ? { ...field, x: Math.max(0, newX), y: Math.max(0, newY) }
+          : field
+      );
+      
+      setCurrentDocument({
+        ...currentDocument,
+        fields: updatedFields
+      });
+    }
+  };
+
+  const handleMouseUp = () => {
+    // Auto-save if fields were moved in admin mode
+    if ((dragging || resizing) && currentDocument && selectedField) {
+      autoSaveDocument(currentDocument);
+    }
+    
+    setDragging(false);
+    setResizing(false);
+  };
+
+  
+
+  const generateClientLink = async () => {
+    if (!currentDocument) return;
+    
+    try {
+      setLoading(true);
+      console.log('Generating client link for document:', currentDocument.id);
+      
+      const clientLink = `${window.location.origin}${window.location.pathname}?doc=${currentDocument.id}&mode=client`;
+      const updatedDoc = {
+        ...currentDocument,
+        status: 'sent' as const,
+        clientLink
+      };
+      
+      console.log('Updated document with client link:', updatedDoc);
+      await saveDocumentToDatabase(updatedDoc);
+      setCurrentDocument(updatedDoc);
+      
+      // Copy to clipboard
+      await navigator.clipboard.writeText(clientLink);
+      console.log('Client link copied to clipboard:', clientLink);
+      
+      // Clear any previous errors
+      setError('');
+    } catch (err) {
+      console.error('Error generating client link:', err);
+      setError('Failed to generate client link. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleFieldInteraction = (field: DocumentField) => {
+    setActiveField(field);
+    if (field.type === 'signature') {
+      setShowSignatureModal(true);
+    } else {
+      setShowTextModal(true);
+    }
+  };
+
+  const saveFieldValue = async (value: string) => {
+    if (!activeField || !currentDocument) return;
+    
+    const updatedFields = currentDocument.fields.map(field =>
+      field.id === activeField.id
+        ? { ...field, value, signatureData: activeField.type === 'signature' ? value : undefined }
+        : field
+    );
+    
+    const updatedDoc = {
+      ...currentDocument,
+      fields: updatedFields
+    };
+    
+    setCurrentDocument(updatedDoc);
+    
+    // Auto-save to database
+    autoSaveDocument(updatedDoc);
+    
+    setShowSignatureModal(false);
+    setShowTextModal(false);
+    setActiveField(null);
+  };
+
+  const removeField = (fieldId: string) => {
+    if (!currentDocument) return;
+    
+    setCurrentDocument({
+      ...currentDocument,
+      fields: currentDocument.fields.filter(f => f.id !== fieldId)
+    });
+  };
+
+  const nextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const prevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const currentPageFields = currentDocument?.fields.filter(field => field.page === currentPage) || [];
+  const allRequiredFieldsCompleted = currentDocument?.fields.every(field => 
+    !field.required || (field.type === 'signature' ? field.signatureData : field.value)
+  ) || false;
+
+  const getFieldIcon = (type: DocumentField['type']) => {
+    switch (type) {
+      case 'signature': return <Pen size={16} />;
+      case 'name': return <User size={16} />;
+      case 'company': return <Building size={16} />;
+      case 'date': return <Calendar size={16} />;
+      case 'text': return <Type size={16} />;
+    }
+  };
+
+  // Login Screen
+  if (!isAuthenticated && mode === 'admin') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-600 to-indigo-800 flex items-center justify-center">
+        <div className="bg-white rounded-2xl shadow-2xl p-8 w-96">
+          <div className="text-center mb-8">
+            <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+              <FileText size={32} className="text-white" />
+            </div>
+            <h1 className="text-2xl font-bold text-gray-800 mb-2">Amplifirm</h1>
+            <p className="text-gray-600">Contract Management Software</p>
+          </div>
+          
+          <form onSubmit={handleLogin} className="space-y-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Username</label>
+              <input
+                type="text"
+                value={loginForm.username}
+                onChange={(e) => setLoginForm({ ...loginForm, username: e.target.value })}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter username"
+                required
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
+              <input
+                type="password"
+                value={loginForm.password}
+                onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter password"
+                required
+              />
+            </div>
+            
+            {loginError && (
+              <div className="bg-red-50 text-red-600 px-4 py-3 rounded-lg text-sm">
+                {loginError}
+              </div>
+            )}
+            
+            <button
+              type="submit"
+              className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+            >
+              Sign In
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100"
+         onMouseMove={handleMouseMove}
+         onMouseUp={handleMouseUp}>
+      <div className="max-w-7xl mx-auto p-6">
+        {/* Error Display */}
+        {error && (
+          <div className={`mb-6 p-4 rounded-lg ${
+            error.startsWith('✅') 
+              ? 'bg-green-50 text-green-700 border border-green-200' 
+              : 'bg-red-50 text-red-700 border border-red-200'
+          }`}>
+            {error}
+          </div>
+        )}
+
+        {/* Header */}
+        <div className="bg-white rounded-2xl shadow-lg mb-6 p-6">
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-800 mb-2">
+                {mode === 'admin' ? 'Amplifirm Document Center' : 'Document Signing'}
+              </h1>
+              <p className="text-gray-600">
+                {mode === 'admin' 
+                  ? 'Professional contract management and e-signature platform' 
+                  : 'Please review and sign the document below'
+                }
+              </p>
+            </div>
+            
+            <div className="flex items-center gap-4">
+              {autoSaving && (
+                <div className="bg-yellow-50 text-yellow-600 px-3 py-2 rounded-lg text-sm">
+                  Auto-saving...
+                </div>
+              )}
+              
+              {lastSaved && !autoSaving && mode === 'client' && (
+                <div className="bg-green-50 text-green-600 px-3 py-2 rounded-lg text-sm">
+                  Last saved: {lastSaved.toLocaleTimeString()}
+                </div>
+              )}
+              
+              {mode === 'admin' && (
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => setMode('client')}
+                    className="flex items-center gap-2 px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                  >
+                    <Eye size={16} />
+                    Preview Client View
+                  </button>
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                  >
+                    <X size={16} />
+                    Logout
+                  </button>
+                </div>
+              )}
+              
+              {mode === 'client' && (
+                <div className="text-right">
+                  <div className="text-sm text-gray-500">Document Status</div>
+                  <div className="text-lg font-semibold text-blue-600">
+                    {currentDocument?.status === 'completed' 
+                      ? 'Completed' 
+                      : allRequiredFieldsCompleted 
+                        ? 'Ready to Submit' 
+                        : 'Pending Signature'
+                    }
+                  </div>
+                  {currentDocument?.signedPdfUrl && (
+                    <a
+                      href={currentDocument.signedPdfUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-green-600 hover:text-green-800 underline"
+                    >
+                      Download Signed PDF
+                    </a>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Admin Interface */}
+        {mode === 'admin' && (
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            {/* Sidebar */}
+            <div className="lg:col-span-1">
+              <div className="bg-white rounded-2xl shadow-lg p-6">
+                <h2 className="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
+                  <FileText size={20} className="text-blue-600" />
+                  Document Tools
+                </h2>
+                
+                {!currentDocument ? (
+                  <div className="text-center">
+                    <input
+                      type="file"
+                      accept=".pdf"
+                      onChange={handleFileUpload}
+                      ref={fileInputRef}
+                      className="hidden"
+                    />
+                    <button
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={loading}
+                      className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all disabled:bg-gray-400 shadow-lg hover:shadow-xl"
+                    >
+                      <Upload size={20} />
+                      Upload PDF Document
+                    </button>
+                    <p className="text-xs text-gray-500 mt-3">
+                      Upload a PDF to start creating your document workflow
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-6">
+                    <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                      <FileText size={18} className="text-blue-600" />
+                      <span className="truncate font-medium text-gray-800">{currentDocument.name}</span>
+                    </div>
+                    
+                    <div>
+                      <h3 className="font-medium text-gray-800 mb-3">Add Fields</h3>
+                      <div className="space-y-2">
+                        {[
+                          { type: 'signature' as const, label: 'Signature', color: 'blue' },
+                          { type: 'name' as const, label: 'Full Name', color: 'green' },
+                          { type: 'company' as const, label: 'Company', color: 'purple' },
+                          { type: 'date' as const, label: 'Date', color: 'orange' },
+                          { type: 'text' as const, label: 'Text Field', color: 'gray' }
+                        ].map(({ type, label, color }) => (
+                          <button
+                            key={type}
+                            onClick={() => startPlacingField(type)}
+                            disabled={placingField}
+                            className={`w-full flex items-center gap-2 px-3 py-2 text-left rounded-lg transition-colors ${
+                              selectedFieldType === type
+                                ? `bg-${color}-100 text-${color}-700 border-${color}-300`
+                                : `text-gray-700 hover:bg-gray-50 ${placingField ? 'opacity-50' : ''}`
+                            }`}
+                          >
+                            {getFieldIcon(type)}
+                            {label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    {placingField && (
+                      <div className="p-3 bg-blue-50 text-blue-800 rounded-lg text-sm">
+                        Click on the document to place the {selectedFieldType} field
+                      </div>
+                    )}
+                    
+                    {selectedField && (
+                      <div className="p-3 bg-gray-50 rounded-lg">
+                        <h4 className="font-medium text-gray-800 mb-2">Field Properties</h4>
+                        <div className="space-y-2 text-sm">
+                          <div>Type: {selectedField.type}</div>
+                          <div>Size: {selectedField.width}×{selectedField.height}</div>
+                          <div>Page: {selectedField.page}</div>
+                        </div>
+                      </div>
+                    )}
+                    
+                    {/* Field Settings */}
+                    <div className="pt-6 border-t border-gray-200">
+                      <h3 className="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                        <Type size={18} className="text-purple-600" />
+                        Field Settings
+                      </h3>
+                      <div className="space-y-4">
+                        <div className="bg-gray-50 p-3 rounded-lg">
+                          <label className="block text-sm font-medium text-gray-700 mb-2">Font Size</label>
+                          <input
+                            type="range"
+                            min="8"
+                            max="24"
+                            value={fieldSettings.fontSize}
+                            onChange={(e) => setFieldSettings({
+                              ...fieldSettings,
+                              fontSize: parseInt(e.target.value)
+                            })}
+                            className="w-full accent-purple-600"
+                          />
+                          <div className="text-sm text-gray-600 mt-1">{fieldSettings.fontSize}px</div>
+                        </div>
+                        
+                        <div className="bg-gray-50 p-3 rounded-lg">
+                          <label className="block text-sm font-medium text-gray-700 mb-2">Signature Size</label>
+                          <div className="grid grid-cols-2 gap-2">
+                            <input
+                              type="number"
+                              placeholder="Width"
+                              value={fieldSettings.signatureSize.width}
+                              onChange={(e) => setFieldSettings({
+                                ...fieldSettings,
+                                signatureSize: {
+                                  ...fieldSettings.signatureSize,
+                                  width: parseInt(e.target.value) || 200
+                                }
+                              })}
+                              className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            />
+                            <input
+                              type="number"
+                              placeholder="Height"
+                              value={fieldSettings.signatureSize.height}
+                              onChange={(e) => setFieldSettings({
+                                ...fieldSettings,
+                                signatureSize: {
+                                  ...fieldSettings.signatureSize,
+                                  height: parseInt(e.target.value) || 60
+                                }
+                              })}
+                              className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            />
+                          </div>
+                        </div>
+                        
+                        <div className="bg-gray-50 p-3 rounded-lg">
+                          <label className="block text-sm font-medium text-gray-700 mb-2">Text Field Size</label>
+                          <div className="grid grid-cols-2 gap-2">
+                            <input
+                              type="number"
+                              placeholder="Width"
+                              value={fieldSettings.textSize.width}
+                              onChange={(e) => setFieldSettings({
+                                ...fieldSettings,
+                                textSize: {
+                                  ...fieldSettings.textSize,
+                                  width: parseInt(e.target.value) || 200
+                                }
+                              })}
+                              className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            />
+                            <input
+                              type="number"
+                              placeholder="Height"
+                              value={fieldSettings.textSize.height}
+                              onChange={(e) => setFieldSettings({
+                                ...fieldSettings,
+                                textSize: {
+                                  ...fieldSettings.textSize,
+                                  height: parseInt(e.target.value) || 40
+                                }
+                              })}
+                              className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {currentDocument.fields.length > 0 && (
+                      <div className="pt-4 border-t">
+                        <button
+                          onClick={generateClientLink}
+                          disabled={loading}
+                          className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:bg-gray-400"
+                        >
+                          <Link size={16} />
+                          Generate Client Link
+                        </button>
+                        
+                        {!supabase && (
+                          <div className="mt-2 p-2 bg-yellow-50 text-yellow-700 rounded text-xs">
+                            Working in local mode - links won't persist without Supabase
+                          </div>
+                        )}
+                        
+                        {currentDocument.clientLink && (
+                          <div className="mt-3 p-3 bg-green-50 rounded-lg">
+                            <div className="text-xs text-green-700 mb-1">Client Link (Copied!)</div>
+                            <div className="text-xs text-green-600 break-all">
+                              {currentDocument.clientLink}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Document Viewer */}
+            <div className="lg:col-span-3">
+              <div className="bg-white rounded-2xl shadow-lg p-6">
+                {currentDocument && pdfDoc ? (
+                  <>
+                    {/* Navigation */}
+                    {totalPages > 1 && (
+                      <div className="flex items-center justify-center gap-4 mb-4">
+                        <button
+                          onClick={prevPage}
+                          disabled={currentPage === 1}
+                          className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:text-gray-800 disabled:opacity-50"
+                        >
+                          <ChevronLeft size={16} />
+                          Previous
+                        </button>
+                        <span className="text-sm font-medium">
+                          Page {currentPage} of {totalPages}
+                        </span>
+                        <button
+                          onClick={nextPage}
+                          disabled={currentPage === totalPages}
+                          className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:text-gray-800 disabled:opacity-50"
+                        >
+                          Next
+                          <ChevronRight size={16} />
+                        </button>
+                      </div>
+                    )}
+
+                    {/* PDF Canvas */}
+                    <div className="relative border rounded-xl overflow-hidden bg-gray-50 flex justify-center">
+                      <div className="relative">
+                        <canvas
+                          ref={canvasRef}
+                          className={`max-w-full ${placingField ? 'cursor-crosshair' : 'cursor-default'}`}
+                          onClick={handleCanvasClick}
+                        />
+                        
+                        {/* Field Overlays */}
+                        {currentPageFields.map((field) => (
+                          <div
+                            key={field.id}
+                            className={`absolute border-2 ${
+                              selectedField?.id === field.id 
+                                ? 'border-solid border-blue-600 bg-blue-100' 
+                                : 'border-dashed hover:border-solid'
+                            } ${
+                              field.type === 'signature' ? 'border-blue-500 bg-blue-50' :
+                              field.type === 'name' ? 'border-green-500 bg-green-50' :
+                              field.type === 'company' ? 'border-purple-500 bg-purple-50' :
+                              field.type === 'date' ? 'border-orange-500 bg-orange-50' :
+                              'border-gray-500 bg-gray-50'
+                            } rounded flex items-center justify-center group cursor-move`}
+                            style={{
+                              left: field.x,
+                              top: field.y,
+                              width: field.width,
+                              height: field.height,
+                            }}
+                            onMouseDown={(e) => handleFieldMouseDown(e, field)}
+                          >
+                            <div className="text-center pointer-events-none">
+                              <div className="text-xs font-medium text-gray-700">{field.label}</div>
+                              <div className="text-xs text-gray-500">{field.required ? 'Required' : 'Optional'}</div>
+                            </div>
+                            
+                            {/* Resize handle */}
+                            <div
+                              className="absolute bottom-0 right-0 w-3 h-3 bg-blue-600 cursor-se-resize opacity-0 group-hover:opacity-100 transition-opacity"
+                              onMouseDown={(e) => {
+                                e.stopPropagation();
+                                setResizing(true);
+                                setSelectedField(field);
+                              }}
+                            />
+                            
+                            {/* Delete button */}
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                removeField(field.id);
+                              }}
+                              className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                            >
+                              <X size={12} />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <div className="flex items-center justify-center h-96 text-gray-500">
+                    <div className="text-center">
+                      <FileText size={64} className="mx-auto mb-4 text-gray-300" />
+                      <p>Upload a PDF document to get started</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Client Interface */}
+        {mode === 'client' && currentDocument && (
+          <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+            {/* Document Info */}
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 border-b">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-2xl font-semibold text-gray-800 mb-1">{currentDocument.name}</h2>
+                  <p className="text-gray-600">Please complete all required fields and sign where indicated</p>
+                </div>
+                
+                <div className="flex items-center gap-4">
+                  {allRequiredFieldsCompleted && currentDocument?.status !== 'completed' && (
+                    <button 
+                      onClick={downloadSignedDocument}
+                      disabled={loading}
+                      className="flex items-center gap-2 px-6 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors disabled:bg-gray-400 shadow-lg"
+                    >
+                      <Send size={18} />
+                      Submit Document
+                    </button>
+                  )}
+                  
+                  {currentDocument?.status === 'completed' && (
+                    <div className="flex items-center gap-2 px-6 py-3 bg-green-100 text-green-700 rounded-xl shadow-lg">
+                      <Check size={18} />
+                      Document Completed
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="p-6">
+              {/* Progress */}
+              <div className="mb-6">
+                <div className="flex justify-between text-sm text-gray-600 mb-3">
+                  <span className="font-medium">Completion Progress</span>
+                  <span>
+                    {currentDocument.fields.filter(f => f.value || f.signatureData).length} of {currentDocument.fields.length} fields completed
+                  </span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-3">
+                  <div 
+                    className="bg-gradient-to-r from-blue-500 to-blue-600 h-3 rounded-full transition-all duration-500 shadow-sm"
+                    style={{
+                      width: `${(currentDocument.fields.filter(f => f.value || f.signatureData).length / currentDocument.fields.length) * 100}%`
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Navigation */}
+              {totalPages > 1 && (
+                <div className="flex items-center justify-center gap-4 mb-6">
+                  <button
+                    onClick={prevPage}
+                    disabled={currentPage === 1}
+                    className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 disabled:opacity-50 rounded-lg hover:bg-gray-50 transition-colors"
+                  >
+                    <ChevronLeft size={16} />
+                    Previous
+                  </button>
+                  <span className="text-sm font-medium bg-gray-100 px-4 py-2 rounded-lg">
+                    Page {currentPage} of {totalPages}
+                  </span>
+                  <button
+                    onClick={nextPage}
+                    disabled={currentPage === totalPages}
+                    className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 disabled:opacity-50 rounded-lg hover:bg-gray-50 transition-colors"
+                  >
+                    Next
+                    <ChevronRight size={16} />
+                  </button>
+                </div>
+              )}
+
+              {/* PDF Canvas */}
+              <div className="relative border-2 border-gray-200 rounded-xl overflow-hidden bg-gray-50 flex justify-center shadow-inner">
+                <div className="relative">
+                  <canvas ref={canvasRef} className="max-w-full" />
+                  
+                  {/* Interactive Fields */}
+                  {currentPageFields.map((field) => (
+                    <div
+                      key={field.id}
+                      className={`absolute rounded-lg flex items-center justify-center cursor-pointer transition-all ${
+                        field.value || field.signatureData
+                          ? 'bg-green-100 border-2 border-green-400 shadow-lg'
+                          : 'bg-blue-100 border-2 border-blue-400 hover:bg-blue-200 hover:border-blue-500 shadow-md hover:shadow-lg'
+                      }`}
+                      style={{
+                        left: field.x,
+                        top: field.y,
+                        width: field.width,
+                        height: field.height,
+                      }}
+                      onClick={() => handleFieldInteraction(field)}
+                    >
+                      {field.signatureData ? (
+                        <img
+                          src={field.signatureData}
+                          alt="Signature"
+                          className="max-w-full max-h-full object-contain"
+                        />
+                      ) : field.value ? (
+                        <span className="text-sm font-medium text-gray-800 px-2 truncate">
+                          {field.value}
+                        </span>
+                      ) : (
+                        <div className="text-center">
+                          <div className="text-sm font-medium text-blue-700 mb-1">
+                            {getFieldIcon(field.type)}
+                          </div>
+                          <div className="text-xs text-blue-600 font-medium">
+                            Click to {field.type === 'signature' ? 'sign' : 'fill'}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Powered by */}
+              <div className="text-center mt-6 pt-4 border-t border-gray-200">
+                <p className="text-xs text-gray-500">
+                  Powered by <span className="font-semibold text-blue-600">Amplifirm</span> Contract Management Software
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Back to Admin Button (Client Mode) - Only show in preview mode */}
+        {mode === 'client' && !window.location.search.includes('mode=client') && (
+          <div className="text-center mt-6">
+            <button
+              onClick={() => setMode('admin')}
+              className="text-blue-600 hover:text-blue-800 transition-colors"
+            >
+              ← Back to Admin View
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Modals */}
+      <SignatureModal
+        isOpen={showSignatureModal}
+        onClose={() => setShowSignatureModal(false)}
+        onSave={saveFieldValue}
+      />
+      
+      <TextInputModal
+        isOpen={showTextModal}
+        field={activeField}
+        onClose={() => setShowTextModal(false)}
+        onSave={saveFieldValue}
+      />
+    </div>
+  );
+}

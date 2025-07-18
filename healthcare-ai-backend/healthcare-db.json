@@ -1,0 +1,521 @@
+{
+    "providers": [
+      {
+        "id": "prov_001",
+        "name": "Dr. Sarah Chen",
+        "specialty": "Cardiology",
+        "practice_name": "Heart Health Associates",
+        "location": {
+          "address": "123 Medical Plaza, Suite 200",
+          "city": "San Francisco",
+          "state": "CA",
+          "zip": "94102",
+          "coordinates": { "lat": 37.7749, "lng": -122.4194 }
+        },
+        "contact": {
+          "phone": "(415) 555-0123",
+          "email": "appointments@hearthealth.com",
+          "website": "www.hearthealth.com"
+        },
+        "insurance_accepted": ["Blue Cross Blue Shield", "Aetna", "UnitedHealthcare", "Kaiser Permanente", "Cigna"],
+        "languages": ["English", "Mandarin", "Cantonese"],
+        "rating": 4.8,
+        "reviews_count": 234,
+        "accepting_new_patients": true,
+        "appointment_availability": "2-3 weeks",
+        "telehealth_available": true,
+        "subspecialties": ["Interventional Cardiology", "Heart Failure", "Preventive Cardiology"],
+        "education": "Stanford Medical School",
+        "board_certified": true,
+        "years_experience": 12
+      },
+      {
+        "id": "prov_002",
+        "name": "Dr. Michael Rodriguez",
+        "specialty": "Primary Care",
+        "practice_name": "Bay Area Family Medicine",
+        "location": {
+          "address": "456 Health Street",
+          "city": "San Jose",
+          "state": "CA",
+          "zip": "95110",
+          "coordinates": { "lat": 37.3382, "lng": -121.8863 }
+        },
+        "contact": {
+          "phone": "(408) 555-0234",
+          "email": "contact@bayfamilymed.com",
+          "website": "www.bayfamilymed.com"
+        },
+        "insurance_accepted": ["Blue Cross Blue Shield", "Anthem", "Health Net", "Medicare", "Medicaid"],
+        "languages": ["English", "Spanish"],
+        "rating": 4.6,
+        "reviews_count": 189,
+        "accepting_new_patients": true,
+        "appointment_availability": "1-2 weeks",
+        "telehealth_available": true,
+        "subspecialties": ["Preventive Medicine", "Chronic Disease Management", "Geriatric Care"],
+        "education": "UCSF Medical School",
+        "board_certified": true,
+        "years_experience": 15
+      },
+      {
+        "id": "prov_003",
+        "name": "Dr. Emily Thompson",
+        "specialty": "Dermatology",
+        "practice_name": "California Dermatology Center",
+        "location": {
+          "address": "789 Skin Care Avenue",
+          "city": "Los Angeles",
+          "state": "CA",
+          "zip": "90210",
+          "coordinates": { "lat": 34.0522, "lng": -118.2437 }
+        },
+        "contact": {
+          "phone": "(310) 555-0345",
+          "email": "bookings@cadermatology.com",
+          "website": "www.cadermatology.com"
+        },
+        "insurance_accepted": ["Aetna", "Blue Cross Blue Shield", "UnitedHealthcare", "Humana"],
+        "languages": ["English"],
+        "rating": 4.9,
+        "reviews_count": 312,
+        "accepting_new_patients": false,
+        "appointment_availability": "6-8 weeks",
+        "telehealth_available": false,
+        "subspecialties": ["Mohs Surgery", "Cosmetic Dermatology", "Pediatric Dermatology"],
+        "education": "Harvard Medical School",
+        "board_certified": true,
+        "years_experience": 18
+      },
+      {
+        "id": "prov_004",
+        "name": "Dr. James Park",
+        "specialty": "Mental Health",
+        "practice_name": "Mind Wellness Psychology",
+        "location": {
+          "address": "321 Therapy Lane",
+          "city": "San Francisco",
+          "state": "CA",
+          "zip": "94115",
+          "coordinates": { "lat": 37.7849, "lng": -122.4294 }
+        },
+        "contact": {
+          "phone": "(415) 555-0456",
+          "email": "intake@mindwellness.com",
+          "website": "www.mindwellness.com"
+        },
+        "insurance_accepted": ["Blue Cross Blue Shield", "Aetna", "Cigna", "Psychology Today Insurance"],
+        "languages": ["English", "Korean"],
+        "rating": 4.7,
+        "reviews_count": 156,
+        "accepting_new_patients": true,
+        "appointment_availability": "3-4 weeks",
+        "telehealth_available": true,
+        "subspecialties": ["Anxiety Disorders", "Depression", "ADHD", "Trauma Therapy"],
+        "education": "UCLA Psychology PhD",
+        "board_certified": true,
+        "years_experience": 10,
+        "therapy_types": ["CBT", "DBT", "EMDR", "Mindfulness-Based Therapy"]
+      },
+      {
+        "id": "prov_005",
+        "name": "Dr. Lisa Wong",
+        "specialty": "Orthopedics",
+        "practice_name": "Sports Medicine & Orthopedic Institute",
+        "location": {
+          "address": "654 Athletic Drive",
+          "city": "San Diego",
+          "state": "CA",
+          "zip": "92101",
+          "coordinates": { "lat": 32.7157, "lng": -117.1611 }
+        },
+        "contact": {
+          "phone": "(619) 555-0567",
+          "email": "schedule@sportsortho.com",
+          "website": "www.sportsortho.com"
+        },
+        "insurance_accepted": ["UnitedHealthcare", "Blue Cross Blue Shield", "Aetna", "Workers Compensation"],
+        "languages": ["English", "Spanish", "Mandarin"],
+        "rating": 4.8,
+        "reviews_count": 267,
+        "accepting_new_patients": true,
+        "appointment_availability": "2-4 weeks",
+        "telehealth_available": true,
+        "subspecialties": ["Sports Medicine", "Joint Replacement", "Arthroscopic Surgery"],
+        "education": "Johns Hopkins Medical School",
+        "board_certified": true,
+        "years_experience": 14
+      },
+      {
+        "id": "prov_006",
+        "name": "Dr. Amanda Johnson",
+        "specialty": "Pediatrics",
+        "practice_name": "Children's Health Partners",
+        "location": {
+          "address": "1456 Kids Care Blvd",
+          "city": "San Francisco",
+          "state": "CA",
+          "zip": "94118",
+          "coordinates": { "lat": 37.7849, "lng": -122.4694 }
+        },
+        "contact": {
+          "phone": "(415) 555-0678",
+          "email": "appointments@childrenshealth.com",
+          "website": "www.childrenshealth.com"
+        },
+        "insurance_accepted": ["Blue Cross Blue Shield", "Aetna", "Kaiser Permanente", "Cigna", "Medicaid"],
+        "languages": ["English", "Spanish", "French"],
+        "rating": 4.9,
+        "reviews_count": 445,
+        "accepting_new_patients": true,
+        "appointment_availability": "1-3 weeks",
+        "telehealth_available": true,
+        "subspecialties": ["Newborn Care", "Adolescent Medicine", "Developmental Pediatrics"],
+        "education": "UCSF Medical School",
+        "board_certified": true,
+        "years_experience": 11
+      },
+      {
+        "id": "prov_007",
+        "name": "Dr. Robert Kim",
+        "specialty": "Neurology",
+        "practice_name": "Bay Area Neurology Institute",
+        "location": {
+          "address": "2890 Brain Science Dr",
+          "city": "Palo Alto",
+          "state": "CA",
+          "zip": "94301",
+          "coordinates": { "lat": 37.4419, "lng": -122.1430 }
+        },
+        "contact": {
+          "phone": "(650) 555-0789",
+          "email": "neurology@baninstitute.com",
+          "website": "www.baninstitute.com"
+        },
+        "insurance_accepted": ["UnitedHealthcare", "Blue Cross Blue Shield", "Aetna", "Stanford Health Care"],
+        "languages": ["English", "Korean", "Japanese"],
+        "rating": 4.7,
+        "reviews_count": 198,
+        "accepting_new_patients": true,
+        "appointment_availability": "4-6 weeks",
+        "telehealth_available": true,
+        "subspecialties": ["Epilepsy", "Multiple Sclerosis", "Headache Medicine", "Movement Disorders"],
+        "education": "Stanford Medical School",
+        "board_certified": true,
+        "years_experience": 16
+      },
+      {
+        "id": "prov_008",
+        "name": "Dr. Maria Gonzalez",
+        "specialty": "Obstetrics and Gynecology",
+        "practice_name": "Women's Health Associates",
+        "location": {
+          "address": "567 Women's Care Way",
+          "city": "Los Angeles",
+          "state": "CA",
+          "zip": "90024",
+          "coordinates": { "lat": 34.0522, "lng": -118.2437 }
+        },
+        "contact": {
+          "phone": "(310) 555-0890",
+          "email": "appointments@womenshealth.com",
+          "website": "www.womenshealthassoc.com"
+        },
+        "insurance_accepted": ["Blue Cross Blue Shield", "Aetna", "UnitedHealthcare", "Cigna", "Anthem"],
+        "languages": ["English", "Spanish", "Portuguese"],
+        "rating": 4.8,
+        "reviews_count": 356,
+        "accepting_new_patients": true,
+        "appointment_availability": "2-4 weeks",
+        "telehealth_available": true,
+        "subspecialties": ["High-Risk Pregnancy", "Minimally Invasive Surgery", "Fertility Care"],
+        "education": "UCLA Medical School",
+        "board_certified": true,
+        "years_experience": 13
+      },
+      {
+        "id": "prov_009",
+        "name": "Dr. David Lee",
+        "specialty": "Psychiatry",
+        "practice_name": "Mental Health Solutions",
+        "location": {
+          "address": "1234 Wellness Street",
+          "city": "San Diego",
+          "state": "CA",
+          "zip": "92103",
+          "coordinates": { "lat": 32.7281, "lng": -117.1468 }
+        },
+        "contact": {
+          "phone": "(619) 555-0901",
+          "email": "intake@mhsolutions.com",
+          "website": "www.mhsolutions.com"
+        },
+        "insurance_accepted": ["Blue Cross Blue Shield", "Aetna", "UnitedHealthcare", "Optum", "Cigna"],
+        "languages": ["English", "Mandarin", "Vietnamese"],
+        "rating": 4.6,
+        "reviews_count": 234,
+        "accepting_new_patients": true,
+        "appointment_availability": "2-3 weeks",
+        "telehealth_available": true,
+        "subspecialties": ["Adult ADHD", "Bipolar Disorder", "Anxiety Disorders", "Depression"],
+        "education": "UCSD Medical School",
+        "board_certified": true,
+        "years_experience": 9
+      },
+      {
+        "id": "prov_010",
+        "name": "Dr. Jennifer Adams",
+        "specialty": "Endocrinology",
+        "practice_name": "Diabetes & Hormone Center",
+        "location": {
+          "address": "789 Endocrine Ave",
+          "city": "San Jose",
+          "state": "CA",
+          "zip": "95112",
+          "coordinates": { "lat": 37.3382, "lng": -121.8863 }
+        },
+        "contact": {
+          "phone": "(408) 555-1012",
+          "email": "appointments@diabetescenter.com",
+          "website": "www.diabetescenter.com"
+        },
+        "insurance_accepted": ["Blue Cross Blue Shield", "UnitedHealthcare", "Aetna", "Health Net", "Kaiser"],
+        "languages": ["English", "Hindi", "Gujarati"],
+        "rating": 4.7,
+        "reviews_count": 187,
+        "accepting_new_patients": true,
+        "appointment_availability": "3-5 weeks",
+        "telehealth_available": true,
+        "subspecialties": ["Diabetes Management", "Thyroid Disorders", "Metabolic Syndrome"],
+        "education": "Stanford Medical School",
+        "board_certified": true,
+        "years_experience": 12
+      }
+    ],
+    "hospitals": [
+      {
+        "id": "hosp_001",
+        "name": "San Francisco General Hospital",
+        "type": "Public Hospital",
+        "location": {
+          "address": "1001 Potrero Avenue",
+          "city": "San Francisco",
+          "state": "CA",
+          "zip": "94110",
+          "coordinates": { "lat": 37.7562, "lng": -122.4044 }
+        },
+        "contact": {
+          "phone": "(415) 206-8000",
+          "website": "www.sfgeneral.org"
+        },
+        "services": ["Emergency Care", "Trauma Center", "Cardiology", "Neurology", "Oncology", "Pediatrics"],
+        "emergency_room": true,
+        "trauma_level": "Level 1",
+        "insurance_accepted": ["Most major insurance", "Medicare", "Medicaid", "Uninsured care available"],
+        "languages": ["English", "Spanish", "Chinese", "Vietnamese", "Russian"],
+        "rating": 4.2,
+        "wait_times": {
+          "emergency": "45-90 minutes",
+          "urgent_care": "30-60 minutes"
+        },
+        "parking": "Available - $3/hour",
+        "public_transport": "Muni Bus Lines 9, 10, 48"
+      },
+      {
+        "id": "hosp_002",
+        "name": "UCSF Medical Center",
+        "type": "Academic Medical Center",
+        "location": {
+          "address": "505 Parnassus Avenue",
+          "city": "San Francisco",
+          "state": "CA",
+          "zip": "94143",
+          "coordinates": { "lat": 37.7632, "lng": -122.4597 }
+        },
+        "contact": {
+          "phone": "(415) 476-1000",
+          "website": "www.ucsfhealth.org"
+        },
+        "services": ["Emergency Care", "Specialized Surgery", "Cancer Care", "Heart Surgery", "Neurosurgery", "Transplant Services"],
+        "emergency_room": true,
+        "trauma_level": "Level 1",
+        "insurance_accepted": ["Blue Cross Blue Shield", "Aetna", "UnitedHealthcare", "Kaiser Permanente"],
+        "languages": ["English", "Spanish", "Chinese", "Arabic", "Russian"],
+        "rating": 4.6,
+        "wait_times": {
+          "emergency": "60-120 minutes",
+          "urgent_care": "Not available"
+        },
+        "parking": "Available - $4/hour",
+        "public_transport": "Muni N-Judah Line"
+      },
+      {
+        "id": "hosp_003",
+        "name": "Cedars-Sinai Medical Center",
+        "type": "Private Non-Profit Hospital",
+        "location": {
+          "address": "8700 Beverly Boulevard",
+          "city": "Los Angeles",
+          "state": "CA",
+          "zip": "90048",
+          "coordinates": { "lat": 34.0761, "lng": -118.3758 }
+        },
+        "contact": {
+          "phone": "(310) 423-3277",
+          "website": "www.cedars-sinai.org"
+        },
+        "services": ["Emergency Care", "Heart Surgery", "Cancer Care", "Neurology", "Orthopedics", "Women's Health"],
+        "emergency_room": true,
+        "trauma_level": "Level 1",
+        "insurance_accepted": ["Blue Cross Blue Shield", "Aetna", "UnitedHealthcare", "Cigna", "Medicare"],
+        "languages": ["English", "Spanish", "Hebrew", "Russian", "Armenian"],
+        "rating": 4.8,
+        "wait_times": {
+          "emergency": "30-75 minutes",
+          "urgent_care": "20-45 minutes"
+        },
+        "parking": "Available - $5/hour",
+        "public_transport": "Metro Bus Lines 14, 16, 20"
+      },
+      {
+        "id": "hosp_004",
+        "name": "UCLA Medical Center",
+        "type": "Academic Medical Center",
+        "location": {
+          "address": "757 Westwood Plaza",
+          "city": "Los Angeles",
+          "state": "CA",
+          "zip": "90095",
+          "coordinates": { "lat": 34.0689, "lng": -118.4473 }
+        },
+        "contact": {
+          "phone": "(310) 825-9111",
+          "website": "www.uclahealth.org"
+        },
+        "services": ["Emergency Care", "Transplant Services", "Cancer Care", "Pediatrics", "Neurology", "Rehabilitation"],
+        "emergency_room": true,
+        "trauma_level": "Level 1",
+        "insurance_accepted": ["Blue Cross Blue Shield", "Aetna", "UnitedHealthcare", "Cigna", "UCLA Health"],
+        "languages": ["English", "Spanish", "Korean", "Chinese", "Arabic"],
+        "rating": 4.7,
+        "wait_times": {
+          "emergency": "45-90 minutes",
+          "urgent_care": "Not available"
+        },
+        "parking": "Available - $6/hour",
+        "public_transport": "Metro Bus Lines 2, 302, Big Blue Bus"
+      }
+    ],
+    "urgent_care": [
+      {
+        "id": "urgent_001",
+        "name": "One Medical Urgent Care",
+        "location": {
+          "address": "2 Embarcadero Center",
+          "city": "San Francisco",
+          "state": "CA",
+          "zip": "94111",
+          "coordinates": { "lat": 37.7955, "lng": -122.3967 }
+        },
+        "contact": {
+          "phone": "(415) 230-4600",
+          "website": "www.onemedical.com"
+        },
+        "services": ["Minor Injuries", "Cold/Flu", "UTI Treatment", "Basic Lab Tests", "Vaccinations"],
+        "hours": {
+          "monday": "7:00 AM - 9:00 PM",
+          "tuesday": "7:00 AM - 9:00 PM",
+          "wednesday": "7:00 AM - 9:00 PM",
+          "thursday": "7:00 AM - 9:00 PM",
+          "friday": "7:00 AM - 9:00 PM",
+          "saturday": "8:00 AM - 6:00 PM",
+          "sunday": "8:00 AM - 6:00 PM"
+        },
+        "insurance_accepted": ["Blue Cross Blue Shield", "Aetna", "UnitedHealthcare", "Cigna"],
+        "online_checkin": true,
+        "average_wait": "15-30 minutes",
+        "rating": 4.5
+      },
+      {
+        "id": "urgent_002",
+        "name": "GoHealth Urgent Care",
+        "location": {
+          "address": "1515 Ocean Avenue",
+          "city": "San Francisco",
+          "state": "CA",
+          "zip": "94112",
+          "coordinates": { "lat": 37.7249, "lng": -122.4594 }
+        },
+        "contact": {
+          "phone": "(415) 555-2345",
+          "website": "www.gohealthuc.com"
+        },
+        "services": ["Minor Injuries", "Illness Treatment", "Sports Physicals", "X-rays", "Lab Tests"],
+        "hours": {
+          "monday": "8:00 AM - 8:00 PM",
+          "tuesday": "8:00 AM - 8:00 PM",
+          "wednesday": "8:00 AM - 8:00 PM",
+          "thursday": "8:00 AM - 8:00 PM",
+          "friday": "8:00 AM - 8:00 PM",
+          "saturday": "9:00 AM - 5:00 PM",
+          "sunday": "9:00 AM - 5:00 PM"
+        },
+        "insurance_accepted": ["Blue Cross Blue Shield", "Aetna", "UnitedHealthcare", "Cigna", "Kaiser"],
+        "online_checkin": true,
+        "average_wait": "20-35 minutes",
+        "rating": 4.3
+      }
+    ],
+    "specialties": [
+      {
+        "name": "Cardiology",
+        "common_conditions": ["Heart Disease", "High Blood Pressure", "Chest Pain", "Heart Rhythm Disorders", "Heart Failure"],
+        "when_to_see": "Heart symptoms, family history of heart disease, high blood pressure management, chest pain evaluation"
+      },
+      {
+        "name": "Dermatology",
+        "common_conditions": ["Acne", "Skin Cancer", "Eczema", "Psoriasis", "Moles", "Rosacea"],
+        "when_to_see": "Skin concerns, suspicious moles, persistent rashes, cosmetic procedures, skin cancer screening"
+      },
+      {
+        "name": "Mental Health",
+        "common_conditions": ["Depression", "Anxiety", "ADHD", "PTSD", "Bipolar Disorder", "Eating Disorders"],
+        "when_to_see": "Emotional difficulties, stress management, behavioral concerns, trauma, mood disorders"
+      },
+      {
+        "name": "Orthopedics",
+        "common_conditions": ["Broken Bones", "Joint Pain", "Sports Injuries", "Arthritis", "Back Pain"],
+        "when_to_see": "Bone/joint pain, sports injuries, mobility issues, chronic joint problems, fractures"
+      },
+      {
+        "name": "Primary Care",
+        "common_conditions": ["Annual Checkups", "Preventive Care", "Chronic Disease Management", "General Health", "Vaccinations"],
+        "when_to_see": "Regular checkups, general health concerns, ongoing health management, preventive care"
+      },
+      {
+        "name": "Pediatrics",
+        "common_conditions": ["Child Development", "Vaccinations", "Common Childhood Illnesses", "Growth Monitoring", "Behavioral Issues"],
+        "when_to_see": "All child healthcare needs, from birth through adolescence, developmental concerns"
+      },
+      {
+        "name": "Neurology",
+        "common_conditions": ["Headaches", "Seizures", "Multiple Sclerosis", "Stroke", "Memory Problems", "Parkinson's Disease"],
+        "when_to_see": "Neurological symptoms, headaches, memory issues, movement disorders, seizures"
+      },
+      {
+        "name": "Obstetrics and Gynecology",
+        "common_conditions": ["Pregnancy Care", "Reproductive Health", "Menstrual Disorders", "Menopause", "Contraception"],
+        "when_to_see": "Women's reproductive health, pregnancy care, gynecological concerns, family planning"
+      },
+      {
+        "name": "Psychiatry",
+        "common_conditions": ["Mental Health Disorders", "Medication Management", "Severe Depression", "Bipolar Disorder", "Schizophrenia"],
+        "when_to_see": "Mental health medication needs, severe psychiatric conditions, complex mental health issues"
+      },
+      {
+        "name": "Endocrinology",
+        "common_conditions": ["Diabetes", "Thyroid Disorders", "Hormone Imbalances", "Metabolic Disorders", "Adrenal Issues"],
+        "when_to_see": "Diabetes management, thyroid problems, hormone-related issues, metabolic concerns"
+      }
+    ]
+  }
