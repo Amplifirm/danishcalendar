@@ -26,6 +26,7 @@ const BeshnoRetreatForm = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [showValidationErrors, setShowValidationErrors] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -52,15 +53,15 @@ const BeshnoRetreatForm = () => {
 
   const handleSubmit = async () => {
     // Validate required fields
-    if (!formData.fullName || !formData.email || !formData.ageGroup || 
-        !formData.countryCity || !formData.retreatDuration || 
+    if (!formData.fullName || !formData.email || !formData.gender || 
+        !formData.ageGroup || !formData.countryCity || !formData.retreatDuration || 
         formData.preferredMonths.length === 0 || !formData.attendanceFrequency || 
         !formData.priceRange || formData.activities.length === 0 || 
         !formData.accommodation || formData.foodPreference.length === 0 || 
         formData.location.length === 0 || !formData.sufiPathLevel || 
         formData.mainAttraction.length === 0 || !formData.openToWorkshops || 
         !formData.stayConnected) {
-      alert('Please fill in all required fields');
+      setShowValidationErrors(true);
       return;
     }
 
@@ -101,6 +102,37 @@ const BeshnoRetreatForm = () => {
       setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const validateCurrentStep = () => {
+    switch(currentStep) {
+      case 0: // About You
+        return formData.fullName && formData.email && formData.gender && 
+               formData.ageGroup && formData.countryCity;
+      case 1: // Retreat Preferences
+        return formData.retreatDuration && formData.preferredMonths.length > 0 && 
+               formData.attendanceFrequency && formData.priceRange;
+      case 2: // Activities
+        return formData.activities.length > 0;
+      case 3: // Retreat Style
+        return formData.accommodation && formData.foodPreference.length > 0 && 
+               formData.location.length > 0;
+      case 4: // Your Journey
+        return formData.sufiPathLevel && formData.mainAttraction.length > 0;
+      case 5: // Final
+        return formData.openToWorkshops && formData.stayConnected;
+      default:
+        return true;
+    }
+  };
+
+  const handleContinue = () => {
+    if (validateCurrentStep()) {
+      setShowValidationErrors(false);
+      setCurrentStep(currentStep + 1);
+    } else {
+      setShowValidationErrors(true);
     }
   };
 
@@ -252,7 +284,9 @@ const BeshnoRetreatForm = () => {
             <label className="body-font block text-sm font-semibold text-[#20321E] mb-2">
               How many days would your ideal retreat be? *
             </label>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+            <div className={`grid grid-cols-1 md:grid-cols-2 gap-2 p-3 rounded-lg ${
+              showValidationErrors && !formData.retreatDuration ? 'bg-red-50 border-2 border-red-500' : ''
+            }`}>
               {[
                 '1 day (urban/day retreat)',
                 '2–3 days (weekend)',
@@ -277,7 +311,9 @@ const BeshnoRetreatForm = () => {
               <label className="body-font block text-sm font-semibold text-[#20321E] mb-2">
                 Which months would you attend? *
               </label>
-              <div className="grid grid-cols-1 gap-2">
+              <div className={`grid grid-cols-1 gap-2 p-3 rounded-lg ${
+                showValidationErrors && formData.preferredMonths.length === 0 ? 'bg-red-50 border-2 border-red-500' : ''
+              }`}>
                 {[
                   'January–March',
                   'April–June',
@@ -299,7 +335,9 @@ const BeshnoRetreatForm = () => {
               <label className="body-font block text-sm font-semibold text-[#20321E] mb-2">
                 How often per year? *
               </label>
-              <div className="grid grid-cols-1 gap-2">
+              <div className={`grid grid-cols-1 gap-2 p-3 rounded-lg ${
+                showValidationErrors && !formData.attendanceFrequency ? 'bg-red-50 border-2 border-red-500' : ''
+              }`}>
                 {[
                   'Once a year',
                   'Twice a year',
@@ -324,7 +362,9 @@ const BeshnoRetreatForm = () => {
             <label className="body-font block text-sm font-semibold text-[#20321E] mb-2">
               Price range you'd feel comfortable investing? *
             </label>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+            <div className={`grid grid-cols-2 md:grid-cols-3 gap-2 p-3 rounded-lg ${
+              showValidationErrors && !formData.priceRange ? 'bg-red-50 border-2 border-red-500' : ''
+            }`}>
               {[
                 'Under €300',
                 '€300–€500',
@@ -356,7 +396,9 @@ const BeshnoRetreatForm = () => {
             <label className="body-font block text-sm font-semibold text-[#20321E] mb-2">
               Which activities interest you most? (select all that apply) *
             </label>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-[400px] overflow-y-auto pr-2">
+            <div className={`grid grid-cols-1 md:grid-cols-2 gap-2 max-h-[400px] overflow-y-auto pr-2 p-3 rounded-lg ${
+              showValidationErrors && formData.activities.length === 0 ? 'bg-red-50 border-2 border-red-500' : ''
+            }`}>
               {activities.map(activity => (
                 <CheckboxOption
                   key={activity}
@@ -394,7 +436,9 @@ const BeshnoRetreatForm = () => {
             <label className="body-font block text-sm font-semibold text-[#20321E] mb-2">
               What kind of accommodation do you prefer? *
             </label>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+            <div className={`grid grid-cols-1 md:grid-cols-2 gap-2 p-3 rounded-lg ${
+              showValidationErrors && !formData.accommodation ? 'bg-red-50 border-2 border-red-500' : ''
+            }`}>
               {[
                 'Shared dorm',
                 'Shared twin/triple room',
@@ -419,7 +463,9 @@ const BeshnoRetreatForm = () => {
               <label className="body-font block text-sm font-semibold text-[#20321E] mb-2">
                 What type of food do you prefer? *
               </label>
-              <div className="grid grid-cols-1 gap-2">
+              <div className={`grid grid-cols-1 gap-2 p-3 rounded-lg ${
+                showValidationErrors && formData.foodPreference.length === 0 ? 'bg-red-50 border-2 border-red-500' : ''
+              }`}>
                 {[
                   'Vegetarian',
                   'Vegan',
@@ -441,7 +487,9 @@ const BeshnoRetreatForm = () => {
               <label className="body-font block text-sm font-semibold text-[#20321E] mb-2">
                 What type of location attracts you? *
               </label>
-              <div className="grid grid-cols-1 gap-2">
+              <div className={`grid grid-cols-1 gap-2 p-3 rounded-lg ${
+                showValidationErrors && formData.location.length === 0 ? 'bg-red-50 border-2 border-red-500' : ''
+              }`}>
                 {[
                   'Countryside villa / estate',
                   'Mountain retreat center',
@@ -472,7 +520,9 @@ const BeshnoRetreatForm = () => {
               <label className="body-font block text-sm font-semibold text-[#20321E] mb-2">
                 Do you follow the Sufi path? *
               </label>
-              <div className="grid grid-cols-1 gap-2">
+              <div className={`grid grid-cols-1 gap-2 p-3 rounded-lg ${
+                showValidationErrors && !formData.sufiPathLevel ? 'bg-red-50 border-2 border-red-500' : ''
+              }`}>
                 {[
                   'Yes, deeply practicing',
                   'Somewhat familiar / exploring',
@@ -495,7 +545,9 @@ const BeshnoRetreatForm = () => {
               <label className="body-font block text-sm font-semibold text-[#20321E] mb-2">
                 What draws you most to a retreat? *
               </label>
-              <div className="grid grid-cols-1 gap-2">
+              <div className={`grid grid-cols-1 gap-2 p-3 rounded-lg ${
+                showValidationErrors && formData.mainAttraction.length === 0 ? 'bg-red-50 border-2 border-red-500' : ''
+              }`}>
                 {[
                   'Spiritual growth',
                   'Community & belonging',
@@ -541,7 +593,9 @@ const BeshnoRetreatForm = () => {
             <label className="body-font block text-sm font-semibold text-[#20321E] mb-2">
               Open to 1-day workshops? *
             </label>
-            <div className="grid grid-cols-1 gap-2">
+            <div className={`grid grid-cols-1 gap-2 p-3 rounded-lg ${
+              showValidationErrors && !formData.openToWorkshops ? 'bg-red-50 border-2 border-red-500' : ''
+            }`}>
               {['Yes', 'No', 'Maybe'].map(option => (
                 <RadioOption
                   key={option}
@@ -560,7 +614,9 @@ const BeshnoRetreatForm = () => {
             <label className="body-font block text-sm font-semibold text-[#20321E] mb-2">
               Stay connected via? *
             </label>
-            <div className="grid grid-cols-1 gap-2">
+            <div className={`grid grid-cols-1 gap-2 p-3 rounded-lg ${
+              showValidationErrors && !formData.stayConnected ? 'bg-red-50 border-2 border-red-500' : ''
+            }`}>
               {['Yes, WhatsApp', 'Yes, Email', 'No thanks'].map(option => (
                 <RadioOption
                   key={option}
@@ -703,10 +759,18 @@ const BeshnoRetreatForm = () => {
 
               {/* Navigation */}
               <div className="flex items-center justify-between mt-10 pt-8 border-t border-[#DDD8CA]/50">
+                {showValidationErrors && (
+                  <p className="body-font text-red-600 text-sm font-medium">
+                    Please fill in all required fields
+                  </p>
+                )}
+                
                 <button
                   onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
                   disabled={currentStep === 0}
-                  className="body-font px-6 py-3 text-[#466245] font-medium disabled:opacity-0 disabled:cursor-not-allowed hover:text-[#20321E] transition-all flex items-center gap-2 group"
+                  className={`body-font px-6 py-3 text-[#466245] font-medium disabled:opacity-0 disabled:cursor-not-allowed hover:text-[#20321E] transition-all flex items-center gap-2 group ${
+                    showValidationErrors ? 'ml-auto' : ''
+                  }`}
                 >
                   <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -716,7 +780,7 @@ const BeshnoRetreatForm = () => {
 
                 {currentStep < steps.length - 1 ? (
                   <button
-                    onClick={() => setCurrentStep(currentStep + 1)}
+                    onClick={handleContinue}
                     className="body-font px-8 py-3.5 bg-[#466245] text-white font-semibold rounded-full hover:bg-[#20321E] transition-all shadow-lg hover:shadow-xl flex items-center gap-2 group"
                   >
                     Continue
