@@ -9,16 +9,16 @@ const BeshnoRetreatForm = () => {
     ageGroup: '',
     countryCity: '',
     retreatDuration: '',
-    preferredMonths: '',
+    preferredMonths: [] as string[],
     attendanceFrequency: '',
     priceRange: '',
     activities: [] as string[],
     otherActivities: '',
     accommodation: '',
-    foodPreference: '',
-    location: '',
+    foodPreference: [] as string[],
+    location: [] as string[],
     sufiPathLevel: '',
-    mainAttraction: '',
+    mainAttraction: [] as string[],
     biggestChallenge: '',
     openToWorkshops: '',
     stayConnected: ''
@@ -41,7 +41,29 @@ const BeshnoRetreatForm = () => {
     }));
   };
 
+  const handleMultiSelectChange = (field: 'preferredMonths' | 'foodPreference' | 'location' | 'mainAttraction', value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: prev[field].includes(value)
+        ? prev[field].filter((v: string) => v !== value)
+        : [...prev[field], value]
+    }));
+  };
+
   const handleSubmit = async () => {
+    // Validate required fields
+    if (!formData.fullName || !formData.email || !formData.ageGroup || 
+        !formData.countryCity || !formData.retreatDuration || 
+        formData.preferredMonths.length === 0 || !formData.attendanceFrequency || 
+        !formData.priceRange || formData.activities.length === 0 || 
+        !formData.accommodation || formData.foodPreference.length === 0 || 
+        formData.location.length === 0 || !formData.sufiPathLevel || 
+        formData.mainAttraction.length === 0 || !formData.openToWorkshops || 
+        !formData.stayConnected) {
+      alert('Please fill in all required fields');
+      return;
+    }
+
     setIsSubmitting(true);
     setSubmitStatus('idle');
 
@@ -49,6 +71,10 @@ const BeshnoRetreatForm = () => {
       const submissionData = {
         ...formData,
         activities: formData.activities.join(', '),
+        preferredMonths: formData.preferredMonths.join(', '),
+        foodPreference: formData.foodPreference.join(', '),
+        location: formData.location.join(', '),
+        mainAttraction: formData.mainAttraction.join(', '),
         timestamp: new Date().toISOString()
       };
 
@@ -224,7 +250,7 @@ const BeshnoRetreatForm = () => {
         <div className="space-y-5">
           <div>
             <label className="body-font block text-sm font-semibold text-[#20321E] mb-2">
-              How many days would your ideal retreat be?
+              How many days would your ideal retreat be? *
             </label>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
               {[
@@ -249,7 +275,7 @@ const BeshnoRetreatForm = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
               <label className="body-font block text-sm font-semibold text-[#20321E] mb-2">
-                Which months would you attend?
+                Which months would you attend? *
               </label>
               <div className="grid grid-cols-1 gap-2">
                 {[
@@ -258,22 +284,20 @@ const BeshnoRetreatForm = () => {
                   'July–September',
                   'October–December'
                 ].map(option => (
-                  <RadioOption
+                  <CheckboxOption
                     key={option}
-                    name="preferredMonths"
-                    value={option}
-                    checked={formData.preferredMonths === option}
-                    onChange={handleInputChange}
+                    checked={formData.preferredMonths.includes(option)}
+                    onChange={() => handleMultiSelectChange('preferredMonths', option)}
                   >
                     {option}
-                  </RadioOption>
+                  </CheckboxOption>
                 ))}
               </div>
             </div>
 
             <div>
               <label className="body-font block text-sm font-semibold text-[#20321E] mb-2">
-                How often per year?
+                How often per year? *
               </label>
               <div className="grid grid-cols-1 gap-2">
                 {[
@@ -298,7 +322,7 @@ const BeshnoRetreatForm = () => {
 
           <div>
             <label className="body-font block text-sm font-semibold text-[#20321E] mb-2">
-              Price range you'd feel comfortable investing?
+              Price range you'd feel comfortable investing? *
             </label>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
               {[
@@ -330,7 +354,7 @@ const BeshnoRetreatForm = () => {
         <div className="space-y-5">
           <div>
             <label className="body-font block text-sm font-semibold text-[#20321E] mb-2">
-              Which activities interest you most? (select all that apply)
+              Which activities interest you most? (select all that apply) *
             </label>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-[400px] overflow-y-auto pr-2">
               {activities.map(activity => (
@@ -368,7 +392,7 @@ const BeshnoRetreatForm = () => {
         <div className="space-y-5">
           <div>
             <label className="body-font block text-sm font-semibold text-[#20321E] mb-2">
-              What kind of accommodation do you prefer?
+              What kind of accommodation do you prefer? *
             </label>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
               {[
@@ -393,7 +417,7 @@ const BeshnoRetreatForm = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
               <label className="body-font block text-sm font-semibold text-[#20321E] mb-2">
-                What type of food do you prefer?
+                What type of food do you prefer? *
               </label>
               <div className="grid grid-cols-1 gap-2">
                 {[
@@ -402,22 +426,20 @@ const BeshnoRetreatForm = () => {
                   'With meat options (Always halal)',
                   'No preference / flexible'
                 ].map(option => (
-                  <RadioOption
+                  <CheckboxOption
                     key={option}
-                    name="foodPreference"
-                    value={option}
-                    checked={formData.foodPreference === option}
-                    onChange={handleInputChange}
+                    checked={formData.foodPreference.includes(option)}
+                    onChange={() => handleMultiSelectChange('foodPreference', option)}
                   >
                     {option}
-                  </RadioOption>
+                  </CheckboxOption>
                 ))}
               </div>
             </div>
 
             <div>
               <label className="body-font block text-sm font-semibold text-[#20321E] mb-2">
-                What type of location attracts you?
+                What type of location attracts you? *
               </label>
               <div className="grid grid-cols-1 gap-2">
                 {[
@@ -426,15 +448,13 @@ const BeshnoRetreatForm = () => {
                   'Beachside location',
                   'Urban spiritual center'
                 ].map(option => (
-                  <RadioOption
+                  <CheckboxOption
                     key={option}
-                    name="location"
-                    value={option}
-                    checked={formData.location === option}
-                    onChange={handleInputChange}
+                    checked={formData.location.includes(option)}
+                    onChange={() => handleMultiSelectChange('location', option)}
                   >
                     {option}
-                  </RadioOption>
+                  </CheckboxOption>
                 ))}
               </div>
             </div>
@@ -450,7 +470,7 @@ const BeshnoRetreatForm = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
               <label className="body-font block text-sm font-semibold text-[#20321E] mb-2">
-                Do you follow the Sufi path?
+                Do you follow the Sufi path? *
               </label>
               <div className="grid grid-cols-1 gap-2">
                 {[
@@ -473,7 +493,7 @@ const BeshnoRetreatForm = () => {
 
             <div>
               <label className="body-font block text-sm font-semibold text-[#20321E] mb-2">
-                What draws you most to a retreat?
+                What draws you most to a retreat? *
               </label>
               <div className="grid grid-cols-1 gap-2">
                 {[
@@ -484,15 +504,13 @@ const BeshnoRetreatForm = () => {
                   'Creative expression',
                   'Other'
                 ].map(option => (
-                  <RadioOption
+                  <CheckboxOption
                     key={option}
-                    name="mainAttraction"
-                    value={option}
-                    checked={formData.mainAttraction === option}
-                    onChange={handleInputChange}
+                    checked={formData.mainAttraction.includes(option)}
+                    onChange={() => handleMultiSelectChange('mainAttraction', option)}
                   >
                     {option}
-                  </RadioOption>
+                  </CheckboxOption>
                 ))}
               </div>
             </div>
@@ -521,7 +539,7 @@ const BeshnoRetreatForm = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <div>
             <label className="body-font block text-sm font-semibold text-[#20321E] mb-2">
-              Open to 1-day workshops?
+              Open to 1-day workshops? *
             </label>
             <div className="grid grid-cols-1 gap-2">
               {['Yes', 'No', 'Maybe'].map(option => (
@@ -540,7 +558,7 @@ const BeshnoRetreatForm = () => {
 
           <div>
             <label className="body-font block text-sm font-semibold text-[#20321E] mb-2">
-              Stay connected via?
+              Stay connected via? *
             </label>
             <div className="grid grid-cols-1 gap-2">
               {['Yes, WhatsApp', 'Yes, Email', 'No thanks'].map(option => (
